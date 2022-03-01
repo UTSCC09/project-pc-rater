@@ -1,4 +1,4 @@
-**CSCC09 Project**
+<h1>CSCC09 Project</h1>
 
 **Title:** ProfCourseRater (PCRater)
 
@@ -57,15 +57,15 @@ Moreover, we will use the Google Maps API to integrate location support for the 
 
 
 **Technical Challenges:**
-Allowing students to comment on posted reviews. Designing the discussion forum layout might be challenging for us as well as designing the database schema to support that. 
-Learning and working with new programming languages, applications and frameworks such as REACT, GraphQL, MongoDB with no previous exposure.
-Obtaining large amounts of data about courses and professors for the various colleges and universities around Ontario.
-The Deployment process of the application on a VM.
-Establishing application security and implementing the authentication through school emails for the app.
+- Allowing students to comment on posted reviews. Designing the discussion forum layout might be challenging for us as well as designing the database schema to support that. 
+- Learning and working with new programming languages, applications and frameworks such as REACT, GraphQL, MongoDB with no previous exposure.
+- Obtaining large amounts of data about courses and professors for the various colleges and universities around Ontario.
+- The Deployment process of the application on a VM.
+- Establishing application security and implementing the authentication through school emails for the app.
 
 
 **Appendix:**
-https://reactjs.org/
+https://reactjs.org/ 
 https://getbootstrap.com/
 https://www.mongodb.com/
 https://github.com/googlemaps/google-maps-services-js
