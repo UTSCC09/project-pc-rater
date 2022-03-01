@@ -37,6 +37,7 @@ Users can add a rating from 1 (lowest) - 5 (highest) on the individual topics me
  <li>Users can sign up / sign in and post reviews on professor’s / courses pages</li>
  <li>Users that are logged out or do not have an account can only view, but not post / edit comments or rate</li>
  <li>Authentication of school emails and login process</li>
+ <li>Users will be able to edit their profile information</li>
 </ul>
 
 
@@ -49,10 +50,8 @@ Users can add a rating from 1 (lowest) - 5 (highest) on the individual topics me
  <li>Layout Color (dark, light)</li>
  <li>Language Selection (English, French, Spanish, etc)</li>
  <li>Recommendations-based system for potential courses where the web app recommends new search results for courses to students based on the ones they previously searched. It   will use collaborative filtering algorithms to generate recommendations for users based on users who searched similar courses.</li>
+ <li>Using a Mailgun API, we will send users a "welcome email" when they sign up and support the "forgot password" option. Also, we will send users emails when another user has commented on their review.</li>
 </ul>
-
-
-
 
 
 
@@ -65,7 +64,7 @@ For the frontend, we will be using React, which is a JavaScript library which is
 For the backend, we will be using Express.js, which is a framework of Node.js that will help us to handle the routing, requests, cookies, sessions, security, etc. 
 MongoDB is the NoSQL database our app will use to store data. It is flexible, easy to scale, and relatively fast. Finally, GraphQL will make the data query and manipulation easier for us. 
  
-Moreover, we will use the Google Maps API to integrate location support for the professor’s building location and the swot-node npm package to verify whether an email address belongs to an academic institution. To support the “Recommendations-based system for potential courses”, we can use the collaborative-filter npm package.
+Moreover, we will use the Google Maps API to integrate location support for the professor’s building location, the mailgun.js to send emails to users and the swot-node npm package to verify whether an email address belongs to an academic institution. To support the “Recommendations-based system for potential courses”, we can use the collaborative-filter npm package.
 
 
 **Technical Challenges:**
