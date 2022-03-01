@@ -1,8 +1,8 @@
-CSCC09 Project
+**CSCC09 Project**
 
-Title: ProfCourseRater (PCRater)
+**Title:** ProfCourseRater (PCRater)
 
-Members: Mohammad Sajjad, Raz Ben Haim, Tirth Patel
+**Members:** Mohammad Sajjad, Raz Ben Haim, Tirth Patel
 
 Description:
 
@@ -10,7 +10,7 @@ PCRater is a web application that provides a central platform for students to co
 
 Users must create an account to create reviews on a course or professor. They will need to enter the necessary details, including their name, school, email, etc. Users also must use their school emails to verify that they are associated with a trustworthy educational institute. We want our web application to rely on relevant data from students who attend the appropriate schools. Users that are only using the application to view the reviews are not required to make an account and have only viewer access. 
 
-	All users who have an account can create reviews, leave comments, like, or dislike other reviews. However, users can only delete their reviews and no one else's. Users can specify certain tags and give individual scores on specific topics associated with the course or professor, such as:
+All users who have an account can create reviews, leave comments, like, or dislike other reviews. However, users can only delete their reviews and no one else's. Users can specify certain tags and give individual scores on specific topics associated with the course or professor, such as:
 
 Difficulty
 Workload
