@@ -30,11 +30,11 @@ Users can add a rating from 1 (lowest) - 5 (highest) on the individual topics me
 **Beta Key Features (due on March 20th):**
 <ul>
  <li>Mandatory pages such as About, Contact Us, Home, etc</li>
- <li>List of courses and professors in various post-secondary schools in Ontario</li>
+ <li>Our app will support courses and professors in various post-secondary schools in Ontario</li>
  <li>Search engine for courses and professors</li>
- <li>List of reviews for each course and professor</li>
+ <li>Users can see a list of reviews for each course and professor</li>
  <li>Overall rating system for the course / professor</li>
- <li>Users can sign up / sign in and post on professor’s / courses pages</li>
+ <li>Users can sign up / sign in and post reviews on professor’s / courses pages</li>
  <li>Users that are logged out or do not have an account can only view, but not post / edit comments or rate</li>
  <li>Authentication of school emails and login process</li>
 </ul>
