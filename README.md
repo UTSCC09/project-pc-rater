@@ -4,7 +4,7 @@
 
 **Members:** Mohammad Sajjad, Raz Ben Haim, Tirth Patel
 
-Description:
+**Description:**
 
 PCRater is a web application that provides a central platform for students to come and check reviews of courses and professors from various Universities and Colleges around Ontario. As a result, the students will plan out their timetables, experience, and future success much better. This app allows students to post reviews on their professors and courses at their respective educational institutions. Every professor and course will have an overall rating score out of 5 made by the students. Then, there will also be a list of written reviews for each professor and course specifying more detailed information with additional features. Users can have follow-up discussions on every review on the app. That way, they can clarify anything that makes them uncertain about the review for the course or professor.
 
@@ -23,7 +23,7 @@ Average time spent weekly on course
 Users can add a rating from 1 (lowest) - 5 (highest) on the individual topics mentioned above, for example, Difficulty is 3, Workload is 5, Engagement is 1, etc. Users can also add various tags to each review to better educate other students regarding the course or the professor. For example, users can add the tags “Kind”, “Helpful” for the professors in their reviews. They can also add the tags “Hard”, “Heavy Workload”, “Time-consuming” for their course reviews. 
 
 
-Beta Key Features (Beta due at March 20th):
+**Beta Key Features (Beta due at March 20th):**
 Mandatory pages such as About, Contact Us, Home, etc
 List of courses and professors in various post-secondary schools in Ontario
 Search engine for courses and professors
@@ -33,7 +33,7 @@ Users can sign up / sign in and post on professor’s / courses pages
 Users that are logged out or do not have an account can only view, but not post / edit comments or rate
 Authentication of school emails and login process
 
-Final Key Features (Final due at April 3rd):
+**Final Key Features (Final due at April 3rd):**
 Users can associate Tags with the course or professor in their review
 Users can give individual scores for certain topics in their reviews
 Users can comment on other reviews
@@ -43,7 +43,7 @@ Layout Color (dark, light)
 Language Selection (English, French, Spanish, etc)
 Recommendations-based system for potential courses where the web app recommends new search results for courses to students based on the ones they previously searched. It will use collaborative filtering algorithms to generate recommendations for users based on users who searched similar courses. 
 
-Technology Stack:
+**Technology Stack:**
 
 Our main stack we will be using is the MERN stack (which stands for MongoDB, Express.js, React, Node.js) as well as GraphQL. 
 For the frontend, we will be using React, which is a JavaScript library which is built on top of HTML, CSS and JavaScript. To improve the responsive design of our app, we will also use Bootstrap, which is an extensive and customizable library that will allow us to build better designs faster. It will also help us to adapt our design to mobile devices.
@@ -56,7 +56,7 @@ Moreover, we will use the Google Maps API to integrate location support for the 
 
 
 
-Technical Challenges:
+**Technical Challenges:**
 Allowing students to comment on posted reviews. Designing the discussion forum layout might be challenging for us as well as designing the database schema to support that. 
 Learning and working with new programming languages, applications and frameworks such as REACT, GraphQL, MongoDB with no previous exposure.
 Obtaining large amounts of data about courses and professors for the various colleges and universities around Ontario.
@@ -64,7 +64,7 @@ The Deployment process of the application on a VM.
 Establishing application security and implementing the authentication through school emails for the app.
 
 
-Appendix:
+**Appendix:**
 https://reactjs.org/
 https://getbootstrap.com/
 https://www.mongodb.com/
