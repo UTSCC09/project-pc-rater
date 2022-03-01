@@ -12,18 +12,21 @@ Users must create an account to create reviews on a course or professor. They wi
 
 All users who have an account can create reviews, leave comments, like, or dislike other reviews. However, users can only delete their reviews and no one else's. Users can specify certain tags and give individual scores on specific topics associated with the course or professor, such as:
 
-Difficulty
-Workload
-Course average grade
-Content
-Engagement
-Professor qualities (fun, caring, great communication, helpful, etc)
-Average time spent weekly on course
+<ul>
+ <li>Difficulty</li>
+ <li>Workload</li>
+ <li>Course average grade</li>
+ <li>Content</li>
+ <li>Engagement</li>
+ <li>Professor qualities (fun, caring, great communication, helpful, etc)</li>
+ <li>Average time spent weekly on course</li>
+</ul>
+
 
 Users can add a rating from 1 (lowest) - 5 (highest) on the individual topics mentioned above, for example, Difficulty is 3, Workload is 5, Engagement is 1, etc. Users can also add various tags to each review to better educate other students regarding the course or the professor. For example, users can add the tags “Kind”, “Helpful” for the professors in their reviews. They can also add the tags “Hard”, “Heavy Workload”, “Time-consuming” for their course reviews. 
 
 
-**Beta Key Features (Beta due at March 20th):**
+**Beta Key Features (due at March 20th):** \
 Mandatory pages such as About, Contact Us, Home, etc
 List of courses and professors in various post-secondary schools in Ontario
 Search engine for courses and professors
@@ -33,7 +36,7 @@ Users can sign up / sign in and post on professor’s / courses pages
 Users that are logged out or do not have an account can only view, but not post / edit comments or rate
 Authentication of school emails and login process
 
-**Final Key Features (Final due at April 3rd):**
+**Final Key Features (due at April 3rd):** \
 Users can associate Tags with the course or professor in their review
 Users can give individual scores for certain topics in their reviews
 Users can comment on other reviews
@@ -54,17 +57,17 @@ MongoDB is the NoSQL database our app will use to store data. It is flexible, ea
 Moreover, we will use the Google Maps API to integrate location support for the professor’s building location, PassportJS middleware for OAuth integration, and the swot-node npm package to verify whether an email address belongs to an academic institution. To support the “Recommendations-based system for potential courses”, we can use the collaborative-filter npm package.
 
 
-
-
 **Technical Challenges:**
-- Allowing students to comment on posted reviews. Designing the discussion forum layout might be challenging for us as well as designing the database schema to support that. 
-- Learning and working with new programming languages, applications and frameworks such as REACT, GraphQL, MongoDB with no previous exposure.
-- Obtaining large amounts of data about courses and professors for the various colleges and universities around Ontario.
-- The Deployment process of the application on a VM.
-- Establishing application security and implementing the authentication through school emails for the app.
+<ul>
+ <li>Allowing students to comment on posted reviews. Designing the discussion forum layout might be challenging for us as well as designing the database schema to support that.</li>
+ <li>Learning and working with new programming languages, applications and frameworks such as REACT, GraphQL, MongoDB with no previous exposure.</li>
+ <li>Obtaining large amounts of data about courses and professors for the various colleges and universities around Ontario.</li>
+ <li>The Deployment process of the application on a VM.</li>
+ <li>Establishing application security and implementing the authentication through school emails for the app.</li>
+</ul>
 
 
-**Appendix:**
+**Appendix:** \
 https://reactjs.org/ \
 https://getbootstrap.com/ \
 https://www.mongodb.com/ \
