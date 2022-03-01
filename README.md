@@ -65,11 +65,11 @@ Moreover, we will use the Google Maps API to integrate location support for the 
 
 
 **Appendix:**
-https://reactjs.org/ 
-https://getbootstrap.com/
-https://www.mongodb.com/
-https://github.com/googlemaps/google-maps-services-js
-https://graphql.org/
-https://www.passportjs.org/
-https://www.npmjs.com/package/swot-node
-https://www.npmjs.com/package/collaborative-filter
+https://reactjs.org/ \
+https://getbootstrap.com/ \
+https://www.mongodb.com/ \
+https://github.com/googlemaps/google-maps-services-js \
+https://graphql.org/ \
+https://www.passportjs.org/ \
+https://www.npmjs.com/package/swot-node \
+https://www.npmjs.com/package/collaborative-filter \
