@@ -65,7 +65,7 @@ For the frontend, we will be using React, which is a JavaScript library which is
 For the backend, we will be using Express.js, which is a framework of Node.js that will help us to handle the routing, requests, cookies, sessions, security, etc. 
 MongoDB is the NoSQL database our app will use to store data. It is flexible, easy to scale, and relatively fast. Finally, GraphQL will make the data query and manipulation easier for us. 
  
-Moreover, we will use the Google Maps API to integrate location support for the professor’s building location, PassportJS middleware for OAuth integration, and the swot-node npm package to verify whether an email address belongs to an academic institution. To support the “Recommendations-based system for potential courses”, we can use the collaborative-filter npm package.
+Moreover, we will use the Google Maps API to integrate location support for the professor’s building location and the swot-node npm package to verify whether an email address belongs to an academic institution. To support the “Recommendations-based system for potential courses”, we can use the collaborative-filter npm package.
 
 
 **Technical Challenges:**
