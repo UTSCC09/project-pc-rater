@@ -1,7 +1,8 @@
 import React from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
-import { BrowserRouter as Router, Outlet, Link, Switch , Route} from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -14,11 +15,12 @@ function App() {
   return (
     <Router>
       <NavBar />
-      {/* <Route exact path='/' component={Home} />
-      <Route exact path='/login' component={Login} />
-      <Route exact path='/signup' component={Signup} /> */}
+      <Routes>
+        <Route exact path='/' element={<Home />} />
+        <Route exact path='/login' element={<Login />} />
+        <Route exact path='/signup' element={<Signup />} />
+      </Routes>
     </Router>
-    // <div>App</div>
   );
 }
 

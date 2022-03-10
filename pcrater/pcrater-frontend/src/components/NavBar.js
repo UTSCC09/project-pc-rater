@@ -1,5 +1,6 @@
 import React, { Component, useState } from 'react'
-import { Menu } from 'semantic-ui-react'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Nav, Navbar, Container } from 'react-bootstrap';
 
 function NavBar() {
   const [activePage, setActivePage] = useState('');
@@ -8,25 +9,16 @@ function NavBar() {
     const { activeItem } = activePage;
 
     return (
-        <Menu inverted secondary>
-            <Menu.Item
-            name='home'
-            active={activeItem === 'home'}
-            onClick={handleItemClick}
-            />
-            <Menu.Item
-            name='login'
-            active={activeItem === 'login'}
-            onClick={handleItemClick}
-            position='right'
-            />
-            <Menu.Item
-            name='signup'
-            active={activeItem === 'signup'}
-            onClick={handleItemClick}
-            position='right'
-            />
-        </Menu>
+        <Navbar bg="dark" variant="dark">
+            <Container>
+                <Navbar.Brand href="/">PCRaters</Navbar.Brand>
+                <Nav className="me-auto">
+                    <Nav.Link href="/">Home</Nav.Link>
+                    <Nav.Link href="login">Login</Nav.Link>
+                    <Nav.Link href="signup">Signup</Nav.Link>
+                </Nav>
+            </Container>
+        </Navbar>
     )
 }
 
