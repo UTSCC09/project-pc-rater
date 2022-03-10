@@ -2,11 +2,13 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
+
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import NewClasses from './pages/NewClasses';
 
 import NavBar from './components/NavBar';
 
@@ -19,6 +21,7 @@ function App() {
         <Route exact path='/' element={<Home />} />
         <Route exact path='/login' element={<Login />} />
         <Route exact path='/signup' element={<Signup />} />
+        <Route exact path='/join-class' element={<NewClasses />} />
       </Routes>
     </Router>
   );
