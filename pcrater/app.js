@@ -19,6 +19,7 @@ app.use(session({
     saveUninitialized: true,
 }));
 
+
 async function run() {
     try {
         // Connect the client to the server
@@ -26,6 +27,7 @@ async function run() {
         // Establish and verify connection
         await client.db("admin").command({ ping: 1 });
         console.log("Connected successfully to Mongo");
+
     } finally {
         // Ensures that the client will close when you finish/error
         await client.close();
@@ -34,7 +36,7 @@ async function run() {
 
 
 const http = require('http');
-const PORT = 3000;
+const PORT = 3001;
 
 http.createServer(app).listen(PORT, function (err) {
     run();
