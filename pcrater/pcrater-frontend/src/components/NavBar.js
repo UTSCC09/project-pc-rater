@@ -17,6 +17,8 @@ function NavBar() {
                     <Nav.Link href="login">Login</Nav.Link>
                     <Nav.Link href="signup">Signup</Nav.Link>
                     <Nav.Link href="join-class">Join Class</Nav.Link>
+                    <Nav.Link href="create-poll">Create Poll</Nav.Link>
+                    <Nav.Link href="view-poll">View Poll</Nav.Link>
                 </Nav>
             </Container>
         </Navbar>
