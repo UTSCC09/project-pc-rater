@@ -13,6 +13,7 @@ const resolvers = require('./graphql/resolvers');
 
 const User = require('./models/User');
 const Course = require('./models/Course');
+const Post = require('./models/Post');
 
 const client = new MongoClient(uri);
 
@@ -24,7 +25,7 @@ const server = new ApolloServer({
 mongoose.connect(uri, { useNewUrlParser: true})
 .then (() => {
     console.log("MongoDB Connected");
-    return server.listen({port:5000})
+    return server.listen({port:5000});
 })
 .then ((res) => {
     console.log(`Server running at ${res.url}`);

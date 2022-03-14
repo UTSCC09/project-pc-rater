@@ -3,9 +3,12 @@ const gql = require('graphql-tag');
 module.exports = gql`
   type Post {
     id: ID!
-    body: String!
-    username: String!
-    createdAt: String!
+    name: String!
+    role: String!
+    course: String!
+    title: String!
+    content: String!
+    visibility: String!
   }
   type User {
     id: ID!
@@ -24,7 +27,10 @@ module.exports = gql`
     findUser: [User]
   }
   type Mutation {
-      login(email: String!, password: String!): User! 
-      register(username: String!, firstname: String!, lastname: String!, institution: String!, email: String! password: String!, confirmPassword: String!): User!
+    login(email: String!, password: String!): User! 
+    register(username: String!, firstname: String!, lastname: String!, institution: String!, email: String! password: String!, confirmPassword: String!): User!
+    addPost(name: String!, role: String!, course: String!, title: String!, content: String!, visibility: String!): Post!
+    updatePost(id: ID!, title: String!, content: String!, visibility: String!): Post!
+    deletePost(id: ID!): Post!
   }
 `;

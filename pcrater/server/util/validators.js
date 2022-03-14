@@ -54,3 +54,36 @@ module.exports.validateRegisterInput = (
       valid: Object.keys(errors).length < 1
     };
   };
+
+  module.exports.validatePostInput = (name, role, course, title, content, visibility) => {
+    const errors = {};
+    if (name.trim() === '') {
+      errors.name = 'name must not be empty';
+    }
+    if (role.trim() === '') {
+      errors.role = 'role must be either Professor, TA, or Student';
+    } else if (role.toLowerCase() != 'professor' && 
+    role.toLowerCase() != 'ta' && role.toLowerCase() != 'student') {
+      errors.role = 'role must be either Professor, TA, or Student';
+    }
+    if (course.trim() === '') {
+      errors.course = 'course must not be empty';
+    }
+    if (title.trim() === '') {
+      errors.title = 'title must not be empty';
+    }
+    if (content.trim() === '') {
+      errors.content = 'content must not be empty';
+    }
+    if (visibility.trim() === '') {
+      errors.visibility = 'visibility must be either public or private';
+    } else if (visibility.toLowerCase() != 'public' && 
+    visibility.toLowerCase() != 'private') {
+      errors.visibility = 'visibility must be either public or private';
+    }
+
+    return {
+      errors,
+      valid: Object.keys(errors).length < 1
+    };
+  };
