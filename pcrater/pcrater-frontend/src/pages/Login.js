@@ -1,35 +1,36 @@
-import React, { useState } from 'react';
-import {gql, useMutation} from "@apollo/client";
+import React, { useState, useContext } from 'react';
+import { useMutation } from '@apollo/react-hooks';
+import { useForm } from '../util/hooks';
+import gql from 'graphql-tag';
 import './Login.css';
+import { AuthContext } from '../context/auth';
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
+    const context = useContext(AuthContext);
+    const navigate = useNavigate();
+    const [errors, setErrors] = useState({});
 
-    const [fields, handleFieldChange] = useState({
-        username: "",
-        firstname: "",
-        lastname: "",
-        institution: "",
+    const { onChange, onSubmit, values } = useForm(authenticateUser, {
         email: "",
         password: ""
     });
 
-    function validateForm() {
-        return (
-            fields.username.length > 0 &&
-            fields.firstname.length > 0 &&
-            fields.lastname.length > 0 &&
-            fields.institution.length > 0 &&
-            fields.email.length > 0 &&
-            fields.password.length > 0 &&
-            fields.confirmPassword.length > 0 &&
-            // Add more as needed
-            fields.email.includes("@") &&
-            fields.password === fields.confirmPassword
-        );
-    }
-    function submitHandler() {
-        // Need to validate if email is unique (backend check)
-        console.log("Submit");
+    const [loginUser, { loading }] = useMutation(LOGIN_USER, {
+        update(_, result) {
+            context.login(result.data.login);
+            navigate("/");
+        },
+        onError(err) {
+            if (err.graphQLErrors[0] !== undefined) {
+                setErrors(err.graphQLErrors[0].extensions.exception.errors);
+            }
+        },
+        variables: values
+    });
+
+    function authenticateUser() {
+        loginUser();
     }
 
     return(
@@ -39,11 +40,25 @@ export default function Login() {
                     Login
                 </h1>
                 <form>
-                    <input type='text' name='email' placeholder='Enter your e-mail' required value={fields.email} onChange={e => handleFieldChange({...fields, email: e.target.value})} />
-                    <input type='text' name='password' placeholder='Enter your password' required value={fields.password} onChange={e => handleFieldChange({...fields, password: e.target.value})} />
+                    <input type='text' name='email' placeholder='Enter your e-mail' required value={values.email} onChange={onChange} />
+                    <input type='text' name='password' placeholder='Enter your password' required value={values.password} onChange={onChange} />
                 </form>
-                <button type='submit' onClick={submitHandler}>Login</button>
+                <button type='submit' noValidate onClick={onSubmit}>Login</button>
             </div>
         </div>
     );
 }
+
+const LOGIN_USER = gql`
+    mutation login($email: String!, $password: String!) {
+        login(
+            email: $email,
+            password: $password,
+        ) {
+            id
+            username
+            email
+            token
+        }
+    }
+`;

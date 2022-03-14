@@ -1,0 +1,25 @@
+#whybtn {
+    max-width: 200px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: '#3AAFA9';
+}
+
+.big-header {
+    background-color: #2B7A78;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.large-header {
+    color: #17252A;
+}
+
+.sub-header {
+    color: #17252A;
+}
+
+.body {
+    background-color: #17252A;
+}
