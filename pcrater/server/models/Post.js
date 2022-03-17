@@ -7,6 +7,7 @@ const postSchema = new Schema({
   title: String,
   content: String,
   visibility: String,
+  type: String,
   createdAt: String
 });
 

@@ -9,6 +9,7 @@ module.exports = gql`
     title: String!
     content: String!
     visibility: String!
+    type: String!
   }
   type User {
     id: ID!
@@ -29,7 +30,7 @@ module.exports = gql`
   type Mutation {
     login(email: String!, password: String!): User! 
     register(username: String!, firstname: String!, lastname: String!, institution: String!, email: String! password: String!, confirmPassword: String!): User!
-    addPost(name: String!, role: String!, course: String!, title: String!, content: String!, visibility: String!): Post!
+    addPost(name: String!, role: String!, course: String!, title: String!, content: String!, visibility: String!, type: String!): Post!
     updatePost(id: ID!, title: String!, content: String!, visibility: String!): Post!
     deletePost(id: ID!): Post!
   }

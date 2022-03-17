@@ -1,7 +1,7 @@
 type Mutation {
   signup(email: String!, password: String!, name: String!): AuthPayload
   login(email: String!, password: String!): AuthPayload
-  addPost(name: String!, role: String!, course: String!, title: String!, content: String!, visibility: String!): Post!
+  addPost(name: String!, role: String!, course: String!, title: String!, content: String!, visibility: String!, type: String!): Post!
   updatePost(id: ID!, title: String!, content: String!, visibility: String!): Post!
   deletePost(id: ID!): Post!
 }
@@ -23,4 +23,5 @@ type Post {
   title: String!
   content: String!
   visibility: String!
+  type: String!
 }

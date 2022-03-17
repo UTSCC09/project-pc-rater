@@ -1,7 +1,7 @@
 const Post = require('../../models/Post');
 const { UserInputError } = require('apollo-server');
 const MongoDb = require('mongodb');
-const { validatePostInput } = require('../../util/validators');
+const { validatePostInput, validateUpdateInput } = require('../../util/validators');
 
 module.exports = {
 
@@ -16,9 +16,9 @@ module.exports = {
         }
     },
     Mutation: {
-        async addPost(_, { name, role, course, title, content, visibility }) {
+        async addPost(_, { name, role, course, title, content, visibility, type }) {
             const { errors, valid } = validatePostInput(name, role, course, 
-                title, content, visibility);
+                title, content, visibility, type);
             
             if (!valid) {
                 throw new UserInputError('Errors', { errors });
@@ -30,24 +30,21 @@ module.exports = {
                 course, 
                 title, 
                 content, 
-                visibility
+                visibility,
+                type
             });
 
-            const res = await postObj.save();
+            await postObj.save();
 
-            return {
-                id: res._id,
-                name: res.name,
-                role: res.role,
-                course: res.course,
-                title: res.title,
-                content: res.content,
-                visibility: res.visibility
-            };
+            return postObj;
         },
 
         async updatePost(_, { id, title, content, visibility }) {
-            const errors = {};
+            const { errors, valid } = validateUpdateInput(title, content, visibility);
+            
+            if (!valid) {
+                throw new UserInputError('Errors', { errors });
+            }
 
             await Post.findByIdAndUpdate(id, { title: title,
                 content: content, visibility: visibility});

@@ -8,6 +8,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import NewClasses from './pages/NewClasses';
+import CreatePost from './pages/CreatePost';
 
 import NavBar from './components/NavBar';
 
@@ -20,6 +21,7 @@ function App() {
         <Route exact path='/login' element={<Login />} />
         <Route exact path='/signup' element={<Signup />} />
         <Route exact path='/join-class' element={<NewClasses />} />
+        <Route exact path='/create-post' element={<CreatePost />} />
       </Routes>
     </Router>
   );

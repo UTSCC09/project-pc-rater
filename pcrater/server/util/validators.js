@@ -55,7 +55,7 @@ module.exports.validateRegisterInput = (
     };
   };
 
-  module.exports.validatePostInput = (name, role, course, title, content, visibility) => {
+  module.exports.validatePostInput = (name, role, course, title, content, visibility, type) => {
     const errors = {};
     if (name.trim() === '') {
       errors.name = 'name must not be empty';
@@ -81,7 +81,34 @@ module.exports.validateRegisterInput = (
     visibility.toLowerCase() != 'private') {
       errors.visibility = 'visibility must be either public or private';
     }
+    if (type.trim() === '') {
+      errors.type = 'type must be either note, poll, or question';
+    } else if (type.toLowerCase() != 'note' && 
+    type.toLowerCase() != 'poll' && type.toLowerCase() != 'question') {
+      errors.type = 'type must be either note, poll, or question';
+    }
 
+    return {
+      errors,
+      valid: Object.keys(errors).length < 1
+    };
+  };
+
+  module.exports.validateUpdateInput = (title, content, visibility) => {
+    const errors = {};
+    if (title.trim() === '') {
+      errors.title = 'title must not be empty';
+    }
+    if (content.trim() === '') {
+      errors.content = 'content must not be empty';
+    }
+    if (visibility.trim() === '') {
+      errors.visibility = 'visibility must be either public or private';
+    } else if (visibility.toLowerCase() != 'public' && 
+    visibility.toLowerCase() != 'private') {
+      errors.visibility = 'visibility must be either public or private';
+    }
+    
     return {
       errors,
       valid: Object.keys(errors).length < 1
