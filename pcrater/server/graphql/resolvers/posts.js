@@ -1,6 +1,5 @@
 const Post = require('../../models/Post');
 const { UserInputError } = require('apollo-server');
-const MongoDb = require('mongodb');
 const { validatePostInput, validateUpdateInput } = require('../../util/validators');
 
 module.exports = {

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {gql, useMutation} from "@apollo/client";
 import './CreatePost.css';
-import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 
 const CREATE_POST = gql`
@@ -27,7 +26,7 @@ $visibility: String!, $type: String!) {
     }
 }`;
 
-export default function Post() {
+export default function CreatePost() {
     const [name, setName] = useState('');
     const [role, setRole] = useState('Student');
     const [course, setCourse] = useState('');
@@ -50,7 +49,7 @@ export default function Post() {
         setRole('');
         setVisibility('Public');
         setType('Question');
-      };
+    };
 
 
     return(
@@ -60,7 +59,7 @@ export default function Post() {
                 Full Name:<input type="text" id="username" className="form_element" placeholder="Full Name" input value={name} 
                 onChange={({ target }) => setName(target.value)} required/>
 
-                Role:<Dropdown style={{ textAlign: "left", marginBottom: "5px", marginLeft: "5px", width: "30%" }}>
+                Role:<Dropdown style={{ textAlign: "left", marginBottom: "5px", marginLeft: "5px", width: "40%" }}>
                     <Dropdown.Toggle id="dropdown-basic">
                         {role}
                     </Dropdown.Toggle>
@@ -72,8 +71,6 @@ export default function Post() {
                     </Dropdown.Menu>
                     
                 </Dropdown>  
-                {/* <input type="text" id="role" class="form_element" placeholder="TA/PROFESSOR/STUDENT" input value={role} 
-                onChange={({ target }) => setRole(target.value)}required/> */}
 
                 Course:<input type="text" id="course" className="form_element" placeholder="Course Code" input value={course} 
                 onChange={({ target }) => setCourse(target.value)}required/>
@@ -95,8 +92,6 @@ export default function Post() {
                     </Dropdown.Menu>
                     
                 </Dropdown>
-                {/* <input type="text" id="visibility" class="form_element" placeholder="Private/Public" input value={visibility} 
-                onChange={({ target }) => setVisibility(target.value)}required/> */}
 
                 Type:<Dropdown style={{ textAlign: "left", marginBottom: "5px", marginLeft: "5px", width: "30%" }}>
                     <Dropdown.Toggle id="dropdown-basic">
@@ -110,8 +105,6 @@ export default function Post() {
                     </Dropdown.Menu>
                     
                 </Dropdown>  
-                {/* <input type="text" id="type" class="form_element" placeholder="Question/Note/Poll" input value={type} 
-                onChange={({ target }) => setType(target.value)} required/> */}
                 
                 <button type="submit" className="btn">Create Post</button>
             </form>

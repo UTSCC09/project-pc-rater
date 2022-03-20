@@ -58,9 +58,10 @@
     border-radius: 20px;
     width: 65%;
     align-self: center;
+    margin-top: 10px;
 }
 
 .btn:hover {
-    background: #3C3D3F;
+    background: #EA4C89;
     color: #ffffff;
 }
