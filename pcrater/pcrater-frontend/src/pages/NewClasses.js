@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import './NewClasses.css';
+import { IconName } from "react-icons/bs";
 import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 import Button from "react-bootstrap/Button";
@@ -15,6 +16,8 @@ import CloseButton from 'react-bootstrap/CloseButton';
 import { AuthContext } from '../context/auth';
 import { useNavigate } from "react-router-dom";
 import SuccessMessage from '../components/SuccessMessage';
+
+import { FaTimesCircle } from 'react-icons/fa';
 
 
 const ALL_COURSES = gql `
@@ -101,6 +104,15 @@ const ADD_PROFESSOR_TO_COURSE = gql`
     }
 `;
 
+const DELETE_USER_FROM_CLASS = gql`
+    mutation deleteStudentFromClasss($courseCode: String!, $username: String!){
+        deleteCourseForUser(courseCode: $courseCode, username: $username){
+            courseCode
+            courseName
+        }
+    }
+`;
+
 const loadUniversity = (userResult) => {
     return userResult.data.findUser.institution;
 }
@@ -167,6 +179,10 @@ const New_Classes = () => {
     });
     let [  addNewProfessorToCourse ] = useMutation(ADD_PROFESSOR_TO_COURSE, {
         refetchQueries: [ GET_COURSES_OF_PROFESSOR ]
+    });
+
+    let [ deleteCourseForUser ] = useMutation(DELETE_USER_FROM_CLASS, {
+        refetchQueries: [ GET_COURSES_OF_STUDENT, GET_COURSES_OF_TA, GET_COURSES_OF_PROFESSOR ]
     });
 
 
@@ -265,6 +281,12 @@ const New_Classes = () => {
         }
     }
 
+    const handleDeleteClass = (courseCode, username) => {
+        deleteCourseForUser({ variables: { "courseCode": courseCode, "username": username } })
+        setSuccessMessage("Class got deleted successfully");
+        setShowSuccess(true);
+    }
+
     function handleUniversityChange(newValue){
         if(newValue){
             let universityObject = universitiesJson.find(elmt => elmt.name.toLowerCase() == newValue.toLowerCase());
@@ -279,6 +301,7 @@ const New_Classes = () => {
             }
         }
     }
+
 
 
     return (
@@ -316,13 +339,13 @@ const New_Classes = () => {
                         <Card.Header style = {{ textAlign: "left", fontWeight: "bold", fontSize: "18px" }}>{current_semester} classes</Card.Header>
                         <ListGroup  variant="flush" className="courses_list" style = {{ textAlign: 'left' }}>
                             {userCoursesResult.data.getCoursesOfStudent.map(classCode => {
-                              return <ListGroup.Item>{classCode.courseCode}: {classCode.courseName}</ListGroup.Item>  
+                              return <ListGroup.Item> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName}</ListGroup.Item>  
                             })}
                             {userCoursesResultTA.data.getCoursesOfTA.map(classCode => {
-                              return <ListGroup.Item>{classCode.courseCode}: {classCode.courseName} <span style={{ color: "grey" }}> (TA)</span></ListGroup.Item>  
+                              return <ListGroup.Item> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName} <span style={{ color: "grey" }}> (TA)</span></ListGroup.Item>  
                             })}
                             {userCoursesResultProfessor.data.getCoursesOfProfessor.map(classCode => {
-                              return <ListGroup.Item>{classCode.courseCode}: {classCode.courseName} <span style={{ color: "grey" }}> (Professor)</span></ListGroup.Item>  
+                              return <ListGroup.Item> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName} <span style={{ color: "grey" }}> (Professor)</span></ListGroup.Item>  
                             })}
                             
  

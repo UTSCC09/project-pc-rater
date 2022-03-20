@@ -20,7 +20,6 @@
     align-items:'center';
 }
 
-/* .universityHeader {
-    align-items: center;
-    justify-content: center;
-} */
+.delete-icon:hover{
+    transform: scale(1.1);
+}

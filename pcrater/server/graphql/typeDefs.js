@@ -60,5 +60,6 @@ module.exports = gql`
       addProfessorToCourse(courseCode: String!, username: String!): Course!
       addStudentToCourse(courseCode: String!, username: String!): Course!
       addTaToCourse(courseCode: String!, username: String!): Course!
+      deleteCourseForUser(courseCode: String!, username: String!): Course!
   }
 `;

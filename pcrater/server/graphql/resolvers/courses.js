@@ -187,6 +187,38 @@ module.exports = {
                 teachingAssistants: res.teachingAssistants,
                 createdAt: res.createdAt,
               };
+        },
+        async deleteCourseForUser(_, { courseCode, username }){
+            let course = await Course.findOne({ courseCode } ).populate("teachingAssistants").populate("students").populate("professors");
+            if(!course){
+                throw new UserInputError('The course ' + courseCode + " is not found.")
+            }else if(!course.students.map(student => student.username).includes(username) && !course.teachingAssistants.map(ta => ta.username).includes(username) && !course.professors.map(prof => prof.username).includes(username)){
+                throw new UserInputError("The user " + username + " is not part of the course " + courseCode);
+            }else{
+                if(course.students.map(student => student.username).includes(username)){
+                    let index = course.students.findIndex(student => student.username === username);
+                    course.students.splice(index, 1);
+                }else if(course.teachingAssistants.map(ta => ta.username).includes(username)){
+                    let index = course.teachingAssistants.findIndex(ta => ta.username === username);
+                    course.teachingAssistants.splice(index, 1);
+                }else{
+                    let index = course.professors.findIndex(professor => professor.username === username);
+                    course.professors.splice(index, 1);
+                }
+                const res = await course.save();
+                return {
+                    id: res._id,
+                    courseCode: res.courseCode,
+                    courseName: res.courseName,
+                    semester: res.semester,
+                    students: res.students,
+                    professors: res.professors,
+                    teachingAssistants: res.teachingAssistants,
+                    createdAt: res.createdAt,
+                  };
+            } 
+
+
         }
     }
 };
