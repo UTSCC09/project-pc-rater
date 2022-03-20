@@ -7,53 +7,38 @@ ProfCourseRater (PCRater)
 Mohammad Sajjad, Raz Ben Haim, Tirth Patel
 
 **Description:** \
-PCRater is a web application that provides a central platform for students to come and check reviews of courses and professors from various Universities and Colleges around Ontario. As a result, the students will plan out their timetables, experience, and future success much better. This app allows students to post reviews on their professors and courses at their respective educational institutions. Every professor and course will have an overall rating score out of 5 made by the students. Then, there will also be a list of written reviews for each professor and course specifying more detailed information with additional features. Users can have follow-up discussions on every review on the app. That way, they can clarify anything that makes them uncertain about the review for the course or professor.
+PCRater is a web application that provides a central platform for students to come and join forums for their courses. Users can join classes as students, TAs or even professors based on their assigned role in the class. As a result, the students will be able to figure out the answers to their questions and doubts, which will improve their success rate. Every course in every university will have its own specific forum where users can participate and interact with one another. The forum will also support an option for polls, notes, and public and private posts. In addition, users can have follow-up discussions on every post on the app. That way, they can clarify anything that makes them uncertain about a question or a response from a course's instructor.
 
-Users must create an account to create reviews on a course or professor. They will need to enter the necessary details, including their name, school, email, etc. Users also must use their school emails to verify that they are associated with a trustworthy educational institute. We want our web application to rely on relevant data from students who attend the appropriate schools. Users that are only using the application to view the reviews are not required to make an account and have only viewer access. 
+Users must create an account to create post on a course's forum. They will need to enter the necessary details, including their name, school, email, etc. Users must sign up or sign in to interact with our web app. 
 
-All users who have an account can create reviews, leave comments, like, or dislike other reviews. However, users can only delete their reviews and no one else's. Users can specify certain tags and give individual scores on specific topics associated with the course or professor, such as:
+All users who have an account can create posts, leave comments, upvote other posts and commments. However, users can only delete their comments and posts and no one else's. Also, users are able to edit and modify their posts and comments. Users can specify certain tags (for example: final exam, midterm, hw1, hw2, logistics).
 
-<ul>
- <li>Difficulty</li>
- <li>Workload</li>
- <li>Course average grade</li>
- <li>Content</li>
- <li>Engagement</li>
- <li>Professor qualities (fun, caring, great communication, helpful, etc)</li>
- <li>Average time spent weekly on course</li>
-</ul>
-
-
-Users can add a rating from 1 (lowest) - 5 (highest) on the individual topics mentioned above, for example, Difficulty is 3, Workload is 5, Engagement is 1, etc. Users can also add various tags to each review to better educate other students regarding the course or the professor. For example, users can add the tags “Kind”, “Helpful” for the professors in their reviews. They can also add the tags “Hard”, “Heavy Workload”, “Time-consuming” for their course reviews. 
-
+Professors will now be able to host virtual office hours and meetings with students by using the video call functinality of the class's forum.
+The virtual room will support audio (including mute and unmute) and video communication between multiple participants, drawing board, and a chat as well. 
 
 **Beta Key Features (due on March 20th):**
 <ul>
- <li>Mandatory pages such as About, Contact Us, Home, etc</li>
- <li>Our app will support courses and professors in various post-secondary schools in Ontario</li>
- <li>Search engine for courses and professors</li>
- <li>Users can see a list of reviews for each course and professor</li>
- <li>Overall rating system for the course / professor</li>
- <li>Users can sign up / sign in and post reviews on professor’s / courses pages</li>
- <li>Users that are logged out or do not have an account can only view, but not post / edit comments or rate</li>
- <li>Authentication of school emails and login process</li>
- <li>Users will be able to edit their profile information</li>
+ <li>Users can sign in and sign up to our app.</li>
+ <li>Users can log out from our app</li>
+ <li>Users can create new posts.</li>
+ <li>Users can create polls</li>
+ <li>Users create new classes</li>
+ <li>Users can join new classes</li>
+ <li>Search engine for universities and courses</li>
 </ul>
 
 
 **Final Key Features (due on April 3rd):**
 <ul>
- <li>Users can associate Tags with the course or professor in their review</li>
- <li>Users can give individual scores for certain topics in their reviews</li>
- <li>Users can comment on other reviews</li>
- <li>Integration with location (Google maps API)</li>
- <li>Layout Color (dark, light)</li>
- <li>Language Selection (English, French, Spanish, etc)</li>
- <li>Recommendations-based system for potential courses where the web app recommends new search results for courses to students based on the ones they previously searched. It   will use collaborative filtering algorithms to generate recommendations for users based on users who searched similar courses.</li>
- <li>Using a Mailgun API, we will send users a "welcome email" when they sign up and support the "forgot password" option. Also, we will send users emails when another user has commented on their review.</li>
+ <li>Users can browse posts and commments for each of their courses</li>
+ <li>Users can post a follow-up comment or upvote every post and comment that is visible to them.</li>
+ <li>Users can associate tags with their posts.</li>
+ <li>Language Selection (English, French, Spanish, etc)</li> 
+ <li>Using a Mailgun API, we will send users a "welcome email" when they sign up and support the "forgot password" option. Also, we will send users emails when another user has commented on their post.</li>
+ <li>For each class's formum, there will be a virtual room where users can interact with one another via audio and video.</li>
+ <li>Chat support for the virtual room.</li>
+ <li>Drawing board support for the virtual room.</li>
 </ul>
-
-
 
 
 
@@ -61,15 +46,15 @@ Users can add a rating from 1 (lowest) - 5 (highest) on the individual topics me
 Our main stack we will be using is the MERN stack (which stands for MongoDB, Express.js, React, Node.js) as well as GraphQL. 
 For the frontend, we will be using React, which is a JavaScript library which is built on top of HTML, CSS and JavaScript. To improve the responsive design of our app, we will also use Bootstrap, which is an extensive and customizable library that will allow us to build better designs faster. It will also help us to adapt our design to mobile devices.
 
-For the backend, we will be using Express.js, which is a framework of Node.js that will help us to handle the routing, requests, cookies, sessions, security, etc. 
-MongoDB is the NoSQL database our app will use to store data. It is flexible, easy to scale, and relatively fast. Finally, GraphQL will make the data query and manipulation easier for us. 
- 
-Moreover, we will use the Google Maps API to integrate location support for the professor’s building location, the mailgun.js to send emails to users and the swot-node npm package to verify whether an email address belongs to an academic institution. To support the “Recommendations-based system for potential courses”, we can use the collaborative-filter npm package.
+For the backend, we will be using Graphql, which is a framework that will help us to handle the routing, requests, cookies, sessions, security, etc. 
+GraphQL will make the data query and manipulation easier for us. MongoDB is the NoSQL database our app will use to store data. 
+
+Moreover, we will use the mailgun.js to send emails to users. To support the video communication, we will use Web RTC frameworks such as Peerjs, which will peer-to-peer connection API on the browser in real time. Also, we will use TogetherJS for collaboration on the drawing borad in the virtual rooms.
 
 
 **Technical Challenges:**
 <ul>
- <li>Allowing students to comment on posted reviews. Designing the discussion forum layout might be challenging for us as well as designing the database schema to support that.</li>
+ <li>Allowing students to comment on the posts. Designing the discussion forum layout might be challenging for us as well as designing the database schema to support that.</li>
  <li>Learning and working with new programming languages, applications and frameworks such as REACT, GraphQL, MongoDB with no previous exposure.</li>
  <li>Obtaining large amounts of data about courses and professors for the various colleges and universities around Ontario.</li>
  <li>The Deployment process of the application on a VM.</li>
@@ -85,8 +70,8 @@ Moreover, we will use the Google Maps API to integrate location support for the 
  <li>https://github.com/googlemaps/google-maps-services-js</li>
  <li>https://graphql.org/</li>
  <li>https://www.passportjs.org/</li>
- <li>https://www.npmjs.com/package/swot-node</li>
- <li>https://www.npmjs.com/package/collaborative-filter</li>
+ <li>https://togetherjs.com/</li>
+ <li>https://peerjs.com/</li>
 </ul>
 
 
