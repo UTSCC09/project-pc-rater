@@ -7,6 +7,7 @@ import Form from "react-bootstrap/Form";
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import SearchBar from '../components/SearchBar';
+import ErrorMessage from '../components/ErrorMessage';
 import Modal from 'react-bootstrap/Modal';
 import Alert from 'react-bootstrap/Alert';
 import CloseButton from 'react-bootstrap/CloseButton';
@@ -116,18 +117,12 @@ const New_Classes = () => {
     });
 
     return (
-        <div className="main">
-            <div className="subContainer">
-                <h2 className="universityHeader">{university}</h2>
-                <p onClick={handleShow}>(Change school)</p>
+        <div className="main" style={{ display: "flex" }}>
+            <div className="subContainer" style={{ alignItems: 'center' }}>
+                <h2 style={{ textAlign: "center" }} className="universityHeader">{university}</h2>
+                <p style={{ textAlign: "center" }} onClick={handleShow}>(Change school)</p>
                 {((universityError !== '' || courseNameError !== '') && showError) &&                
-                <Alert style={{ textAlign: "left", marginLeft: "25%", width: '40rem' }} variant="danger" onClose={() => setShowError(false)} dismissible>
-                    <p style={{ color: "red" }}>
-                        {universityError === '' ?
-                        courseNameError :
-                        universityError}
-                    </p>
-                </Alert>
+                <ErrorMessage errorMessage={universityError === '' ? courseNameError : universityError} setShowError={setShowError} />
                 }
                 <Modal show={show} onHide={handleClose} animation={false}>
                     <Modal.Header closeButton>
@@ -148,7 +143,7 @@ const New_Classes = () => {
                     </Modal.Footer>
                 </Modal>
                 <div style={{ justifyContent: "center" }}>
-                    <Card style={{ width: '40rem', marginLeft: "25%" }}>
+                    <Card style={{ width: '50rem' }}>
                         <Card.Header style = {{ textAlign: "left", fontWeight: "bold", fontSize: "18px" }}>{current_semester} classes</Card.Header>
                         <ListGroup  variant="flush" className="courses_list" style = {{ textAlign: 'left' }}>
                             {classesList.map(classCode => {
@@ -178,7 +173,7 @@ const New_Classes = () => {
                             </div>
                         </Form>
                         {!willCreateNewClass &&
-                        <Dropdown style={{ textAlign: "left", marginTop: "10px", marginBottom: "5px", marginLeft: "5px" }}>
+                        <Dropdown style={{ textAlign: "left", marginBottom: "5px", marginLeft: "5px", width: "30%" }}>
                             <Dropdown.Toggle id="dropdown-basic">
                                 Join as a {joinAsSelection}
                             </Dropdown.Toggle>
@@ -198,7 +193,7 @@ const New_Classes = () => {
                         
                         </Button>
  
-                        <h6 className='browse_classes_title'>Browse current classes</h6>
+                        <h6 style={{ textAlign: "center" }} className='browse_classes_title'>Browse current classes</h6>
 
                     </Card>
                 </div>
