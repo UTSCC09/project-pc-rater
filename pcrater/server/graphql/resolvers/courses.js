@@ -67,17 +67,12 @@ module.exports = {
               });
             }
 
-            //temp prof
-            //TOOD: Use context to get actual user's _id
-            let cur_prof = await User.findOne({_id: "622e7851714d95b5c332ee16"});
-
-
             const NewCourse = new Course({
                 courseCode,
                 courseName,
                 semester,
                 university,
-                professors: [cur_prof],
+                professors: [],
                 teachingAssistants: [],
                 students: [],
                 createdAt: new Date().toISOString()

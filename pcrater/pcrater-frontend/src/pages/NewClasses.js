@@ -156,12 +156,18 @@ const New_Classes = () => {
     });
 
     let [ addNewCourse ] = useMutation(ADD_COURSE, {
-        refetchQueries: [ ALL_COURSES,  "getCourses"]
+        refetchQueries: [ ALL_COURSES ]
     });
 
-    let [  addNewStudentToCourse ] = useMutation(ADD_STUDENT_TO_COURSE);
-    let [  addNewTAToCourse ] = useMutation(ADD_TA_TO_COURSE);
-    let [  addNewProfessorToCourse ] = useMutation(ADD_PROFESSOR_TO_COURSE);
+    let [  addNewStudentToCourse ] = useMutation(ADD_STUDENT_TO_COURSE, {
+        refetchQueries: [ GET_COURSES_OF_STUDENT ]
+    });
+    let [  addNewTAToCourse ] = useMutation(ADD_TA_TO_COURSE, {
+        refetchQueries: [ GET_COURSES_OF_TA ]
+    });
+    let [  addNewProfessorToCourse ] = useMutation(ADD_PROFESSOR_TO_COURSE, {
+        refetchQueries: [ GET_COURSES_OF_PROFESSOR ]
+    });
 
 
     
@@ -209,22 +215,54 @@ const New_Classes = () => {
     }
 
     const addNewClass = () => {
-        let classObj = allCoursesResult.data.getCourses.find(classElmt => classElmt.couroseCode == classCode);
-        if(!willCreateNewClass && !classObj){
-            setUniversityError('');
-            setCourseNameError("The course is not found.");
+        let classObj = allCoursesResult.data.getCourses.find(classElmt => classElmt.courseCode == classCode);
+        if(classObj){
+            setCourseNameError('Course already exists');
+            setShowError(true);
+        }else if(courseName == ''){
+            setCourseNameError('Course name cannot be empty.');
+            setShowError(true);
+        }else if(classCode == ''){
+            setCourseNameError('Course code cannot be empty.');
             setShowError(true);
         }else{
             setCourseNameError('');
             setUniversityError('');
             setShowError(false);
             addNewCourse({ variables: { "courseName": courseName, "courseCode": classCode, "university": university, "semester": current_semester } });
-            setSuccessMessage("Course added successfully!");
+            setSuccessMessage("Course added successfully! Now you can join the course as a professor.");
             setShowSuccess(true);
             setCourseName('');
             setClassCode('');
         }
+    }
 
+    const joinNewClass = () => {
+        let classObj = allCoursesResult.data.getCourses.find(classElmt => classElmt.courseCode == classCode);
+        let classObj2 = userCoursesResult.data.getCoursesOfStudent.find(classElmt => classElmt.courseCode == classCode);
+        let classObj3 = userCoursesResultTA.data.getCoursesOfTA.find(classElmt => classElmt.courseCode == classCode);
+        let classObj4 = userCoursesResultProfessor.data.getCoursesOfProfessor.find(classElmt => classElmt.courseCode == classCode);
+        if(classObj === undefined){
+            setCourseNameError('Course is not found.');
+            setShowError(true);
+        }else if(classObj2 !== undefined || classObj3 !== undefined || classObj4 !== undefined){
+            console.log("hereee");
+            setCourseNameError("You have already joined the course");
+            setShowError(true);
+        }
+        else{
+            setShowError(false);
+            setSuccessMessage("You joined the course successfully");
+            setShowSuccess(true);
+            switch(joinAsSelection.toLowerCase()){
+                case "student":
+                    addNewStudentToCourse({ variables: { "courseCode": classCode, "username": user.username } });
+                case "ta":
+                    addNewTAToCourse({ variables: { "courseCode": classCode, "username": user.username } });
+                default: // "professor"
+                    addNewProfessorToCourse({ variables: { "courseCode": classCode, "username": user.username } });
+            }
+        }
     }
 
     function handleUniversityChange(newValue){
@@ -336,7 +374,7 @@ const New_Classes = () => {
                         <Button style={{ marginTop: "10px" }} variant="primary" size="lg" onClick={() => addNewClass()}>
                         Create new class
                         </Button> :
-                        <Button style={{ marginTop: "10px" }} variant="primary" size="lg" onClick={() => addNewClass()}>
+                        <Button style={{ marginTop: "10px" }} variant="primary" size="lg" onClick={() => joinNewClass()}>
                         Join new class
                         </Button>
                         }
