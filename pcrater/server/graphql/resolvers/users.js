@@ -29,16 +29,10 @@ module.exports = {
                 throw new Error(err);
             }
         },
-        async findUser(email) {
+        async findUser(root, args) {
             try {
-                const user = await User.findOne({ username });
-                if (user) {
-                    throw new UserInputError('Username is taken', {
-                        errors: {
-                            username: 'This username is taken'
-                        }
-                    });
-                }
+                const user = await User.findOne({ "username": args.username });
+                return user;
             } catch (err) {
                 throw new Error(err);
             }

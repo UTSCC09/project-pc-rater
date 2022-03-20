@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './NewClasses.css';
 import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
@@ -9,53 +9,192 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import SearchBar from '../components/SearchBar';
 import ErrorMessage from '../components/ErrorMessage';
 import Modal from 'react-bootstrap/Modal';
+import { gql, useQuery, useMutation } from '@apollo/client'
 import Alert from 'react-bootstrap/Alert';
 import CloseButton from 'react-bootstrap/CloseButton';
+import { AuthContext } from '../context/auth';
+import { useNavigate } from "react-router-dom";
+import SuccessMessage from '../components/SuccessMessage';
 
-const current_semester = "Winter 2022";
 
-let classes = [
-    {
-        code: "CSCC69",
-        name: "Operating Systems"
-    },
-    {
-        code: "CSCC43",
-        name: "Databases"
-    },
-    {
-        code: "CSCC37",
-        name: "Numerical Analysis"
-    },
-    {
-        code: "CSCC63",
-        name: "Computability and Computational Complexity"
-    },
-    {
-        code: "CSCB36",
-        name: "Numerical Analysis"
-    },
-    {
-        code: "STAB52",
-        name: "Statistics"
+const ALL_COURSES = gql `
+    query findCoursesByUniversity($university: String!){
+        getCourses(university: $university) {
+            courseName
+            courseCode
+            university
+        }
     }
-];
+`;
+
+const FIND_USER = gql`
+    query findUserByUsername($username: String!) {
+        findUser(username: $username) {
+            username
+            institution
+        }
+    }
+`;
+
+const GET_COURSES_OF_STUDENT = gql`
+    query getCoursesOfStudentByUsername($username: String!){
+        getCoursesOfStudent(username: $username) {
+            courseCode
+            courseName
+        }
+    } 
+`;
+
+const GET_COURSES_OF_TA = gql`
+    query getCoursesOfTAForUser($username: String!){
+        getCoursesOfTA(username: $username) {
+            courseCode
+            courseName
+        }
+    } 
+`;
+
+const GET_COURSES_OF_PROFESSOR = gql`
+    query getCoursesOfProfForUser($username: String!){
+        getCoursesOfProfessor(username: $username) {
+            courseCode
+            courseName
+        }
+    } 
+`;
+
+
+
+const ADD_COURSE = gql`
+    mutation addNewCourse($courseName: String!, $courseCode: String!, $university: String!, $semester: String!){
+        addCourse(courseName: $courseName, courseCode: $courseCode, university: $university, semester: $semester){
+            courseCode
+            courseName
+        }
+    }
+`;
+
+const ADD_STUDENT_TO_COURSE = gql`
+    mutation addNewStudentToCourse($courseCode: String!, $username: String!) {
+        addStudentToCourse(courseCode: $courseCode, username: $username) {
+            courseCode
+            courseName
+        }
+    }
+`;
+
+const ADD_TA_TO_COURSE = gql`
+    mutation addNewTAToCourse($courseCode: String!, $username: String!) {
+        addTaToCourse(courseCode: $courseCode, username: $username) {
+            courseCode
+            courseName
+        }
+    }
+`;
+
+const ADD_PROFESSOR_TO_COURSE = gql`
+    mutation addNewProfessorToCourse($courseCode: String!, $username: String!) {
+        addProfessorToCourse(courseCode: $courseCode, username: $username) {
+            courseCode
+            courseName
+        }
+    }
+`;
+
+const loadUniversity = (userResult) => {
+    return userResult.data.findUser.institution;
+}
+
+const determineSemester = () => {
+    const year = new Date().getFullYear();
+    let season = "Fall";
+    let month = new Date().getMonth();
+    if(month >= 0 && month <= 3){
+        season = "Winter";
+    }else if(month >= 4 && month <= 7){
+        season = "Summer";
+    }
+    return season + " " + year;
+}
     
+let current_semester = determineSemester();
 
 const New_Classes = () => {
+    const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
     const [classCode, setClassCode] = useState('');
     const [courseName, setCourseName] = useState('');
     const [joinAsSelection, SetJoinAsSelection] = useState("student");
-    const [classesList, setClassesList] = useState(classes);
+    const [classesList, setClassesList] = useState([]);
     const [willCreateNewClass, setWillCreateNewClass] = useState(false);
     const [universityError, setUniversityError] = useState('');
     const [courseNameError, setCourseNameError] = useState('');
+    const [searchResultsForCourses, setSearchResultsForCourses]= useState([]);
     const [showError, setShowError] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
 
     const [show, setShow] = useState(false);
     const [university, setUniversity] = useState("University of Toronto");
     const [universityInputVal, setUniversityInputVal] = useState("");
     const [universitiesJson, setUniversitiesJson] = useState({});
+
+
+
+    //This will be used for fetching data from the database
+    useEffect(() => {
+        fetch('https://raw.githubusercontent.com/Hipo/university-domains-list/master/world_universities_and_domains.json')
+        .then((res) => {
+            return res.json();
+        })
+        .then((jsonObj) => {
+            setUniversitiesJson(jsonObj);
+        })
+        .catch((err) =>{
+            console.log(err);
+        });
+    });
+
+    let [ addNewCourse ] = useMutation(ADD_COURSE, {
+        refetchQueries: [ ALL_COURSES,  "getCourses"]
+    });
+
+    let [  addNewStudentToCourse ] = useMutation(ADD_STUDENT_TO_COURSE);
+    let [  addNewTAToCourse ] = useMutation(ADD_TA_TO_COURSE);
+    let [  addNewProfessorToCourse ] = useMutation(ADD_PROFESSOR_TO_COURSE);
+
+
+    
+    let allCoursesResult = useQuery(ALL_COURSES, {variables: { university }, skip: !university,});
+    let userResult = useQuery(FIND_USER, {variables: { "username": user.username }, skip: !user.username,});
+    let userCoursesResult = useQuery(GET_COURSES_OF_STUDENT, {variables: { "username": user.username }, skip: !user.username});
+    let userCoursesResultTA = useQuery(GET_COURSES_OF_TA, {variables: { "username": user.username }, skip: !user.username});
+    let userCoursesResultProfessor = useQuery(GET_COURSES_OF_PROFESSOR, {variables: { "username": user.username }, skip: !user.username});
+    
+
+    useEffect(() => {
+        if(!userResult.loading){
+            setUniversity(loadUniversity(userResult));
+        }
+    }, [userResult]);
+
+    useEffect(() => {
+        if(!userCoursesResult.loading){
+            setClassesList(userCoursesResult.data.getCoursesOfStudent);
+        }
+    }, [userCoursesResult])
+
+    useEffect(() => {
+        if(!allCoursesResult.loading){
+            setSearchResultsForCourses(allCoursesResult.data.getCourses);
+        };
+    }, [allCoursesResult])
+
+    if(allCoursesResult.loading || userResult.loading || userCoursesResult.loading || userCoursesResultTA.loading || userCoursesResultProfessor.loading){
+        return <div>Loading...</div>
+    }
+
+
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -69,8 +208,8 @@ const New_Classes = () => {
         setWillCreateNewClass(!willCreateNewClass);
     }
 
-    function addNewClass(){
-        let classObj = classesList.find(classElmt => classElmt.code == classCode);
+    const addNewClass = () => {
+        let classObj = allCoursesResult.data.getCourses.find(classElmt => classElmt.couroseCode == classCode);
         if(!willCreateNewClass && !classObj){
             setUniversityError('');
             setCourseNameError("The course is not found.");
@@ -79,10 +218,11 @@ const New_Classes = () => {
             setCourseNameError('');
             setUniversityError('');
             setShowError(false);
-            classes.push({"code": classCode, "name": courseName});
+            addNewCourse({ variables: { "courseName": courseName, "courseCode": classCode, "university": university, "semester": current_semester } });
+            setSuccessMessage("Course added successfully!");
+            setShowSuccess(true);
             setCourseName('');
             setClassCode('');
-            setClassesList(classes);
         }
 
     }
@@ -102,19 +242,6 @@ const New_Classes = () => {
         }
     }
 
-    //This will be used for fetching data from the database
-    useEffect(() => {
-        fetch('https://raw.githubusercontent.com/Hipo/university-domains-list/master/world_universities_and_domains.json')
-        .then((res) => {
-            return res.json();
-        })
-        .then((jsonObj) => {
-            setUniversitiesJson(jsonObj);
-        })
-        .catch((err) =>{
-            console.log(err);
-        });
-    });
 
     return (
         <div className="main" style={{ display: "flex" }}>
@@ -123,6 +250,10 @@ const New_Classes = () => {
                 <p style={{ textAlign: "center" }} onClick={handleShow}>(Change school)</p>
                 {((universityError !== '' || courseNameError !== '') && showError) &&                
                 <ErrorMessage errorMessage={universityError === '' ? courseNameError : universityError} setShowError={setShowError} />
+                }
+                {
+                    (showSuccess &&  successMessage !== '') &&
+                    <SuccessMessage successMessage={successMessage} setShowSuccess={setShowSuccess} />
                 }
                 <Modal show={show} onHide={handleClose} animation={false}>
                     <Modal.Header closeButton>
@@ -146,9 +277,17 @@ const New_Classes = () => {
                     <Card style={{ width: '50rem' }}>
                         <Card.Header style = {{ textAlign: "left", fontWeight: "bold", fontSize: "18px" }}>{current_semester} classes</Card.Header>
                         <ListGroup  variant="flush" className="courses_list" style = {{ textAlign: 'left' }}>
-                            {classesList.map(classCode => {
-                              return <ListGroup.Item>{classCode.code}: {classCode.name}</ListGroup.Item>  
+                            {userCoursesResult.data.getCoursesOfStudent.map(classCode => {
+                              return <ListGroup.Item>{classCode.courseCode}: {classCode.courseName}</ListGroup.Item>  
                             })}
+                            {userCoursesResultTA.data.getCoursesOfTA.map(classCode => {
+                              return <ListGroup.Item>{classCode.courseCode}: {classCode.courseName} <span style={{ color: "grey" }}> (TA)</span></ListGroup.Item>  
+                            })}
+                            {userCoursesResultProfessor.data.getCoursesOfProfessor.map(classCode => {
+                              return <ListGroup.Item>{classCode.courseCode}: {classCode.courseName} <span style={{ color: "grey" }}> (Professor)</span></ListGroup.Item>  
+                            })}
+                            
+ 
                         </ListGroup>
                         <Form style={{ marginTop: "10px" }}>
                             <Form.Check
@@ -167,7 +306,12 @@ const New_Classes = () => {
 
                                 {
                                     !willCreateNewClass &&
-                                    <SearchBar setSearchWord={setClassCode} placeholder = "Enter a class code..." data={classes} attributeToSearchFor="code" />
+                                    <SearchBar setSearchWord={setClassCode} placeholder = "Enter a class code..." data={allCoursesResult.data.getCourses.map(course => {
+                                        let new_elmt = {
+                                            "code": course.courseCode
+                                        };
+                                        return new_elmt;
+                                    })} attributeToSearchFor="code" />
                                 }
                                 
                             </div>
@@ -184,14 +328,18 @@ const New_Classes = () => {
                                 <Dropdown.Item onClick={() => SetJoinAsSelection("professor")} href="#/action-3">Professor</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>  
-                        }       
-                        <Button style={{ marginTop: "10px" }} variant="primary" size="lg" onClick={() => addNewClass()}>
-                        {willCreateNewClass ?
-                        "Create new class" :
-                        "Join new class"
-                        }
                         
+                                                
+                        }       
+
+                        {willCreateNewClass ?
+                        <Button style={{ marginTop: "10px" }} variant="primary" size="lg" onClick={() => addNewClass()}>
+                        Create new class
+                        </Button> :
+                        <Button style={{ marginTop: "10px" }} variant="primary" size="lg" onClick={() => addNewClass()}>
+                        Join new class
                         </Button>
+                        }
  
                         <h6 style={{ textAlign: "center" }} className='browse_classes_title'>Browse current classes</h6>
 

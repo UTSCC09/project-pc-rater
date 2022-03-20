@@ -16,7 +16,6 @@ import ErrorMessage from "../components/ErrorMessage";
 
 const PollItem = (props) => {
     const {optionObj, deletePollItem} = props;
-    console.log("hello");
     console.log(optionObj);
     console.log(optionObj.val);
     return (

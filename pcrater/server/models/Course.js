@@ -1,33 +1,29 @@
+const mongoose = require('mongoose');
 const { model, Schema } = require('mongoose');
 
 const courseSchema = new Schema({
   courseName: String,
   courseCode: String,
+  university: String,
   semester: String,
   createdAt: String,
   teachingAssistants: [
     {
-      id: String,
-      firstname: String,
-      lastname: String,
-      username: String
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
     }
   ],
   professors: [
     {
-      id: String,
-      firstname: String,
-      lastname: String,
-      username: String
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
     }
   ],
   students: [
     {
-        id: String,
-        firstname: String,
-        lastname: String,
-        username: String
-      }
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User"
+    }
   ]
 });
 

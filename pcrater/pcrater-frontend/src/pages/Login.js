@@ -40,8 +40,8 @@ export default function Login() {
                     Login
                 </h1>
                 <form>
-                    <input type='text' name='email' placeholder='Enter your e-mail' required value={values.email} onChange={onChange} />
-                    <input type='text' name='password' placeholder='Enter your password' required value={values.password} onChange={onChange} />
+                    <input type='email' name='email' placeholder='Enter your e-mail' required value={values.email} onChange={onChange} />
+                    <input type='password' name='password' placeholder='Enter your password' required value={values.password} onChange={onChange} />
                 </form>
                 <button type='submit' noValidate onClick={onSubmit}>Login</button>
             </div>
