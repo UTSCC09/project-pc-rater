@@ -10,6 +10,7 @@ module.exports = gql`
     content: String!
     visibility: String!
     type: String!
+    createdAt: String!
   }
   type User {
     id: ID!

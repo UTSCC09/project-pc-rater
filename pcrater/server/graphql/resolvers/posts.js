@@ -2,6 +2,14 @@ const Post = require('../../models/Post');
 const { UserInputError } = require('apollo-server');
 const { validatePostInput, validateUpdateInput } = require('../../util/validators');
 
+function getCurDateInYearMonthDayFormat(){
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    return day + '/' + month + '/' + year;
+}
+
 module.exports = {
 
     Query: {
@@ -23,6 +31,8 @@ module.exports = {
                 throw new UserInputError('Errors', { errors });
             }
 
+            const createdAt = getCurDateInYearMonthDayFormat();
+
             const postObj = new Post({
                 name, 
                 role, 
@@ -30,7 +40,8 @@ module.exports = {
                 title, 
                 content, 
                 visibility,
-                type
+                type,
+                createdAt
             });
 
             await postObj.save();

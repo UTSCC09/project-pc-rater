@@ -23,6 +23,7 @@ $visibility: String!, $type: String!) {
         content
         visibility
         type
+        createdAt
     }
 }`;
 
@@ -46,11 +47,9 @@ export default function CreatePost() {
         setCourse('');
         setTitle('');
         setContent('');
-        setRole('');
         setVisibility('Public');
         setType('Question');
     };
-
 
     return(
         <div className='div-post'>

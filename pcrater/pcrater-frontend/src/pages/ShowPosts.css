@@ -15,7 +15,7 @@
     flex-direction: row;
 }
 
-#post{
+.post{
     display:flex;
     justify-content: space-around;
     align-items:center;
