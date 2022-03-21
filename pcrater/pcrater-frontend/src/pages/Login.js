@@ -1,6 +1,9 @@
+//credits: https://www.youtube.com/watch?v=_DqPiZPKkgY&list=PLMhAeHCz8S3_pgb-j51QnCEhXNj5oyl8n
+
+
 import React, { useState, useContext } from 'react';
 import { useMutation } from '@apollo/react-hooks';
-import { useForm } from '../util/hooks';
+import { useForm    } from '../util/hooks';
 import gql from 'graphql-tag';
 import './Login.css';
 import { AuthContext } from '../context/auth';
@@ -19,7 +22,7 @@ export default function Login() {
     const [loginUser, { loading }] = useMutation(LOGIN_USER, {
         update(_, result) {
             context.login(result.data.login);
-            navigate("/");
+            navigate("/show-posts");
         },
         onError(err) {
             if (err.graphQLErrors[0] !== undefined) {

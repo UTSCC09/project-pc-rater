@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './CreatePoll.css';
 import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 import Button from "react-bootstrap/Button";
@@ -16,8 +15,6 @@ import ErrorMessage from "../components/ErrorMessage";
 
 const PollItem = (props) => {
     const {optionObj, deletePollItem} = props;
-    console.log(optionObj);
-    console.log(optionObj.val);
     return (
         <ListGroup.Item>{optionObj.val}</ListGroup.Item>
     )

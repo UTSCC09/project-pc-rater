@@ -1,3 +1,5 @@
+//credits: https://www.youtube.com/watch?v=71-CtIcmDJQ
+
 const User = require('../../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -87,7 +89,6 @@ module.exports = {
             if (!valid) {
               throw new UserInputError('Errors', { errors });
             }
-            // TODO: Make sure user doesnt already exist
             const user = await User.findOne({ email });
             if (user) {
               throw new UserInputError('Email is taken', {

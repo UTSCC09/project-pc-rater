@@ -262,7 +262,6 @@ const New_Classes = () => {
             setCourseNameError('Course is not found.');
             setShowError(true);
         }else if(classObj2 !== undefined || classObj3 !== undefined || classObj4 !== undefined){
-            console.log("hereee");
             setCourseNameError("You have already joined the course");
             setShowError(true);
         }
@@ -394,10 +393,10 @@ const New_Classes = () => {
                         }       
 
                         {willCreateNewClass ?
-                        <Button style={{ marginTop: "10px" }} variant="primary" size="lg" onClick={() => addNewClass()}>
+                        <Button style={{ marginTop: "10px", width: "100%" }} variant="primary" size="lg" onClick={() => addNewClass()}>
                         Create new class
                         </Button> :
-                        <Button style={{ marginTop: "10px" }} variant="primary" size="lg" onClick={() => joinNewClass()}>
+                        <Button style={{ marginTop: "10px", width: "100%" }} variant="primary" size="lg" onClick={() => joinNewClass()}>
                         Join new class
                         </Button>
                         }

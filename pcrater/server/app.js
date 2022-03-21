@@ -1,3 +1,5 @@
+//credits: https://www.youtube.com/watch?v=71-CtIcmDJQ
+
 const { MongoClient } = require("mongodb");
 const bcrypt = require('bcrypt');
 
