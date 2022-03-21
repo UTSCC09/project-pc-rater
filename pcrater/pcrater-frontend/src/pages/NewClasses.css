@@ -1,0 +1,25 @@
+.main{
+    /* background-color: "#def2f1"; */
+    padding: 30px;
+    margin: auto;
+    justify-content: center;
+    align-items: center;
+}
+
+.browse_classes_title{
+    margin-top: 5px;
+    color: "#17252a";
+}
+
+.browse_classes_title:hover{
+    cursor: pointer;
+}
+
+.subContainer {
+    justify-content:'center';
+    align-items:'center';
+}
+
+.delete-icon:hover{
+    transform: scale(1.1);
+}
