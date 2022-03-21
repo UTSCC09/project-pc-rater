@@ -195,12 +195,6 @@ const New_Classes = () => {
     
 
     useEffect(() => {
-        if(!userResult.loading){
-            setUniversity(loadUniversity(userResult));
-        }
-    }, [userResult]);
-
-    useEffect(() => {
         if(!userCoursesResult.loading){
             setClassesList(userCoursesResult.data.getCoursesOfStudent);
         }
