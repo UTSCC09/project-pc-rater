@@ -25,6 +25,7 @@ The virtual room will support audio (including mute and unmute) and video commun
  <li>Users create new classes</li>
  <li>Users can join new classes</li>
  <li>Search engine for universities and courses</li>
+ <li>Users can see the list of all posts</li>
 </ul>
 
 
