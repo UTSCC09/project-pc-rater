@@ -3,8 +3,13 @@ const gql = require('graphql-tag');
 module.exports = gql`
   type Post {
     id: ID!
-    body: String!
-    username: String!
+    name: String!
+    role: String!
+    course: String!
+    title: String!
+    content: String!
+    visibility: String!
+    type: String!
     createdAt: String!
   }
   type User {
@@ -61,5 +66,8 @@ module.exports = gql`
       addStudentToCourse(courseCode: String!, username: String!): Course!
       addTaToCourse(courseCode: String!, username: String!): Course!
       deleteCourseForUser(courseCode: String!, username: String!): Course!
+      addPost(name: String!, role: String!, course: String!, title: String!, content: String!, visibility: String!, type: String!): Post!
+      updatePost(id: ID!, title: String!, content: String!, visibility: String!): Post!
+      deletePost(id: ID!): Post!
   }
 `;

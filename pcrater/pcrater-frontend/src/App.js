@@ -10,6 +10,9 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import NewClasses from './pages/NewClasses';
+import CreatePost from './pages/CreatePost';
+import ShowPosts from './pages/ShowPosts';
+
 import CreatePoll from './pages/CreatePoll';
 import ViewPoll from './pages/ViewPoll';
 import NavBar from './components/NavBar';
@@ -27,6 +30,8 @@ function App() {
           <Route exact path='/join-class' element={<NewClasses />} />
           <Route exact path="/create-poll" element={<CreatePoll />} />
           <Route exact path="/view-poll" element={<ViewPoll />} />
+          <Route exact path='/create-post' element={<CreatePost />} />
+          <Route exact path='/show-posts' element={<ShowPosts />} />
         </Routes>
       </Router>
     </AuthProvider>
