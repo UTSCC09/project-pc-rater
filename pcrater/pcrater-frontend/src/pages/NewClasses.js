@@ -323,7 +323,7 @@ const New_Classes = () => {
                     </Modal.Header>
                     <Modal.Body>
                         <form>
-                            <SearchBar placeholder="Enter the name of your university" setSearchWord ={setUniversityInputVal} data={universitiesJson} attributeToSearchFor="name" />
+                            <SearchBar placeholder="Enter university name" setSearchWord ={setUniversityInputVal} data={universitiesJson} attributeToSearchFor="name" />
                         </form>
                     </Modal.Body>
                     <Modal.Footer>
@@ -342,15 +342,11 @@ const New_Classes = () => {
                             {userCoursesResult.data.getCoursesOfStudent.map(classCode => {
                               return <ListGroup.Item> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName} - {classCode.university}</ListGroup.Item>  
                             })}
-                        </ListGroup>
 
-                        <ListGroup  variant="flush" className="courses_list" style = {{ textAlign: 'left' }}>                            
                             {userCoursesResultTA.data.getCoursesOfTA.map(classCode => {
                               return <ListGroup.Item> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName} - {classCode.university} <span style={{ color: "grey" }}> (TA)</span></ListGroup.Item>  
                             })}
-                        </ListGroup>
 
-                        <ListGroup>
                             {userCoursesResultProfessor.data.getCoursesOfProfessor.map(classCode => {
                               return <ListGroup.Item> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName} - {classCode.university} <span style={{ color: "grey" }}> (Professor)</span></ListGroup.Item>  
                             })}
@@ -384,7 +380,7 @@ const New_Classes = () => {
                             </div>
                         </Form>
                         {!willCreateNewClass &&
-                        <Dropdown style={{ textAlign: "left", marginBottom: "5px", marginLeft: "5px", width: "30%" }}>
+                        <Dropdown style={{ textAlign: "left", marginBottom: "5px", marginTop: "20px", marginLeft: "5px", width: "30%" }}>
                             <Dropdown.Toggle id="dropdown-basic">
                                 Join as a {joinAsSelection}
                             </Dropdown.Toggle>

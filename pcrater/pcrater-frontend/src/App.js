@@ -17,6 +17,7 @@ import CreatePoll from './pages/CreatePoll';
 import ViewPoll from './pages/ViewPoll';
 import NavBar from './components/NavBar';
 import ViewPollResults from './pages/ViewPoll';
+import Posts from './pages/Posts';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route exact path="/view-poll" element={<ViewPoll />} />
           <Route exact path='/create-post' element={<CreatePost />} />
           <Route exact path='/show-posts' element={<ShowPosts />} />
+          <Route exact path="posts" element={<Posts/>} />
         </Routes>
       </Router>
     </AuthProvider>

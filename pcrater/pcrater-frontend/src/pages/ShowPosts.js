@@ -18,21 +18,19 @@ query findPosts {
     }
 }`;
 
-export default function ShowPosts() {
+export default function ShowPosts({ setCreateOrShow }) {
     let allPostsResult = useQuery(GET_POSTS);
     if(allPostsResult.loading){
         return <div>Loading...</div>
     }
 
     return(
-        <div>
+        <div id="posts_container">
             <div id="post-functions">
-                <Nav.Link href="create-post" className="create_post_btn">Create Post</Nav.Link>
-                <SearchBar/>
             </div>
             <div id="posts">
             {allPostsResult.data.getPosts.map(post => {
-                return <div className="post"> 
+                return <div className="post" onClick={() => setCreateOrShow(false)}> 
                     <div className="post_name">{post.name}</div>
                     <div className="post_content">{post.content}</div>
                     <div className="post_date">{post.createdAt}</div>

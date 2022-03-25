@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {gql, useMutation} from "@apollo/client";
+import Button from "react-bootstrap/Button";
 import './CreatePost.css';
 import Dropdown from 'react-bootstrap/Dropdown';
 
@@ -92,7 +93,7 @@ export default function CreatePost() {
                     
                 </Dropdown>
 
-                Type:<Dropdown style={{ textAlign: "left", marginBottom: "5px", marginLeft: "5px", width: "30%" }}>
+                Type:<Dropdown style={{ textAlign: "left", marginBottom: "25px", marginLeft: "5px", width: "30%" }}>
                     <Dropdown.Toggle id="dropdown-basic">
                         {type}
                     </Dropdown.Toggle>
@@ -105,7 +106,7 @@ export default function CreatePost() {
                     
                 </Dropdown>  
                 
-                <button type="submit" className="btn">Create Post</button>
+                <Button type="submit" className="btn">Create Post</Button>
             </form>
         </div>
     );

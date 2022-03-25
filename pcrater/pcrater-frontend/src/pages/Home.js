@@ -44,7 +44,7 @@ export default function Signup() {
                     <Collapse in={open} dimension="width">
                     <div id="example-collapse-text">
                         <Card body style={{width: '800px'}}>
-                            PCRaters allows students to get multiple opinions before embarking with a certain course or professor. Having these reviews and ratings creates transparency.
+                        PCRater is a web application that provides a central platform for students to come and join forums for their courses. Users can join classes as students, TAs or even professors based on their assigned role in the class. As a result, the students will be able to figure out the answers to their questions and doubts, which will improve their success rate.
                         </Card>
                     </div>
                     </Collapse>

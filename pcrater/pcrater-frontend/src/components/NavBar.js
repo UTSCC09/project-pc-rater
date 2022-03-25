@@ -27,6 +27,7 @@ function NavBar() {
                     <Nav.Link href="create-poll">Create Poll</Nav.Link>
                     <Nav.Link href="create-post">Create Posts</Nav.Link>
                     <Nav.Link href="show-posts">Show posts</Nav.Link>
+                    <Nav.Link href="posts">Posts</Nav.Link>
                 </Nav>
                 <Nav>
                     {/* Redirect to user's profile page after */}
