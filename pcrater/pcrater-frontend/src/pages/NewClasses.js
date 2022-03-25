@@ -227,7 +227,7 @@ const New_Classes = () => {
         setWillCreateNewClass(!willCreateNewClass);
     }
 
-    const addNewClass = () => {
+    const addNewClass = async () => {
         let classObj = allCoursesResult.data.getCourses.find(classElmt => classElmt.courseCode == classCode);
         if(classObj){
             setCourseNameError('Course already exists');
@@ -242,8 +242,9 @@ const New_Classes = () => {
             setCourseNameError('');
             setUniversityError('');
             setShowError(false);
-            addNewCourse({ variables: { "courseName": courseName, "courseCode": classCode, "university": university, "semester": current_semester } });
-            setSuccessMessage("Course added successfully! Now you can join the course as a professor.");
+            let value = await addNewCourse({ variables: { "courseName": courseName, "courseCode": classCode, "university": university, "semester": current_semester } });
+            addNewProfessorToCourse({ variables: { "courseCode": classCode, "username": user.username } });
+            setSuccessMessage("Course added successfully! You have joined the course as a professor.");
             setShowSuccess(true);
             setCourseName('');
             setClassCode('');
@@ -266,13 +267,12 @@ const New_Classes = () => {
             setShowError(false);
             setSuccessMessage("You joined the course successfully");
             setShowSuccess(true);
-            switch(joinAsSelection.toLowerCase()){
-                case "student":
-                    addNewStudentToCourse({ variables: { "courseCode": classCode, "username": user.username } });
-                case "ta":
-                    addNewTAToCourse({ variables: { "courseCode": classCode, "username": user.username } });
-                default: // "professor"
-                    addNewProfessorToCourse({ variables: { "courseCode": classCode, "username": user.username } });
+            if(joinAsSelection.toLowerCase() === "student"){
+                addNewStudentToCourse({ variables: { "courseCode": classCode, "username": user.username } });
+            }else if(joinAsSelection.toLocaleLowerCase() === "ta"){
+                addNewTAToCourse({ variables: { "courseCode": classCode, "username": user.username } });
+            }else if(joinAsSelection.toLocaleLowerCase() === "professor"){
+                addNewProfessorToCourse({ variables: { "courseCode": classCode, "username": user.username } });
             }
         }
     }
@@ -335,18 +335,22 @@ const New_Classes = () => {
                         <Card.Header style = {{ textAlign: "left", fontWeight: "bold", fontSize: "18px" }}>{current_semester} classes</Card.Header>
                         <ListGroup  variant="flush" className="courses_list" style = {{ textAlign: 'left' }}>
                             {userCoursesResult.data.getCoursesOfStudent.map(classCode => {
-                              console.log(classCode);
                               return <ListGroup.Item> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName} - {classCode.university}</ListGroup.Item>  
                             })}
+                        </ListGroup>
+
+                        <ListGroup  variant="flush" className="courses_list" style = {{ textAlign: 'left' }}>                            
                             {userCoursesResultTA.data.getCoursesOfTA.map(classCode => {
                               return <ListGroup.Item> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName} - {classCode.university} <span style={{ color: "grey" }}> (TA)</span></ListGroup.Item>  
                             })}
+                        </ListGroup>
+
+                        <ListGroup>
                             {userCoursesResultProfessor.data.getCoursesOfProfessor.map(classCode => {
                               return <ListGroup.Item> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName} - {classCode.university} <span style={{ color: "grey" }}> (Professor)</span></ListGroup.Item>  
                             })}
-                            
- 
                         </ListGroup>
+                            
                         <Form style={{ marginTop: "10px" }}>
                             <Form.Check
                              onClick={() => handleCreateNewClassClick()} 
