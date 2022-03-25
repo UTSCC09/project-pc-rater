@@ -32,7 +32,7 @@ export default function Signup(props) {
         },
         onError(err) {
             if (err.graphQLErrors[0] != undefined) {
-                setErrors(err.graphQLErrors[0].extensions.exception.errors);
+                setErrors(err.graphQLErrors[0].extensions.errors);
             }
         },
         variables: values
@@ -45,7 +45,7 @@ export default function Signup(props) {
     return(
         <div className='div-login'>
             <div>
-                <h1 id="login-header">
+                <h1>
                     Signup
                 </h1>
                 <form>
@@ -59,6 +59,15 @@ export default function Signup(props) {
                 </form>
                 <button type='submit' onClick={onSubmit}>Signup</button>
             </div>
+            {Object.keys(errors).length > 0 && (
+            <div className="ui-error-message">
+                <ul className="list">
+                    {Object.values(errors).map((value) => (
+                    <li key={value}>{value}</li>
+                    ))}
+                </ul>
+            </div>
+            )}
         </div>
     );
 }

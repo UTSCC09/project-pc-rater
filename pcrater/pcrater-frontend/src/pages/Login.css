@@ -12,20 +12,18 @@
     background-color: white;
   } 
   
-  input{
+  .input{
     width: 95%;
     border: 1px solid #dbdbdb;
     padding: 5px;
-    margin: 2px 0;
     border-radius: 5px;
     background-color: #fafafa;
     box-shadow: none;
-    font-family: Garamond, sans-serif;
     font-size: 15px;
   }
   
   button{
-    width: 100%;
+    width: 95%;
     margin: 5px 0;
     background-color: dodgerblue;
     font-family: Garamond, sans-serif;
@@ -36,7 +34,18 @@
     border-radius: 5px;
     font-size: 15px;
   }
-  
-  #login-header {
-    font-family: Garamond;
+
+  .ui-error-message {
+    border: 1px solid #ffa7a1;
+    border-radius: 5px;
+    background: #fcc4c0;
+    display: flex;
+    flex-direction: column;
+    color: red;
+    font-weight: bold;
+  }
+
+  .list {
+    margin: 5px;
+    font-size: 12px;
   }
