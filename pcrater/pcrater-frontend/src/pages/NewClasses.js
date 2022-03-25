@@ -207,12 +207,17 @@ const New_Classes = () => {
         if(!allCoursesResult.loading){
             setSearchResultsForCourses(allCoursesResult.data.getCourses);
         };
-    }, [allCoursesResult])
+    }, [allCoursesResult]);
+
+    useEffect(() => {
+        if(!userResult.loading){
+            setUniversity(userResult.data.findUser.institution);        
+        }
+    });
 
     if(allCoursesResult.loading || userResult.loading || userCoursesResult.loading || userCoursesResultTA.loading || userCoursesResultProfessor.loading){
         return <div>Loading...</div>
     }
-
 
 
     const handleClose = () => setShow(false);

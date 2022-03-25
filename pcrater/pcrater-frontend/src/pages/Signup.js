@@ -1,7 +1,7 @@
 //credits: https://www.youtube.com/watch?v=_DqPiZPKkgY&list=PLMhAeHCz8S3_pgb-j51QnCEhXNj5oyl8n
 
 
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 import './Signup.css';
@@ -14,6 +14,21 @@ export default function Signup(props) {
     const context = useContext(AuthContext);
     const navigate = useNavigate();
     const [errors, setErrors] = useState({});
+    const [universitiesJson, setUniversitiesJson] = useState([]);
+
+    //This will be used for fetching data from the database
+    useEffect(() => {
+        fetch('https://raw.githubusercontent.com/Hipo/university-domains-list/master/world_universities_and_domains.json')
+        .then((res) => {
+            return res.json();
+        })
+        .then((jsonObj) => {
+            setUniversitiesJson(jsonObj);
+        })
+        .catch((err) =>{
+            console.log(err);
+        });
+    });
 
     const { onChange, onSubmit, values } = useForm(registerUser, {
         username: "",
@@ -39,7 +54,13 @@ export default function Signup(props) {
     });
 
     function registerUser() {
-        addUser();
+        if(universitiesJson.map(university => university.name.toLowerCase()).includes(values.institution.toLowerCase())){
+            const index = universitiesJson.findIndex(university => university.name.toLowerCase().includes(values.institution.toLowerCase()));
+            values.institution = universitiesJson[index].name;
+            addUser();
+        }else{
+            setErrors(["University is not valid"]);
+        }
     }
 
     return(
@@ -95,6 +116,7 @@ const REGISTER_USER = gql`
       username
       email
       token
+      institution
     }
   }
 `;
