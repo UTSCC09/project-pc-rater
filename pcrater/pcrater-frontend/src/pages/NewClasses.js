@@ -44,6 +44,7 @@ const GET_COURSES_OF_STUDENT = gql`
         getCoursesOfStudent(username: $username) {
             courseCode
             courseName
+            university
         }
     } 
 `;
@@ -53,6 +54,7 @@ const GET_COURSES_OF_TA = gql`
         getCoursesOfTA(username: $username) {
             courseCode
             courseName
+            university
         }
     } 
 `;
@@ -62,6 +64,7 @@ const GET_COURSES_OF_PROFESSOR = gql`
         getCoursesOfProfessor(username: $username) {
             courseCode
             courseName
+            university
         }
     } 
 `;
@@ -332,13 +335,14 @@ const New_Classes = () => {
                         <Card.Header style = {{ textAlign: "left", fontWeight: "bold", fontSize: "18px" }}>{current_semester} classes</Card.Header>
                         <ListGroup  variant="flush" className="courses_list" style = {{ textAlign: 'left' }}>
                             {userCoursesResult.data.getCoursesOfStudent.map(classCode => {
-                              return <ListGroup.Item> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName}</ListGroup.Item>  
+                              console.log(classCode);
+                              return <ListGroup.Item> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName} - {classCode.university}</ListGroup.Item>  
                             })}
                             {userCoursesResultTA.data.getCoursesOfTA.map(classCode => {
-                              return <ListGroup.Item> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName} <span style={{ color: "grey" }}> (TA)</span></ListGroup.Item>  
+                              return <ListGroup.Item> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName} - {classCode.university} <span style={{ color: "grey" }}> (TA)</span></ListGroup.Item>  
                             })}
                             {userCoursesResultProfessor.data.getCoursesOfProfessor.map(classCode => {
-                              return <ListGroup.Item> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName} <span style={{ color: "grey" }}> (Professor)</span></ListGroup.Item>  
+                              return <ListGroup.Item> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName} - {classCode.university} <span style={{ color: "grey" }}> (Professor)</span></ListGroup.Item>  
                             })}
                             
  
