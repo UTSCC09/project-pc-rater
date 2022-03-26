@@ -25,8 +25,6 @@ function NavBar() {
                 <Nav className="me-auto">
                     <Nav.Link href="join-class">Join Class</Nav.Link>
                     <Nav.Link href="create-poll">Create Poll</Nav.Link>
-                    <Nav.Link href="create-post">Create Posts</Nav.Link>
-                    <Nav.Link href="show-posts">Show posts</Nav.Link>
                     <Nav.Link href="posts">Posts</Nav.Link>
                 </Nav>
                 <Nav>

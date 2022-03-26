@@ -22,10 +22,10 @@
 }
 
 .post{
-    display:flex;
     justify-content: space-around;
     align-items:center;
     width:100%;
+    padding: 5px;
     margin-top:5px;
     margin-left: 1px;
     border-bottom: 2px solid grey; 
@@ -33,7 +33,10 @@
 
 .post:hover {
     cursor: pointer;
+    background-color: silver;
 }
+
+
 
 .post_name{
     font-weight: bold;
@@ -41,12 +44,12 @@
 
 .post_date{
     font-style: italic;
+    font-size: 11px;
 }
 
 .post_content{
-    width:50%;
-    font-size: 10px;
-    margin-left: 10px;
+    width:70%;
+    font-size: 12px;
 }
 
 .create_post_btn {

@@ -16,19 +16,19 @@ export default function Signup(props) {
     const [errors, setErrors] = useState({});
     const [universitiesJson, setUniversitiesJson] = useState([]);
 
-    //This will be used for fetching data from the database
-    useEffect(() => {
-        fetch('https://raw.githubusercontent.com/Hipo/university-domains-list/master/world_universities_and_domains.json')
-        .then((res) => {
-            return res.json();
-        })
-        .then((jsonObj) => {
-            setUniversitiesJson(jsonObj);
-        })
-        .catch((err) =>{
-            console.log(err);
-        });
-    });
+    // //This will be used for fetching data from the database
+    // useEffect(() => {
+    //     fetch('https://raw.githubusercontent.com/Hipo/university-domains-list/master/world_universities_and_domains.json')
+    //     .then((res) => {
+    //         return res.json();
+    //     })
+    //     .then((jsonObj) => {
+    //         setUniversitiesJson(jsonObj);
+    //     })
+    //     .catch((err) =>{
+    //         console.log(err);
+    //     });
+    // });
 
     const { onChange, onSubmit, values } = useForm(registerUser, {
         username: "",
@@ -54,13 +54,7 @@ export default function Signup(props) {
     });
 
     function registerUser() {
-        if(universitiesJson.map(university => university.name.toLowerCase()).includes(values.institution.toLowerCase())){
-            const index = universitiesJson.findIndex(university => university.name.toLowerCase().includes(values.institution.toLowerCase()));
-            values.institution = universitiesJson[index].name;
-            addUser();
-        }else{
-            setErrors(["University is not valid"]);
-        }
+        addUser();
     }
 
     return(

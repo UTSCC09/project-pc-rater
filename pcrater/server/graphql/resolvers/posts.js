@@ -13,9 +13,9 @@ function getCurDateInYearMonthDayFormat(){
 module.exports = {
 
     Query: {
-        async getPosts() {
+        async getPosts(_, args) {
             try {
-                const posts = await Post.find();
+                const posts = await Post.find({ "course": args.courseCode });
                 return posts;
             } catch (err) {
                 throw new Error(err);

@@ -46,9 +46,9 @@ module.exports = {
                 throw new Error(err);
             }
         },
-        async findCourse(courseCode){
+        async findCourse(root, args){
             try{
-                const course = await Course.findOne(courseCode);
+                const course = await Course.findOne({"courseCode": args.courseCode}).populate("students").populate("teachingAssistants").populate("professors");
                 return course;
             }catch(err){
                 throw new Error(err);
