@@ -14,7 +14,29 @@ import Form from "react-bootstrap/Form";
 import { FaSearch } from "react-icons/fa";
 
 
-
+const CREATE_POST = gql`
+    mutation createPost ($name: String!, $role: String!, 
+    $course: String!, $title: String!, $content: String!, 
+    $visibility: String!, $type: String!) {
+        addPost(
+            name: $name, 
+            role: $role, 
+            course: $course,
+            title: $title,
+            content: $content, 
+            visibility: $visibility,
+            type: $type
+        ) {
+            name
+            role
+            course
+            title
+            content
+            visibility
+            type
+            createdAt
+        }
+}`;
 
 const GET_COURSES_OF_STUDENT = gql`
     query getCoursesOfStudentByUsername($username: String!){
@@ -68,6 +90,7 @@ const FIND_COURSE = gql`
 const GET_POSTS = gql`
 query findPosts($courseCode: String!) {
     getPosts(courseCode: $courseCode) {
+        id
         name
         role
         course
@@ -76,10 +99,25 @@ query findPosts($courseCode: String!) {
         visibility
         type
         createdAt
+        upvotes
+        upvotes_list {
+            username
+        }
+        comments{
+            id
+            author
+            role
+            content
+            createdAt
+            upvotes
+            upvotes_list{
+                username
+            }
+        }
     }
 }`;
 
-const PostsNavBar  = ({ setFilteredData, setRole, postsData, setCreateOrShow, selectedCourse, setSelectedCourse }) => {
+const PostsNavBar  = ({ setIsSearching, setFilteredData, setRole, postsData, setCreateOrShow, selectedCourse, setSelectedCourse }) => {
     const { user } = useContext(AuthContext);
     const [ searchWordVal, setSearchWordVal ] = useState(""); 
   
@@ -96,8 +134,10 @@ const PostsNavBar  = ({ setFilteredData, setRole, postsData, setCreateOrShow, se
           return value.title.toLowerCase().includes(searchWord.toLowerCase());
         });
         if (searchWord === "") {
+            setIsSearching(false);
             setFilteredData(postsData);
         } else {
+            setIsSearching(true);
             setFilteredData(newFilter);
         }
     };
@@ -212,24 +252,28 @@ const Posts = () => {
     const [ role, setRole ] = useState("Student");
     const [ post, setPost ] = useState({});
     const [filteredData, setFilteredData] = useState("");
+    const [ isSearching, setIsSearching ] = useState(false);
 
 
-
-    let allPostsResult = useQuery(GET_POSTS, { variables: { "courseCode": selectedCourse } });
+    let allPostsResult = useQuery(GET_POSTS, { variables: { "courseCode": selectedCourse }});
+    
+    const [ createPostFunction ] = useMutation(CREATE_POST, { refetchQueries: [ GET_POSTS ] });
+    
     if(allPostsResult.loading){
         return <div>Loading...</div>
     }
 
+    console.log(allPostsResult);
 
     return (
         <div style = {{ display: "flex" }}>
             <div>
-                <PostsNavBar setFilteredData={setFilteredData} setRole={setRole} postsData={allPostsResult.data.getPosts} setCreateOrShow={setCreateOrShow} selectedCourse={selectedCourse} setSelectedCourse={setSelectedCourse} />
-                <ShowPosts filteredData={filteredData} postsData={allPostsResult.data.getPosts} setCreateOrShow={setCreateOrShow} selectedCourse={selectedCourse} currentPost={post} setPost={setPost} />
+                <PostsNavBar setIsSearching={setIsSearching} setFilteredData={setFilteredData} setRole={setRole} postsData={allPostsResult.data ? allPostsResult.data.getPosts : []} setCreateOrShow={setCreateOrShow} selectedCourse={selectedCourse} setSelectedCourse={setSelectedCourse} />
+                <ShowPosts isSearching={isSearching} filteredData={filteredData} postsData={allPostsResult.data ? allPostsResult.data.getPosts : []} setCreateOrShow={setCreateOrShow} selectedCourse={selectedCourse} currentPost={post} setPost={setPost} />
             </div>
             
             {createOrShow ?
-                <CreatePost role={role} selectedCourse={selectedCourse}  /> :
+                <CreatePost setIsSearching={setIsSearching} createPostFunction={createPostFunction} role={role} selectedCourse={selectedCourse}  /> :
                 <Post role={role} post={post} />
             }
 

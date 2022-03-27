@@ -22,7 +22,7 @@ export default function Login() {
     const [loginUser, { loading }] = useMutation(LOGIN_USER, {
         update(_, result) {
             context.login(result.data.login);
-            navigate("/show-posts");
+            navigate("/posts");
         },
         onError(err) {
             if (err.graphQLErrors[0] !== undefined) {

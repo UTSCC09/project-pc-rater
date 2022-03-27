@@ -1,6 +1,19 @@
 const gql = require('graphql-tag');
 
 module.exports = gql`
+  type Upvote {
+    username: String!
+  }
+  type Comment {
+    id: ID!
+    author: String!,
+    role: String!,
+    content: String!,
+    title: String!,
+    createdAt: String!
+    upvotes: Int!
+    upvotes_list: [Upvote!]
+  }
   type Post {
     id: ID!
     name: String!
@@ -11,6 +24,9 @@ module.exports = gql`
     visibility: String!
     type: String!
     createdAt: String!
+    upvotes: Int!
+    upvotes_list: [Upvote!]
+    comments: [Comment!]
   }
   type User {
     id: ID!
@@ -50,6 +66,7 @@ module.exports = gql`
   }
   type Query {
     getPosts(courseCode: String!): [Post]
+    getPost(id: ID!): Post
     getUsers: [User]
     findUser(username: String!): User
     getCourses(university: String!): [Course]
@@ -69,5 +86,8 @@ module.exports = gql`
       addPost(name: String!, role: String!, course: String!, title: String!, content: String!, visibility: String!, type: String!): Post!
       updatePost(id: ID!, title: String!, content: String!, visibility: String!): Post!
       deletePost(id: ID!): Post!
+      addComment(id: ID!, content: String!, author: String!, role: String!): Post!
+      increaseUpvotesPost(id: ID!, username: String!): Post
+      increaseUpvotesComment(postId: ID!, commentId: ID!, username: String!): Post
   }
 `;

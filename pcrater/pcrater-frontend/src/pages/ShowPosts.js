@@ -5,12 +5,16 @@ import SearchBar from '../components/SearchBar';
 import { gql, useQuery, useMutation } from '@apollo/client';
 
 
-export default function ShowPosts({ filteredData, postsData, setCreateOrShow, selectedCourse, currentPost, setPost }) {
+export default function ShowPosts({ isSearching, filteredData, postsData, setCreateOrShow, selectedCourse, currentPost, setPost }) {
     let reversePostsData = [];
-    if(filteredData){
+    if(isSearching && filteredData){
         reversePostsData = filteredData.slice();
         reversePostsData = reversePostsData.reverse();
+    }else if(postsData){
+        reversePostsData = postsData.slice();
+        reversePostsData = reversePostsData.reverse();
     }
+
 
     return(
         <div id="posts_container">

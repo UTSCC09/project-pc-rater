@@ -31,8 +31,6 @@ function App() {
           <Route exact path='/join-class' element={<NewClasses />} />
           <Route exact path="/create-poll" element={<CreatePoll />} />
           <Route exact path="/view-poll" element={<ViewPoll />} />
-          <Route exact path='/create-post' element={<CreatePost />} />
-          <Route exact path='/show-posts' element={<ShowPosts />} />
           <Route exact path="posts" element={<Posts/>} />
         </Routes>
       </Router>

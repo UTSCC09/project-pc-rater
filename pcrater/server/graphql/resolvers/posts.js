@@ -20,6 +20,15 @@ module.exports = {
             } catch (err) {
                 throw new Error(err);
             }
+        },
+
+        async getPost(_, args){
+            try{
+                const postObj = await Post.findById(args.id);
+                return postObj;
+            }catch(err){
+                throw new Error(err);
+            }
         }
     },
     Mutation: {
@@ -41,7 +50,10 @@ module.exports = {
                 content, 
                 visibility,
                 type,
-                createdAt
+                createdAt,
+                upvotes: 0,
+                upvotes_list: [],
+                comments: []
             });
 
             await postObj.save();
@@ -79,6 +91,51 @@ module.exports = {
                 throw new UserInputError('Post not found', { errors });
             }
             
+            return postObj;
+        },
+        async addComment(_, { id, content, author, role }){
+            const errors = {};
+            const postObj = await Post.findById(id);
+            if(!postObj){
+                errors.general = "post not found";
+                throw new UserInputError("Post not found", { errors });
+            }
+            const createdAt = getCurDateInYearMonthDayFormat();
+            const newComment = {
+                author,
+                role,
+                content, 
+                createdAt,
+                upvotes: 0,
+                upvotes_list: []
+            };
+            postObj.comments = [...postObj.comments, newComment];
+            await postObj.save();
+            return postObj;
+        },
+        async increaseUpvotesPost(_, { id, username }){
+            const errors = {};
+            const postObj = await Post.findById(id);
+            if(!postObj){
+                errors.general = "post not found";
+                throw new UserInputError("Post not found", { errors });
+            }
+            postObj.upvotes = postObj.upvotes + 1;
+            postObj.upvotes_list.push({"username": username});
+            postObj.save();
+            return postObj;
+        },
+        async increaseUpvotesComment(_, { postId, commentId, username }){
+            const errors = {};
+            const postObj = await Post.findById(postId);
+            if(!postObj){
+                errors.general = "post not found";
+                throw new UserInputError("Post not found", { errors });
+            }
+            let commentObj = postObj.comments.find(comment => comment.id === commentId);
+            commentObj.upvotes = commentObj.upvotes + 1;
+            commentObj.upvotes_list.push({"username": username});
+            postObj.save();
             return postObj;
         }
     }

@@ -6,44 +6,6 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import { AuthContext } from '../context/auth';
 
 
-const CREATE_POST = gql`
-mutation createPost ($name: String!, $role: String!, 
-$course: String!, $title: String!, $content: String!, 
-$visibility: String!, $type: String!) {
-    addPost(
-        name: $name, 
-        role: $role, 
-        course: $course,
-        title: $title,
-        content: $content, 
-        visibility: $visibility,
-        type: $type
-    ) {
-        name
-        role
-        course
-        title
-        content
-        visibility
-        type
-        createdAt
-    }
-}`;
-
-const GET_POSTS = gql`
-query findPosts($courseCode: String!) {
-    getPosts(courseCode: $courseCode) {
-        name
-        role
-        course
-        title
-        content
-        visibility
-        type
-        createdAt
-    }
-}`;
-
 const FIND_USER = gql`
     query findUserByUsername($username: String!) {
         findUser(username: $username) {
@@ -55,7 +17,7 @@ const FIND_USER = gql`
     }
 `;
 
-export default function CreatePost({ role, selectedCourse }) {
+export default function CreatePost({ setIsSearching, createPostFunction, role, selectedCourse }) {
     // const [name, setName] = useState('');
     // const [role, setRole] = useState('Student');
     // const [course, setCourse] = useState('');
@@ -68,7 +30,6 @@ export default function CreatePost({ role, selectedCourse }) {
 
     const tempName='';
 
-    const [ createPost ] = useMutation(CREATE_POST, { refetchQueries: [ GET_POSTS ] });
     let userResult = useQuery(FIND_USER, {variables: { "username": user.username }, skip: !user.username,});
     if(userResult.loading){
         return <div>Loading...</div>
@@ -77,7 +38,8 @@ export default function CreatePost({ role, selectedCourse }) {
     const submit = (event) => {
         event.preventDefault();
         const name = userResult.data.findUser.firstname + " " + userResult.data.findUser.lastname;
-        createPost({  variables: {name , "role": role, "course": selectedCourse, title, content, visibility, type } });
+        setIsSearching(false);
+        createPostFunction({  variables: {name , "role": role, "course": selectedCourse, title, content, visibility, type } });
 
         // setName('');
         // setRole('Student');
