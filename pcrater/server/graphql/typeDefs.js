@@ -78,6 +78,7 @@ module.exports = gql`
   type Mutation {
       login(email: String!, password: String!): User! 
       register(username: String!, firstname: String!, lastname: String!, institution: String!, email: String! password: String!, confirmPassword: String!): User!
+      updateUniversity(username: String!, university: String!): User!
       addCourse(courseName: String!, courseCode: String!, university: String!, semester: String!): Course!
       addProfessorToCourse(courseCode: String!, username: String!): Course!
       addStudentToCourse(courseCode: String!, username: String!): Course!

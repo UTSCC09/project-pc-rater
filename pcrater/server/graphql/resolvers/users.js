@@ -49,6 +49,7 @@ module.exports = {
             }
       
             const user = await User.findOne({ email });
+
       
             if (!user) {
               errors.general = 'User not found';
@@ -125,6 +126,16 @@ module.exports = {
               createdAt: res.createdAt,
               token
             };
+        
+        },
+        async updateUniversity(_, { username, university }){
+          const user = await User.findOne({ username });
+          if (!user) {
+            throw new UserInputError('User not found');
+          }
+          user.institution = university;
+          user.save();
+          return user;
         }
     }
 }

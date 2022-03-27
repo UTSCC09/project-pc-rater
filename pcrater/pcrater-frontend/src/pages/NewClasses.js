@@ -69,6 +69,15 @@ const GET_COURSES_OF_PROFESSOR = gql`
     } 
 `;
 
+const UPDATE_UNIVERSITY = gql`
+    mutation($username: String!, $university: String!) {
+        updateUniversity(username: $username, university: $university) {
+            username
+            institution
+        }
+    }
+`;
+
 
 
 const ADD_COURSE = gql`
@@ -116,9 +125,6 @@ const DELETE_USER_FROM_CLASS = gql`
     }
 `;
 
-const loadUniversity = (userResult) => {
-    return userResult.data.findUser.institution;
-}
 
 const determineSemester = () => {
     const year = new Date().getFullYear();
@@ -150,7 +156,7 @@ const New_Classes = () => {
     const [successMessage, setSuccessMessage] = useState('');
 
     const [show, setShow] = useState(false);
-    const [university, setUniversity] = useState("University of Toronto");
+    const [university, setUniversity] = useState("");
     const [universityInputVal, setUniversityInputVal] = useState("");
     const [universitiesJson, setUniversitiesJson] = useState({});
 
@@ -168,6 +174,10 @@ const New_Classes = () => {
         .catch((err) =>{
             console.log(err);
         });
+    });
+
+    let [ updateUniversity ] = useMutation(UPDATE_UNIVERSITY, {
+        refetchQueries: [ FIND_USER ]
     });
 
     let [ addNewCourse ] = useMutation(ADD_COURSE, {
@@ -190,12 +200,18 @@ const New_Classes = () => {
 
 
     
-    let allCoursesResult = useQuery(ALL_COURSES, {variables: { university }, skip: !university,});
     let userResult = useQuery(FIND_USER, {variables: { "username": user.username }, skip: !user.username,});
+    let allCoursesResult = useQuery(ALL_COURSES, {variables: { "university": university }, skip: !userResult.data});
     let userCoursesResult = useQuery(GET_COURSES_OF_STUDENT, {variables: { "username": user.username }, skip: !user.username});
     let userCoursesResultTA = useQuery(GET_COURSES_OF_TA, {variables: { "username": user.username }, skip: !user.username});
     let userCoursesResultProfessor = useQuery(GET_COURSES_OF_PROFESSOR, {variables: { "username": user.username }, skip: !user.username});
     
+
+    useEffect(() => {
+        if(!userResult.loading){
+            setUniversity(userResult.data.findUser.institution);
+        }
+    });
 
     useEffect(() => {
         if(!userCoursesResult.loading){
@@ -204,16 +220,11 @@ const New_Classes = () => {
     }, [userCoursesResult])
 
     useEffect(() => {
-        if(!allCoursesResult.loading){
+        if(!allCoursesResult.loading && allCoursesResult.data){
             setSearchResultsForCourses(allCoursesResult.data.getCourses);
-        };
+        }
     }, [allCoursesResult]);
 
-    useEffect(() => {
-        if(university == '' && !userResult.loading){
-            setUniversity(userResult.data.findUser.institution);        
-        }
-    });
 
     if(allCoursesResult.loading || userResult.loading || userCoursesResult.loading || userCoursesResultTA.loading || userCoursesResultProfessor.loading){
         return <div>Loading...</div>
@@ -247,7 +258,7 @@ const New_Classes = () => {
             setCourseNameError('');
             setUniversityError('');
             setShowError(false);
-            let value = await addNewCourse({ variables: { "courseName": courseName, "courseCode": classCode, "university": university, "semester": current_semester } });
+            let value = await addNewCourse({ variables: { "courseName": courseName, "courseCode": classCode, "university": userResult.data.findUser.institution, "semester": current_semester } });
             addNewProfessorToCourse({ variables: { "courseCode": classCode, "username": user.username } });
             setSuccessMessage("Course added successfully! You have joined the course as a professor.");
             setShowSuccess(true);
@@ -292,7 +303,8 @@ const New_Classes = () => {
         if(newValue){
             let universityObject = universitiesJson.find(elmt => elmt.name.toLowerCase() == newValue.toLowerCase());
             if(universityObject){
-                setUniversity(universityObject.name);
+                // setUniversity(universityObject.name);
+                updateUniversity({ variables: { "username": user.username, "university": universityObject.name } })
                 setShow(false);
                 setUniversityError('');
             }else{
@@ -308,7 +320,7 @@ const New_Classes = () => {
     return (
         <div className="main">
             <div className="subContainer">
-                <h2 className="text-center">{university}</h2>
+                <h2 className="text-center">{userResult.data.findUser.institution}</h2>
                 <p className="text-center" onClick={handleShow}>(Change school)</p>
                 {((universityError !== '' || courseNameError !== '') && showError) &&                
                 <ErrorMessage errorMessage={universityError === '' ? courseNameError : universityError} setShowError={setShowError} />
@@ -322,7 +334,7 @@ const New_Classes = () => {
                     <Modal.Title>Change schools</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <form>
+                        <form className="w-75 px-4">
                             <SearchBar placeholder="Enter university name" setSearchWord ={setUniversityInputVal} data={universitiesJson} attributeToSearchFor="name" />
                         </form>
                     </Modal.Body>
