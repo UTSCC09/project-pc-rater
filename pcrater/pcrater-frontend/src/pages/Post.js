@@ -139,7 +139,7 @@ const Post = ({ post, role }) => {
 
     return (
             <Card style = {{ width: "65%", marginTop: "10px" }}>
-                <Card.Header>Question</Card.Header>
+                <Card.Header>{post.type}</Card.Header>
                 <Card.Title style = {{ marginTop: "10px", paddingLeft: "10px" }}>
                     {post.role == "Student" &&
                         <span style={{ backgroundColor: "green", color: "white", paddingTop: "1px", paddingBottom: "1px", paddingLeft: "3px", paddingRight: "3px" }}>S</span>  

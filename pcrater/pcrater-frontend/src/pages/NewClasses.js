@@ -210,7 +210,7 @@ const New_Classes = () => {
     }, [allCoursesResult]);
 
     useEffect(() => {
-        if(!userResult.loading){
+        if(university == '' && !userResult.loading){
             setUniversity(userResult.data.findUser.institution);        
         }
     });

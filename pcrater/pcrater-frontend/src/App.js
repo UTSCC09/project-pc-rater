@@ -29,7 +29,6 @@ function App() {
           <Route exact path='/login' element={<Login />} />
           <Route exact path='/signup' element={<Signup />} />
           <Route exact path='/join-class' element={<NewClasses />} />
-          <Route exact path="/create-poll" element={<CreatePoll />} />
           <Route exact path="/view-poll" element={<ViewPoll />} />
           <Route exact path="posts" element={<Posts/>} />
         </Routes>

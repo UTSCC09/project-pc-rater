@@ -4,6 +4,7 @@ import Button from "react-bootstrap/Button";
 import './CreatePost.css';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { AuthContext } from '../context/auth';
+import CreatePoll from './CreatePoll';
 
 
 const FIND_USER = gql`
@@ -73,11 +74,34 @@ export default function CreatePost({ setIsSearching, createPostFunction, role, s
                 {/* Course:<input type="text" id="course" className="form_element" placeholder="Course Code" input value={course} 
                 onChange={({ target }) => setCourse(target.value)}required/> */}
 
-                Title:<input type="text" id="title" className="form_element" placeholder="Post Title" input value={title} 
-                onChange={({ target }) => setTitle(target.value)} required/>
+                Type:<Dropdown style={{ textAlign: "left", marginBottom: "10px", marginLeft: "5px", width: "30%" }}>
+                    <Dropdown.Toggle id="dropdown-basic">
+                        {type}
+                    </Dropdown.Toggle>
 
-                Content:<textarea rows="5" id="content" className="form_element" placeholder="Details" input value={content} 
-                onChange={({ target }) => setContent(target.value)} required></textarea>
+                    <Dropdown.Menu>
+                        <Dropdown.Item onClick={() => setType("Question")}>Question</Dropdown.Item>
+                        <Dropdown.Item onClick={() => setType("Note")}>Note</Dropdown.Item>
+                        <Dropdown.Item onClick={() => setType("Poll")}>Poll</Dropdown.Item>
+                    </Dropdown.Menu>
+                    
+                </Dropdown>  
+                
+                {(type === "Question" || type === "Note") ?
+                    <>
+                        Title:<input type="text" id="title" className="form_element" placeholder="Post Title" input value={title} 
+                            onChange={({ target }) => setTitle(target.value)} required/>
+                        Content:<textarea rows="5" id="content" className="form_element" placeholder="Details" input value={content} 
+                            onChange={({ target }) => setContent(target.value)} required></textarea>
+                    </> :
+                    <>
+                        <CreatePoll />
+                    
+                    </>
+                
+
+                }
+
 
                 {/* Visibility:<Dropdown style={{ textAlign: "left", marginBottom: "5px", marginLeft: "5px", width: "30%" }}>
                     <Dropdown.Toggle id="dropdown-basic">
@@ -91,18 +115,7 @@ export default function CreatePost({ setIsSearching, createPostFunction, role, s
                     
                 </Dropdown> */}
 
-                Type:<Dropdown style={{ textAlign: "left", marginBottom: "25px", marginLeft: "5px", width: "30%" }}>
-                    <Dropdown.Toggle id="dropdown-basic">
-                        {type}
-                    </Dropdown.Toggle>
 
-                    <Dropdown.Menu>
-                        <Dropdown.Item onClick={() => setType("Question")}>Question</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setType("Note")}>Note</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setType("Poll")}>Poll</Dropdown.Item>
-                    </Dropdown.Menu>
-                    
-                </Dropdown>  
                 
                 <Button type="submit" className="btn">Create Post</Button>
             </form>
