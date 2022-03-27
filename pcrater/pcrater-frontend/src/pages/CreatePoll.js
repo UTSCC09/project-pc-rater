@@ -96,7 +96,7 @@ const CreatePoll = () => {
         <div>
             <div>
                 {showError && 
-                <ErrorMessage errorMessage={errorMessage} setShowError={setShowError} />}
+                <ErrorMessage isDismissible="dismissble" errorMessage={errorMessage} setShowError={setShowError} />}
                 <Card className="p-2">
                     <Form>
                         <Form.Control onChange={handleTitleChange} placeholder="Enter poll's title" />

@@ -13,6 +13,8 @@ import { AuthContext } from '../context/auth';
 import Form from "react-bootstrap/Form";
 import { FaSearch } from "react-icons/fa";
 import './Posts.css';
+import ErrorMessage from "../components/ErrorMessage";
+
 
 const CREATE_POST = gql`
     mutation createPost ($name: String!, $role: String!, 
@@ -145,7 +147,7 @@ const PostsNavBar  = ({ setIsSearching, setFilteredData, setRole, postsData, set
 
     useEffect(() => {
         if(userCoursesResult.data !== undefined && userCoursesResultTA.data !== undefined && userCoursesResultProfessor.data !== undefined && selectedCourse === ""){
-            if(userCoursesResult.data.getCoursesOfStudent.concat(!userCoursesResultTA.data.getCoursesOfTA).concat(userCoursesResultProfessor.data.getCoursesOfProfessor).length > 0){
+            if(userCoursesResult.data.getCoursesOfStudent.concat(!userCoursesResultTA.data.getCoursesOfTA).concat(userCoursesResultProfessor.data.getCoursesOfProfessor).length > 1){
                 setSelectedCourse(userCoursesResult.data.getCoursesOfStudent.concat(userCoursesResultTA.data.getCoursesOfTA).concat(userCoursesResultProfessor.data.getCoursesOfProfessor)[0].courseCode);
             }
         }
@@ -154,7 +156,7 @@ const PostsNavBar  = ({ setIsSearching, setFilteredData, setRole, postsData, set
 
     useEffect(() => {
         if(userCoursesResult.data !== undefined && userCoursesResultTA.data !== undefined && userCoursesResultProfessor.data !== undefined && selectedCourse === ""){
-            if(userCoursesResult.data.getCoursesOfStudent.concat(!userCoursesResultTA.data.getCoursesOfTA).concat(userCoursesResultProfessor.data.getCoursesOfProfessor).length > 0){
+            if(userCoursesResult.data.getCoursesOfStudent.concat(!userCoursesResultTA.data.getCoursesOfTA).concat(userCoursesResultProfessor.data.getCoursesOfProfessor).length > 1){
                 setSelectedCourse(userCoursesResult.data.getCoursesOfStudent.concat(userCoursesResultTA.data.getCoursesOfTA).concat(userCoursesResultProfessor.data.getCoursesOfProfessor)[0].courseCode);
             }
         }
@@ -163,7 +165,7 @@ const PostsNavBar  = ({ setIsSearching, setFilteredData, setRole, postsData, set
     
     useEffect(() => {
         if(userCoursesResult.data !== undefined && userCoursesResultTA.data !== undefined && userCoursesResultProfessor.data !== undefined && selectedCourse === ""){
-            if(userCoursesResult.data.getCoursesOfStudent.concat(!userCoursesResultTA.data.getCoursesOfTA).concat(userCoursesResultProfessor.data.getCoursesOfProfessor).length > 0){
+            if(userCoursesResult.data.getCoursesOfStudent.concat(!userCoursesResultTA.data.getCoursesOfTA).concat(userCoursesResultProfessor.data.getCoursesOfProfessor).length > 1){
                 setSelectedCourse(userCoursesResult.data.getCoursesOfStudent.concat(userCoursesResultTA.data.getCoursesOfTA).concat(userCoursesResultProfessor.data.getCoursesOfProfessor)[0].courseCode);
             }
         }
@@ -254,17 +256,18 @@ const Posts = () => {
     const [ post, setPost ] = useState({});
     const [filteredData, setFilteredData] = useState("");
     const [ isSearching, setIsSearching ] = useState(false);
+    const [ showError, setShowError ] = useState(false);
 
 
     let allPostsResult = useQuery(GET_POSTS, { variables: { "courseCode": selectedCourse }});
     
     const [ createPostFunction ] = useMutation(CREATE_POST, { refetchQueries: [ GET_POSTS ] });
     
+
     if(allPostsResult.loading){
         return <div>Loading...</div>
     }
 
-    console.log(allPostsResult);
 
     return (
         <div style = {{ display: "flex" }}>
@@ -273,8 +276,15 @@ const Posts = () => {
                 <ShowPosts isSearching={isSearching} filteredData={filteredData} postsData={allPostsResult.data ? allPostsResult.data.getPosts : []} setCreateOrShow={setCreateOrShow} selectedCourse={selectedCourse} currentPost={post} setPost={setPost} />
             </div>
             
-            {createOrShow ?
-                <CreatePost setIsSearching={setIsSearching} createPostFunction={createPostFunction} role={role} selectedCourse={selectedCourse}  /> :
+            {selectedCourse == '' &&
+                <ErrorMessage isDismissible="undismissble" errorMessage="Please enroll in at least one course to proceed" setShowError={setShowError} />
+            }
+
+            {(createOrShow && selectedCourse !== '') &&
+                <CreatePost setIsSearching={setIsSearching} createPostFunction={createPostFunction} role={role} selectedCourse={selectedCourse}  />
+            }
+
+            {(!createOrShow && selectedCourse !== '') &&
                 <Post role={role} post={post} />
             }
 

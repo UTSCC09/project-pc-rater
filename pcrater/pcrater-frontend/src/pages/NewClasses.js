@@ -323,7 +323,7 @@ const New_Classes = () => {
                 <h2 className="text-center">{userResult.data.findUser.institution}</h2>
                 <p className="text-center" onClick={handleShow}>(Change school)</p>
                 {((universityError !== '' || courseNameError !== '') && showError) &&                
-                <ErrorMessage errorMessage={universityError === '' ? courseNameError : universityError} setShowError={setShowError} />
+                <ErrorMessage isDismissible="dismissble" errorMessage={universityError === '' ? courseNameError : universityError} setShowError={setShowError} />
                 }
                 {
                     (showSuccess &&  successMessage !== '') &&

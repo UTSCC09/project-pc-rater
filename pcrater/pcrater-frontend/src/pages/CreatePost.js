@@ -19,6 +19,7 @@ const FIND_USER = gql`
 `;
 
 export default function CreatePost({ setIsSearching, createPostFunction, role, selectedCourse }) {
+
     // const [name, setName] = useState('');
     // const [role, setRole] = useState('Student');
     // const [course, setCourse] = useState('');
@@ -31,7 +32,11 @@ export default function CreatePost({ setIsSearching, createPostFunction, role, s
 
     const tempName='';
 
+    
     let userResult = useQuery(FIND_USER, {variables: { "username": user.username }, skip: !user.username,});
+
+
+
     if(userResult.loading){
         return <div>Loading...</div>
     }
