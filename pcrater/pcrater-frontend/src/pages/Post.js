@@ -142,20 +142,20 @@ const Post = ({ post, role }) => {
                 <Card.Header>{post.type}</Card.Header>
                 <Card.Title style = {{ marginTop: "10px", paddingLeft: "10px" }}>
                     {post.role == "Student" &&
-                        <span style={{ backgroundColor: "green", color: "white", paddingTop: "1px", paddingBottom: "1px", paddingLeft: "3px", paddingRight: "3px" }}>S</span>  
+                        <span className="s_span">S</span>  
                     }
                     {post.role == "TA" &&
-                        <span style={{ backgroundColor: "blue", color: "white", paddingTop: "1px", paddingBottom: "1px", paddingLeft: "3px", paddingRight: "3px" }}>T</span>  
+                        <span className="t_span">T</span>  
                     }
                     {post.role == "Professor" &&
-                        <span style={{ backgroundColor: "orange", color: "white", paddingTop: "1px", paddingBottom: "1px", paddingLeft: "3px", paddingRight: "3px" }}>I</span>  
+                        <span className="p_span">I</span>  
                     }
                     &nbsp;{post.title}
                 
                 </Card.Title>
-                <Card.Text style={{ paddingLeft: "10px" }}>{post.content}</Card.Text>
-                <Card.Footer style={{ display: "flex", verticalAlign: "middle", alignItems: "center" }}>
-                    <Button size="sm" style={{ width: "10%", height: "90%" }}>Edit</Button>
+                <Card.Text className="post_content">{post.content}</Card.Text>
+                <Card.Footer className="card_footer">
+                    <Button size="sm" className="edit_button">Edit</Button>
                     {postResult.data.getPost.upvotes_list.map(upvote => upvote.username).includes(user.username) ?
                     <div className="good_question_text" style = {{ marginLeft: "20px", color: "blue", fontSize: "12px" }}>You have upvoted |  {postResult.data.getPost.upvotes}</div> :
                     <div onClick={() => increaseUpvotesPost({ variables: { "id": post.id, "username": user.username } })} className="good_question_text" style = {{ marginLeft: "20px", color: "blue", fontSize: "12px" }}>Good question |  {postResult.data.getPost.upvotes}</div>
@@ -170,7 +170,7 @@ const Post = ({ post, role }) => {
                                     className="d-flex justify-content-between align-items-start m-2"
                                     >
                                         <div className="ms-2 me-auto">
-                                            <div className="fw-bold"><span style={{ color: "white", backgroundColor: "green", paddingTop: "1px", paddingBottom: "1px", paddingLeft: "3px", paddingRight: "3px" }}>S</span> {comment.author}</div>
+                                            <div className="fw-bold"><span className="s_span">S</span> {comment.author}</div>
                                             {comment.content}
                                         </div>
                                         {comment.upvotes_list.map(upvote => upvote.username).includes(user.username) ?
@@ -193,7 +193,7 @@ const Post = ({ post, role }) => {
                                     className="d-flex justify-content-between align-items-start m-2"
                                     >
                                         <div className="ms-2 me-auto">
-                                        <div className="fw-bold"><span style={{ color: "white", backgroundColor: "blue", paddingTop: "1px", paddingBottom: "1px", paddingLeft: "3px", paddingRight: "3px" }}>T</span> {comment.author}</div>
+                                        <div className="fw-bold"><span className="t_span">T</span> {comment.author}</div>
                                         {comment.content}
                                         </div>
                                         {comment.upvotes_list.map(upvote => upvote.username).includes(user.username) ?
@@ -216,7 +216,7 @@ const Post = ({ post, role }) => {
                                         className="d-flex justify-content-between align-items-start m-2"
                                     >
                                         <div className="ms-2 me-auto">
-                                        <div className="fw-bold"><span style={{ color: "white", backgroundColor: "orange", paddingTop: "1px", paddingBottom: "1px", paddingLeft: "3px", paddingRight: "3px" }}>I</span> {comment.author}</div>
+                                        <div className="fw-bold"><span className="p_span">I</span> {comment.author}</div>
                                         {comment.content}
                                         </div>
                                         {comment.upvotes_list.map(upvote => upvote.username).includes(user.username) ?

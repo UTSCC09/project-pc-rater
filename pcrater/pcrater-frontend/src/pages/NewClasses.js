@@ -306,10 +306,10 @@ const New_Classes = () => {
 
 
     return (
-        <div className="main" style={{ display: "flex" }}>
-            <div className="subContainer" style={{ alignItems: 'center' }}>
-                <h2 style={{ textAlign: "center" }} className="universityHeader">{university}</h2>
-                <p style={{ textAlign: "center" }} onClick={handleShow}>(Change school)</p>
+        <div className="main">
+            <div className="subContainer">
+                <h2 className="text-center">{university}</h2>
+                <p className="text-center" onClick={handleShow}>(Change school)</p>
                 {((universityError !== '' || courseNameError !== '') && showError) &&                
                 <ErrorMessage errorMessage={universityError === '' ? courseNameError : universityError} setShowError={setShowError} />
                 }
@@ -335,8 +335,8 @@ const New_Classes = () => {
                     </Button>
                     </Modal.Footer>
                 </Modal>
-                <div style={{ justifyContent: "center" }}>
-                    <Card style={{ width: '50rem' }}>
+                <div className='justify-content-center'>
+                    <Card className='classCard'>
                         <Card.Header style = {{ textAlign: "left", fontWeight: "bold", fontSize: "18px" }}>{current_semester} classes</Card.Header>
                         <ListGroup  variant="flush" className="courses_list" style = {{ textAlign: 'left' }}>
                             {userCoursesResult.data.getCoursesOfStudent.map(classCode => {
@@ -344,26 +344,26 @@ const New_Classes = () => {
                             })}
 
                             {userCoursesResultTA.data.getCoursesOfTA.map(classCode => {
-                              return <ListGroup.Item> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName} - {classCode.university} <span style={{ color: "grey" }}> (TA)</span></ListGroup.Item>  
+                              return <ListGroup.Item> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName} - {classCode.university} <span className='text-secondary'> (TA)</span></ListGroup.Item>  
                             })}
 
                             {userCoursesResultProfessor.data.getCoursesOfProfessor.map(classCode => {
-                              return <ListGroup.Item> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName} - {classCode.university} <span style={{ color: "grey" }}> (Professor)</span></ListGroup.Item>  
+                              return <ListGroup.Item> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName} - {classCode.university} <span className='text-secondary'> (Professor)</span></ListGroup.Item>  
                             })}
                         </ListGroup>
                             
-                        <Form style={{ marginTop: "10px" }}>
+                        <Form className="mt-2">
                             <Form.Check
                              onClick={() => handleCreateNewClassClick()} 
                              style = {{ textAlign: "left", marginLeft: "10px", marginTop: "5px", marginBottom: "10px" }} 
                              label="Create new class? (professors only)" 
                              />
-                            <div style={{ display: "flex" }}>
+                            <div className="d-flex">
                                 {
                                     willCreateNewClass &&
-                                    <div style={{ display: "flex", width: "100%" }}>
-                                        <Form.Control placeholder="Enter class name" size="lg" style={{ marginLeft: "5px", marginRight: "5px" }} onChange={(e) => setCourseName(e.target.value)} /> 
-                                        <Form.Control placeholder="Enter class code" size="lg" style={{ marginLeft: "5px", marginRight: "5px" }} onChange={(e) => setClassCode(e.target.value)} />
+                                    <div className="d-flex w-100">
+                                        <Form.Control placeholder="Enter class name" size="lg" className="ml-1 mr-1" onChange={(e) => setCourseName(e.target.value)} /> 
+                                        <Form.Control placeholder="Enter class code" size="lg" className="ml-1 mr-1" onChange={(e) => setClassCode(e.target.value)} />
                                     </div>
                                 }
 
@@ -380,7 +380,7 @@ const New_Classes = () => {
                             </div>
                         </Form>
                         {!willCreateNewClass &&
-                        <Dropdown style={{ textAlign: "left", marginBottom: "5px", marginTop: "20px", marginLeft: "5px", width: "30%" }}>
+                        <Dropdown className="text-left mb-1 mt-4 ml-1 w-25">
                             <Dropdown.Toggle id="dropdown-basic">
                                 Join as a {joinAsSelection}
                             </Dropdown.Toggle>
@@ -396,15 +396,15 @@ const New_Classes = () => {
                         }       
 
                         {willCreateNewClass ?
-                        <Button style={{ marginTop: "10px", width: "100%" }} variant="primary" size="lg" onClick={() => addNewClass()}>
+                        <Button className="mt-2 w-100" variant="primary" size="lg" onClick={() => addNewClass()}>
                         Create new class
                         </Button> :
-                        <Button style={{ marginTop: "10px", width: "100%" }} variant="primary" size="lg" onClick={() => joinNewClass()}>
+                        <Button className="mt-2 w-100" variant="primary" size="lg" onClick={() => joinNewClass()}>
                         Join new class
                         </Button>
                         }
  
-                        <h6 style={{ textAlign: "center" }} className='browse_classes_title'>Browse current classes</h6>
+                        <h6 className='browse_classes_title'>Browse current classes</h6>
 
                     </Card>
                 </div>

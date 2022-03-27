@@ -12,7 +12,7 @@ import Post from './Post';
 import { AuthContext } from '../context/auth';
 import Form from "react-bootstrap/Form";
 import { FaSearch } from "react-icons/fa";
-
+import './Posts.css';
 
 const CREATE_POST = gql`
     mutation createPost ($name: String!, $role: String!, 
@@ -128,6 +128,7 @@ const PostsNavBar  = ({ setIsSearching, setFilteredData, setRole, postsData, set
 
 
     const handleFilter = (event) => {
+        event.preventDefault();
         const searchWord = event.target.value;
         setSearchWordVal(searchWord);
         const newFilter = postsData.filter((value) => {
@@ -188,13 +189,13 @@ const PostsNavBar  = ({ setIsSearching, setFilteredData, setRole, postsData, set
 
  
     return (
-        <Card style = {{ marginLeft: "20px", marginTop: "10px", width: "400px" }}>
+        <Card className="posts_navbar_card">
             <Card.Header>
-                <div style = {{ display: "flex" }}>
-                    <div style  = {{ marginTop: "5px", marginRight: "3px", fontWeight: "bold" }}>
+                <div className='d-flex'>
+                    <div className="showing_posts_text">
                         Showing posts for  
                     </div>
-                    <Dropdown style={{ textAlign: "left", marginBottom: "5px", marginLeft: "5px", width: "30%", height: "40%", justifyContent: "center", alignItems: "center", alignContent: 'center'  }}>
+                    <Dropdown className="select_course_dropdown">
                         <Dropdown.Toggle id="dropdown-basic">
                             {selectedCourse}
                         </Dropdown.Toggle>
@@ -212,14 +213,14 @@ const PostsNavBar  = ({ setIsSearching, setFilteredData, setRole, postsData, set
                                     setSelectedCourse(course.courseCode);
                                     setCreateOrShow(true);
                                 }}>
-                                {course.courseCode} : {course.courseName} <span style={{ color: "grey" }}> (TA)</span></Dropdown.Item>    
+                                {course.courseCode} : {course.courseName} <span className='text-secondary'> (TA)</span></Dropdown.Item>    
                             )}
 
                             {userCoursesResultProfessor.data.getCoursesOfProfessor.map(course => 
                                 <Dropdown.Item onClick={() => {
                                     setSelectedCourse(course.courseCode);
                                     setCreateOrShow(true);
-                                }}>{course.courseCode} : {course.courseName} <span style={{ color: "grey" }}> (Prof)</span></Dropdown.Item>    
+                                }}>{course.courseCode} : {course.courseName} <span className='text-secondary'> (Prof)</span></Dropdown.Item>    
                             )}
                         </Dropdown.Menu>
                         
@@ -234,10 +235,10 @@ const PostsNavBar  = ({ setIsSearching, setFilteredData, setRole, postsData, set
                         };
                         return new_elemt;
                     })} attributeToSearchFor="title" /> */}
-                    <Form style={{ display: "flex", verticalAlign: "midde", alignItems: "center" }}>
-                        <Button onClick={() => setCreateOrShow(true)} size="sm" style={{ height: "50%", width: "30%" }}><FaTelegramPlane /> New Post</Button>
-                        <Form.Control onChange={handleFilter} style={{ height: "50%" }} placeholder="Search for post..." />
-                        <FaSearch style={{ width: "40%", height: "45%", backgroundColor: "white" }} />
+                    <Form className="search_post_form" onSubmit={(e) => e.preventDefault()}>
+                        <Button className="new_post_btn" onClick={() => setCreateOrShow(true)} size="sm"><FaTelegramPlane /> New Post</Button>
+                        <Form.Control onChange={handleFilter} className="h-50" placeholder="Search for post..." />
+                        <FaSearch className='fa_serach' />
                     </Form>
                 </div>
             </Card.Header>

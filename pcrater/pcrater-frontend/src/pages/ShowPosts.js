@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Nav } from 'react-bootstrap';
 import './ShowPosts.css';
+import './Post.css';
 import SearchBar from '../components/SearchBar';
 import { gql, useQuery, useMutation } from '@apollo/client';
 
@@ -22,22 +23,22 @@ export default function ShowPosts({ isSearching, filteredData, postsData, setCre
             </div>
             <div id="posts">
             {reversePostsData && reversePostsData.map(post => {
-                return <div style={{ backgroundColor: currentPost.title == post.title ? "azure" : "white" }} className="post" onClick={() => {
+                return <div className={currentPost.title === post.title ? "bg-azure post" : "bg-light post"} onClick={() => {
                     setCreateOrShow(false);
                     setPost(post);
                 }}> 
                     <div className="post_name">
                         {post.role == "Student" &&
-                            <span style={{ backgroundColor: "green", color: "white", paddingTop: "1px", paddingBottom: "1px", paddingLeft: "3px", paddingRight: "3px" }}>S</span> 
+                            <span className='s_span'>S</span> 
                         }
                         {post.role == "TA" &&
-                            <span style={{ backgroundColor: "blue", color: "white", paddingTop: "1px", paddingBottom: "1px", paddingLeft: "3px", paddingRight: "3px" }}>T</span> 
+                            <span className='t_span'>T</span> 
                         }
                         {post.role == "Professor" &&
-                            <span style={{ backgroundColor: "orange", color: "white", paddingTop: "1px", paddingBottom: "1px", paddingLeft: "3px", paddingRight: "3px" }}>I</span> 
+                            <span className='p_span'>I</span> 
                         }
                         &nbsp;{post.title}</div>
-                    <div style={{ display: "flex", justifyContent: "space-around" }}>
+                    <div className='d-flex justify-content-around'>
                         <div className="post_content">{post.content}</div>
                         <div  className="post_date">{post.createdAt}</div>
                     </div>

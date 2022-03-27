@@ -93,21 +93,20 @@ const CreatePoll = () => {
     };
 
     return (
-        <div className="main" style={{ display: "flex" }}>
-            <div className="subContainer" style={{ alignItems: 'center' }}>
-                <h2 style={{ textAlign: "center" }}>Create New Poll</h2>
+        <div>
+            <div>
                 {showError && 
                 <ErrorMessage errorMessage={errorMessage} setShowError={setShowError} />}
-                <Card style={{ width: '50rem', padding: "10px" }}>
+                <Card className="p-2">
                     <Form>
                         <Form.Control onChange={handleTitleChange} placeholder="Enter poll's title" />
-                        <Form.Control onChange={handleDescriptionChange} as="textarea" style={{ marginTop: "5px", marginBottom: "10px" }} placeholder="Enter poll's description" />
+                        <Form.Control onChange={handleDescriptionChange} as="textarea" className="mt-2 mb-1" placeholder="Enter poll's description" />
                         <Form.Label>Poll options</Form.Label>
-                        <div style={{ display: "flex", width: "50%" }}>
+                        <div className="d-flex w-50">
                             <Form.Control ref={itemContentRef} placeholder="Enter a new poll choice"></Form.Control>
-                            <Button onClick={handleAddClick} style={{ width: "30%" }}>Add</Button>
+                            <Button onClick={handleAddClick} className="w-50">Add</Button>
                         </div>
-                        <ListGroup style={{ marginTop: "10px", marginBottom: "5px"}} id="poll_options">
+                        <ListGroup className="mt-2 mb-1" id="poll_options">
                             {pollOptions.map((option, idx) => {
                                 return <PollItem 
                                     key={'poll-idx-${idx}'}
@@ -116,9 +115,9 @@ const CreatePoll = () => {
                                 />
                             })}
                         </ListGroup>
-                        <div style={{ display: "flex", width: "50%" }}>
-                            <Button onClick={handleSubmitPoll} style={{ margin: "2px" }}>Post New Poll</Button>
-                            <Button onClick={handleCancelClick} style={{ margin: "2px" }} variant="secondary">Cancel</Button>
+                        <div className="d-flex w-50">
+                            <Button onClick={handleSubmitPoll} className="m-1">Post New Poll</Button>
+                            <Button onClick={handleCancelClick} className="m-1" variant="secondary">Cancel</Button>
                         </div>
                     </Form>
                 </Card>

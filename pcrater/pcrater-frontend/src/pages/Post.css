@@ -1,3 +1,45 @@
 .good_question_text:hover {
     cursor: pointer;
 }
+
+.s_span{
+    background-color: green;
+    color: white;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+.t_span{
+    background-color: blue;
+    color: white;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+.p_span{
+    background-color: orange;
+    color: white;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+.post_content{
+    padding-left: 10px;
+}
+
+.card_footer{
+    display: flex;
+    vertical-align: middle;
+    align-items: center;
+}
+
+.edit_button{
+    width: 10%;
+    height: 90%; 
+}

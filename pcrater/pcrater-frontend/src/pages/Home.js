@@ -40,10 +40,10 @@ export default function Signup() {
                     id="whybtn">
                     Why PCRaters?
                 </Button>
-                <div style={{minHeight: '150px'}}>
+                <div className='collapseContainer'>
                     <Collapse in={open} dimension="width">
                     <div id="example-collapse-text">
-                        <Card body style={{width: '800px'}}>
+                        <Card body className="collapseBody">
                         PCRater is a web application that provides a central platform for students to come and join forums for their courses. Users can join classes as students, TAs or even professors based on their assigned role in the class. As a result, the students will be able to figure out the answers to their questions and doubts, which will improve their success rate.
                         </Card>
                     </div>

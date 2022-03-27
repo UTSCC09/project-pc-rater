@@ -74,7 +74,7 @@ export default function CreatePost({ setIsSearching, createPostFunction, role, s
                 {/* Course:<input type="text" id="course" className="form_element" placeholder="Course Code" input value={course} 
                 onChange={({ target }) => setCourse(target.value)}required/> */}
 
-                Type:<Dropdown style={{ textAlign: "left", marginBottom: "10px", marginLeft: "5px", width: "30%" }}>
+                Type:<Dropdown className="tet-left mb-2 ml-1 w-25" >
                     <Dropdown.Toggle id="dropdown-basic">
                         {type}
                     </Dropdown.Toggle>

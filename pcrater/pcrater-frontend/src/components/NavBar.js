@@ -24,7 +24,7 @@ function NavBar() {
                 <Navbar.Brand href="/">PCRaters</Navbar.Brand>
                 <Nav className="me-auto">
                     <Nav.Link href="join-class">Join Class</Nav.Link>
-                    <Nav.Link href="create-poll">Create Poll</Nav.Link>
+                    {/* <Nav.Link href="create-poll">Create Poll</Nav.Link> */}
                     <Nav.Link href="posts">Posts</Nav.Link>
                 </Nav>
                 <Nav>
