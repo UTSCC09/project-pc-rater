@@ -1,0 +1,61 @@
+version: "3"
+services:
+  react-app:
+    image: react-app
+    build: ./pcrater-frontend/
+    stdin_open: true
+    ports:
+      - "80:3000"
+    expose:
+      - 80
+    networks:
+      - merng-app
+    # volumes:
+    #   - ./pcrater-frontend:/app
+    #   - /app/node_modules
+
+  api-server:
+    image: api-server
+    build: 
+      context: ./server
+      dockerfile: ./server/Dockerfile.production
+    ports:
+      - "5000:5000"
+    networks:
+      - merng-app
+    # depends_on:
+    #   - mongo
+    # volumes:
+    #   - ./server:/app
+    #   - /app/node_modules
+  
+  # proxy:
+  #   image: nginx:alpine
+  #   container_name: web-proxy
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./proxy.conf:/etc/nginx/conf.d/default.conf
+  #   ports:
+  #     - 80:80
+  #   depends_on:
+  #     - api-server
+  #   networks:
+  #     - merng-app
+
+  # mongo:
+  #   image: mongo:4.4-bionic
+  #   ports:
+  #     - "27017:27017"
+  #   networks:
+  #     - merng-app
+  #   volumes:
+  #     - mongo-data:/data/db
+
+networks:
+  merng-app:
+    driver: bridge
+
+# volumes:
+#   mongo-data:
+#     driver: local
+

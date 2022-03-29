@@ -2,9 +2,10 @@
 
 const { MongoClient } = require("mongodb");
 const bcrypt = require('bcrypt');
+require('dotenv').config();
 
 // // Connection URI
-const uri = "mongodb+srv://pcraters:appleorange123@cluster0.zvwmr.mongodb.net/pcraters";
+const uri = process.env.MONGO_URI;
 
 const { ApolloServer } = require('apollo-server');
 const gql = require('graphql-tag');
