@@ -1,6 +1,6 @@
 const Course = require('../../models/Course');
 const { UserInputError } = require('apollo-server');
-
+const uuid = require("uuid");
 const { validateRegisterInput, validateLoginInput } = require('../../util/validators');
 const User = require('../../models/User');
 const { findOne } = require('../../models/Course');
@@ -75,6 +75,7 @@ module.exports = {
                 professors: [],
                 teachingAssistants: [],
                 students: [],
+                roomID: uuid.v4(),
                 createdAt: new Date().toISOString()
             });
 
@@ -86,6 +87,7 @@ module.exports = {
                 courseName: res.courseName,
                 university: res.university,
                 semester: res.semester,
+                roomID: res.roomID,
                 students: res.students,
                 professors: res.professors,
                 teachingAssistants: res.teachingAssistants,
@@ -117,6 +119,7 @@ module.exports = {
                 courseCode: res.courseCode,
                 courseName: res.courseName,
                 semester: res.semester,
+                roomID: res.roomID,
                 students: res.students,
                 professors: res.professors,
                 teachingAssistants: res.teachingAssistants,
@@ -148,6 +151,7 @@ module.exports = {
                 id: res._id,
                 courseCode: res.courseCode,
                 courseName: res.courseName,
+                roomID: res.roomID,
                 semester: res.semester,
                 students: res.students,
                 professors: res.professors,
@@ -182,6 +186,7 @@ module.exports = {
                 courseCode: res.courseCode,
                 courseName: res.courseName,
                 semester: res.semester,
+                roomID: res.roomID,
                 students: res.students,
                 professors: res.professors,
                 teachingAssistants: res.teachingAssistants,
@@ -211,13 +216,13 @@ module.exports = {
                     courseCode: res.courseCode,
                     courseName: res.courseName,
                     semester: res.semester,
+                    roomID: res.roomID,
                     students: res.students,
                     professors: res.professors,
                     teachingAssistants: res.teachingAssistants,
                     createdAt: res.createdAt,
                   };
             } 
-
 
         }
     }

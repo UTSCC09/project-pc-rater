@@ -37,3 +37,7 @@
     height: 45%;
     background-color: white;
 }
+
+.fa_video_icon:hover{
+    cursor: pointer;
+}

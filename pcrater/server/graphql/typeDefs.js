@@ -45,6 +45,7 @@ module.exports = gql`
     courseCode: String!
     university: String!
     semester: String!
+    roomID: String!
     createdAt: String!
     teachingAssistants: [User!]
     professors: [User!]!

@@ -7,6 +7,7 @@ const courseSchema = new Schema({
   university: String,
   semester: String,
   createdAt: String,
+  roomID: String,
   teachingAssistants: [
     {
       type: mongoose.Schema.Types.ObjectId,

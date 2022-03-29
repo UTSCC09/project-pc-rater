@@ -11,9 +11,14 @@ import { FaTelegramPlane } from "react-icons/fa";
 import Post from './Post';
 import { AuthContext } from '../context/auth';
 import Form from "react-bootstrap/Form";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";  
+import { FaVideo } from "react-icons/fa";
+import { FaShareSquare } from "react-icons/fa";
+import { v1 as uuid } from "uuid";
 import './Posts.css';
 import ErrorMessage from "../components/ErrorMessage";
+import { useNavigate } from "react-router-dom";
+
 
 
 const CREATE_POST = gql`
@@ -46,6 +51,7 @@ const GET_COURSES_OF_STUDENT = gql`
             courseCode
             courseName
             university
+            roomID
         }
     } 
 `;
@@ -56,6 +62,7 @@ const GET_COURSES_OF_TA = gql`
             courseCode
             courseName
             university
+            roomID
         }
     } 
 `;
@@ -66,6 +73,7 @@ const GET_COURSES_OF_PROFESSOR = gql`
             courseCode
             courseName
             university
+            roomID
         }
     } 
 `;
@@ -76,6 +84,7 @@ const FIND_COURSE = gql`
             courseCode
             courseName
             university
+            roomID
             students {
                 username
             }
@@ -122,12 +131,17 @@ query findPosts($courseCode: String!) {
 const PostsNavBar  = ({ setIsSearching, setFilteredData, setRole, postsData, setCreateOrShow, selectedCourse, setSelectedCourse }) => {
     const { user } = useContext(AuthContext);
     const [ searchWordVal, setSearchWordVal ] = useState(""); 
-  
+    const navigate = useNavigate();
     let userCoursesResult = useQuery(GET_COURSES_OF_STUDENT, {variables: { "username": user.username }, skip: !user.username});
     let userCoursesResultTA = useQuery(GET_COURSES_OF_TA, {variables: { "username": user.username }, skip: !user.username});
     let userCoursesResultProfessor = useQuery(GET_COURSES_OF_PROFESSOR, {variables: { "username": user.username }, skip: !user.username});
     let currentCourseResult = useQuery(FIND_COURSE, { variables: { "courseCode": selectedCourse }, skip: !selectedCourse } );
 
+    const handleVideoIconClick = () => {
+        let id =  currentCourseResult.data.findCourse.roomID;
+        console.log(id);
+        navigate('/video', { state: { id: id } });
+    };
 
     const handleFilter = (event) => {
         event.preventDefault();
@@ -192,6 +206,8 @@ const PostsNavBar  = ({ setIsSearching, setFilteredData, setRole, postsData, set
  
     return (
         <Card className="posts_navbar_card">
+            {selectedCourse !== '' ?
+
             <Card.Header>
                 <div className='d-flex'>
                     <div className="showing_posts_text">
@@ -225,8 +241,11 @@ const PostsNavBar  = ({ setIsSearching, setFilteredData, setRole, postsData, set
                                 }}>{course.courseCode} : {course.courseName} <span className='text-secondary'> (Prof)</span></Dropdown.Item>    
                             )}
                         </Dropdown.Menu>
+
                         
                     </Dropdown>  
+                    
+                    <FaVideo onClick={() => handleVideoIconClick()} className="ml-3 mt-1 fa_video_icon" size={25} />
                 </div>
 
                 <div style = {{ display: "flex" }}>
@@ -243,8 +262,11 @@ const PostsNavBar  = ({ setIsSearching, setFilteredData, setRole, postsData, set
                         <FaSearch className='fa_serach' />
                     </Form>
                 </div>
-            </Card.Header>
+            </Card.Header> :
+            <div></div>
+        }
         </Card>
+
     )
 }
 
