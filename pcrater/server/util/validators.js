@@ -94,19 +94,13 @@ module.exports.validateRegisterInput = (
     };
   };
 
-  module.exports.validateUpdateInput = (title, content, visibility) => {
+  module.exports.validateUpdateInput = (title, content) => {
     const errors = {};
     if (title.trim() === '') {
       errors.title = 'title must not be empty';
     }
     if (content.trim() === '') {
       errors.content = 'content must not be empty';
-    }
-    if (visibility.trim() === '') {
-      errors.visibility = 'visibility must be either public or private';
-    } else if (visibility.toLowerCase() != 'public' && 
-    visibility.toLowerCase() != 'private') {
-      errors.visibility = 'visibility must be either public or private';
     }
     
     return {

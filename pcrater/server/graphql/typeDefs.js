@@ -86,7 +86,7 @@ module.exports = gql`
       addTaToCourse(courseCode: String!, username: String!): Course!
       deleteCourseForUser(courseCode: String!, username: String!): Course!
       addPost(name: String!, role: String!, course: String!, title: String!, content: String!, visibility: String!, type: String!): Post!
-      updatePost(id: ID!, title: String!, content: String!, visibility: String!): Post!
+      updatePost(id: ID!, title: String!, content: String!): Post!
       deletePost(id: ID!): Post!
       addComment(id: ID!, content: String!, author: String!, role: String!): Post!
       increaseUpvotesPost(id: ID!, username: String!): Post

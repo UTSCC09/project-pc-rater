@@ -61,15 +61,15 @@ module.exports = {
             return postObj;
         },
 
-        async updatePost(_, { id, title, content, visibility }) {
-            const { errors, valid } = validateUpdateInput(title, content, visibility);
+        async updatePost(_, { id, title, content }) {
+            const { errors, valid } = validateUpdateInput(title, content);
             
             if (!valid) {
                 throw new UserInputError('Errors', { errors });
             }
 
             await Post.findByIdAndUpdate(id, { title: title,
-                content: content, visibility: visibility});
+                content: content});
             
             postObj = await Post.findById(id);
 
