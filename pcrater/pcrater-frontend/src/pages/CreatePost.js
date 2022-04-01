@@ -5,6 +5,7 @@ import './CreatePost.css';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { AuthContext } from '../context/auth';
 import CreatePoll from './CreatePoll';
+import ErrorMessage from "../components/ErrorMessage";
 
 
 const FIND_USER = gql`
@@ -23,6 +24,10 @@ export default function CreatePost({ setIsSearching, createPostFunction, role, s
     // const [name, setName] = useState('');
     // const [role, setRole] = useState('Student');
     // const [course, setCourse] = useState('');
+
+    const [errorMessage, setErrorMessage] = useState('');
+    const [showError, setShowError] = useState(false);
+
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [visibility, setVisibility] = useState('Public');
@@ -43,6 +48,10 @@ export default function CreatePost({ setIsSearching, createPostFunction, role, s
 
     const submit = (event) => {
         event.preventDefault();
+        if(!userResult.data || !userResult.data.findUser.firstname || !userResult.data.findUser.lastname){
+            setErrorMessage("Cannot create a post with invalid user data.");
+            setShowError(true);
+        }
         const name = userResult.data.findUser.firstname + " " + userResult.data.findUser.lastname;
         setIsSearching(false);
         createPostFunction({  variables: {name , "role": role, "course": selectedCourse, title, content, visibility, type } });
@@ -58,6 +67,8 @@ export default function CreatePost({ setIsSearching, createPostFunction, role, s
 
     return(
         <div className='div-post'>
+            {showError && 
+            <ErrorMessage isDismissible="dismissble" errorMessage={errorMessage} setShowError={setShowError} />}
             <form className="complex_post_form" id="add_post_form" onSubmit={submit}>
                 <div className="post_title">Create a Post</div>
                 {/* Full Name:<input type="text" id="username" className="form_element" placeholder="Full Name" input value={name} 

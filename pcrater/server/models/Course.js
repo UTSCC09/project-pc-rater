@@ -8,6 +8,7 @@ const courseSchema = new Schema({
   semester: String,
   createdAt: String,
   roomID: String,
+  usersInRoom: [String],
   teachingAssistants: [
     {
       type: mongoose.Schema.Types.ObjectId,

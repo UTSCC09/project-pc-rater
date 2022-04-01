@@ -239,7 +239,11 @@ const Post = ({ post, role }) => {
                 <Form style = {{ marginTop: "20px", marginLeft: "10px", marginRight: "10px" }}>
                     <Form.Label>Start a new followup discussion</Form.Label>
                     <Form.Control onChange={({ target }) => setCommentContent(target.value)} as="textarea" rows={4} placeholder="Enter comment" />
-                    <Button onClick={() => addNewComment({ variables: { "role": role, "author": user.username, "content": commentContent, "id": post.id } })}>Post</Button>
+                    <Button onClick={() => {
+                        if(commentContent){
+                            addNewComment({ variables: { "role": role, "author": user.username, "content": commentContent, "id": post.id } })
+                        }
+                    }}>Post</Button>
                 </Form>
 
             </Card>

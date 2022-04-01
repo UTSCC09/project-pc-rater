@@ -1,6 +1,10 @@
-//credits: 
-//GraphQL Server (MERNG): #1 Setting Up Database & Server https://www.youtube.com/watch?v=71-CtIcmDJQ
-//React Group Video Chat | simple-peer webRTC: https://www.youtube.com/watch?v=R1sfHPwEH7A&list=PLK0STOMCFms4nXm1bRUdjhPg0coxI2U6h&index=3
+// Credits: 
+// GraphQL Server (MERNG): #1 Setting Up Database & Server https://www.youtube.com/watch?v=71-CtIcmDJQ
+// React Group Video Chat | simple-peer webRTC: https://www.youtube.com/watch?v=R1sfHPwEH7A&list=PLK0STOMCFms4nXm1bRUdjhPg0coxI2U6h&index=3
+// Handle User Disconnect in WebRTC Group Video Chat https://www.youtube.com/watch?v=0fWN_q4zAqs&list=PLK0STOMCFms4nXm1bRUdjhPg0coxI2U6h&index=10
+// WebRTC Screen Sharing Tutorial: https://www.youtube.com/watch?v=X8QHHB7DA90&list=PLK0STOMCFms4nXm1bRUdjhPg0coxI2U6h&index=4
+// How To Mute Mic or Toggle Cam In WebRTC Video Chat? : https://www.youtube.com/watch?v=Uk5DbEnFNP0&list=PLK0STOMCFms4nXm1bRUdjhPg0coxI2U6h&index=14
+// React Chat App Using Socket.IO | Socket IO Tutorial: https://www.youtube.com/watch?v=E4V6nbP_NoQ
 
 const { MongoClient } = require("mongodb");
 const bcrypt = require('bcrypt');
@@ -34,9 +38,9 @@ const http = require("http");
 const httpServer = http.createServer(app);
 const socket = require("socket.io");
 
-const users = {};
 
-const socketToRoom = {};
+let socketIdAndUserName = [];
+
 
 const io = socket(httpServer, {
   cors: {
@@ -50,36 +54,54 @@ const io = socket(httpServer, {
 httpServer.listen(8000, () => console.log('http server for the sockets is running on port 8000'));
 
 io.on('connection', socket => {
-  socket.on("join room", roomID => {
-      if (users[roomID]) {
-          const length = users[roomID].length;
-          users[roomID].push(socket.id);
-      } else {
-          users[roomID] = [socket.id];
-      }
-      socketToRoom[socket.id] = roomID;
-      const usersInThisRoom = users[roomID].filter(id => id !== socket.id);
 
-      socket.emit("all users", usersInThisRoom);
+  const id = socket.id;
+
+  socket.on("check if user is in room", (data) => {
+    const { username, roomID } = data;
+    if(!socketIdAndUserName.map(elmt => elmt[1]).includes(username)){
+      socketIdAndUserName.push([id, username, roomID]);
+      io.to(id).emit("user is not in room yet");
+    }else{
+      io.to(id).emit("user is already in room");
+    }
   });
 
-  socket.on("sending signal", payload => {
-      io.to(payload.userToSignal).emit('user joined', { signal: payload.signal, callerID: payload.callerID });
+
+  socket.on("joining", () => {
+      socket.emit("init", socketIdAndUserName.filter(elmt => elmt[0] !== id).map(elmt => [elmt[0], elmt[1]]));
+      io.to(id).emit("socket id", id);
   });
 
-  socket.on("returning signal", payload => {
-      io.to(payload.callerID).emit('receiving returned signal', { signal: payload.signal, id: socket.id });
+
+  socket.on("sending", (data) => {
+    const { userID, username, sig, userOnCallID } = data;
+    const welcomeSignal = { sig, userOnCallID, username };
+    io.to(userID).emit('joined room', welcomeSignal);
+  });
+
+  socket.on("sending message", (data) => {
+    io.emit("message", data);
+  });
+
+
+  socket.on("returning", (data) => {
+    const { signal, userID } = data;
+    const returningSignal = { signal, id };
+    io.to(userID).emit('receiving', returningSignal);
+  });
+
+  socket.on("user leaves disconnect", () => {
+    if(socketIdAndUserName) socketIdAndUserName = socketIdAndUserName.filter(elmt => elmt[0] !== id);
+    socket.broadcast.emit('user disconnect', id);
   });
 
   socket.on('disconnect', () => {
-      const roomID = socketToRoom[socket.id];
-      let room = users[roomID];
-      if (room) {
-          room = room.filter(id => id !== socket.id);
-          users[roomID] = room;
-      }
-      socket.broadcast.emit('user left', socket.id);
+      if(socketIdAndUserName) socketIdAndUserName = socketIdAndUserName.filter(elmt => elmt[0] !== id);
+      socket.broadcast.emit('user disconnect', id);
   });
+
+
 
   socket.on("connect_error", (err) => {
     console.log(`connect_error due to ${err.message}`);

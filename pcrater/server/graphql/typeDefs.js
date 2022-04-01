@@ -47,6 +47,7 @@ module.exports = gql`
     semester: String!
     roomID: String!
     createdAt: String!
+    usersInRoom: [String!]
     teachingAssistants: [User!]
     professors: [User!]!
     students: [User!]
@@ -84,6 +85,8 @@ module.exports = gql`
       addProfessorToCourse(courseCode: String!, username: String!): Course!
       addStudentToCourse(courseCode: String!, username: String!): Course!
       addTaToCourse(courseCode: String!, username: String!): Course!
+      addUserToRoomForCourse(username: String!, courseCode: String!): Course!
+      deleteUserFromCourseRoom(username: String!, courseCode: String!): Course!
       deleteCourseForUser(courseCode: String!, username: String!): Course!
       addPost(name: String!, role: String!, course: String!, title: String!, content: String!, visibility: String!, type: String!): Post!
       updatePost(id: ID!, title: String!, content: String!, visibility: String!): Post!

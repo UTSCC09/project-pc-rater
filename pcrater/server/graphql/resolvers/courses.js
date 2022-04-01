@@ -72,6 +72,7 @@ module.exports = {
                 courseName,
                 semester,
                 university,
+                usersInRoom: [],
                 professors: [],
                 teachingAssistants: [],
                 students: [],
@@ -88,6 +89,7 @@ module.exports = {
                 university: res.university,
                 semester: res.semester,
                 roomID: res.roomID,
+                usersInRoom: res.usersInRoom,
                 students: res.students,
                 professors: res.professors,
                 teachingAssistants: res.teachingAssistants,
@@ -120,6 +122,7 @@ module.exports = {
                 courseName: res.courseName,
                 semester: res.semester,
                 roomID: res.roomID,
+                usersInRoom: res.usersInRoom,
                 students: res.students,
                 professors: res.professors,
                 teachingAssistants: res.teachingAssistants,
@@ -153,6 +156,7 @@ module.exports = {
                 courseName: res.courseName,
                 roomID: res.roomID,
                 semester: res.semester,
+                usersInRoom: res.usersInRoom,
                 students: res.students,
                 professors: res.professors,
                 teachingAssistants: res.teachingAssistants,
@@ -187,16 +191,68 @@ module.exports = {
                 courseName: res.courseName,
                 semester: res.semester,
                 roomID: res.roomID,
+                usersInRoom: res.usersInRoom,
                 students: res.students,
                 professors: res.professors,
                 teachingAssistants: res.teachingAssistants,
                 createdAt: res.createdAt,
               };
         },
+        async addUserToRoomForCourse(_, { username, courseCode }){
+            let course = await Course.findOne({ courseCode } ).populate("teachingAssistants").populate("students").populate("professors");
+            if(!course){
+                throw new UserInputError('The course ' + courseCode + " is not found.");
+            }else if(!course.students.map(student => student.username).includes(username) && !course.teachingAssistants.map(ta => ta.username).includes(username) && !course.professors.map(prof => prof.username).includes(username)){
+                throw new UserInputError("The user " + username + " is not part of the course " + courseCode);
+            }else if(course.usersInRoom.includes(username)){
+                throw new UserInputError("The user " + username + " is already in the course's room of " + courseCode + ".");
+            }else{
+                course.usersInRoom.push(username);
+                const res = await course.save();
+                return {
+                    id: res._id,
+                    courseCode: res.courseCode,
+                    courseName: res.courseName,
+                    semester: res.semester,
+                    roomID: res.roomID,
+                    usersInRoom: res.usersInRoom,
+                    students: res.students,
+                    professors: res.professors,
+                    teachingAssistants: res.teachingAssistants,
+                    createdAt: res.createdAt,
+                  };
+            }
+        },
+        async deleteUserFromCourseRoom(_, { username, courseCode }){
+            let course = await Course.findOne({ courseCode } ).populate("teachingAssistants").populate("students").populate("professors");
+            if(!course){
+                throw new UserInputError('The course ' + courseCode + " is not found.");
+            }else if(!course.students.map(student => student.username).includes(username) && !course.teachingAssistants.map(ta => ta.username).includes(username) && !course.professors.map(prof => prof.username).includes(username)){
+                throw new UserInputError("The user " + username + " is not part of the course " + courseCode);
+            }else if(!course.usersInRoom.includes(username)){
+                throw new UserInputError("The user " + username + " is not part of the room for the course " + courseCode + ".");
+            }else{
+                let index = course.usersInRoom.findIndex(user => user.username === username);;
+                course.usersInRoom.splice(index, 1);
+                const res = await course.save();
+                return {
+                    id: res._id,
+                    courseCode: res.courseCode,
+                    courseName: res.courseName,
+                    semester: res.semester,
+                    roomID: res.roomID,
+                    usersInRoom: res.usersInRoom,
+                    students: res.students,
+                    professors: res.professors,
+                    teachingAssistants: res.teachingAssistants,
+                    createdAt: res.createdAt,
+                  };
+            } 
+        },
         async deleteCourseForUser(_, { courseCode, username }){
             let course = await Course.findOne({ courseCode } ).populate("teachingAssistants").populate("students").populate("professors");
             if(!course){
-                throw new UserInputError('The course ' + courseCode + " is not found.")
+                throw new UserInputError('The course ' + courseCode + " is not found.");
             }else if(!course.students.map(student => student.username).includes(username) && !course.teachingAssistants.map(ta => ta.username).includes(username) && !course.professors.map(prof => prof.username).includes(username)){
                 throw new UserInputError("The user " + username + " is not part of the course " + courseCode);
             }else{
@@ -217,6 +273,7 @@ module.exports = {
                     courseName: res.courseName,
                     semester: res.semester,
                     roomID: res.roomID,
+                    usersInRoom: res.usersInRoom,
                     students: res.students,
                     professors: res.professors,
                     teachingAssistants: res.teachingAssistants,

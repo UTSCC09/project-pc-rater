@@ -19,6 +19,15 @@ import './Posts.css';
 import ErrorMessage from "../components/ErrorMessage";
 import { useNavigate } from "react-router-dom";
 
+const ADD_USER_TO_ROOM_FOR_COURSE = gql`
+    mutation($username: String!, $courseCode: String!){
+        addUserToRoomForCourse(username: $username, courseCode: $courseCode){
+            courseCode
+            courseName
+            usersInRoom
+        }
+    }
+`; 
 
 
 const CREATE_POST = gql`
@@ -85,6 +94,7 @@ const FIND_COURSE = gql`
             courseName
             university
             roomID
+            usersInRoom
             students {
                 username
             }
@@ -128,6 +138,8 @@ query findPosts($courseCode: String!) {
     }
 }`;
 
+
+
 const PostsNavBar  = ({ setIsSearching, setFilteredData, setRole, postsData, setCreateOrShow, selectedCourse, setSelectedCourse }) => {
     const { user } = useContext(AuthContext);
     const [ searchWordVal, setSearchWordVal ] = useState(""); 
@@ -135,12 +147,20 @@ const PostsNavBar  = ({ setIsSearching, setFilteredData, setRole, postsData, set
     let userCoursesResult = useQuery(GET_COURSES_OF_STUDENT, {variables: { "username": user.username }, skip: !user.username});
     let userCoursesResultTA = useQuery(GET_COURSES_OF_TA, {variables: { "username": user.username }, skip: !user.username});
     let userCoursesResultProfessor = useQuery(GET_COURSES_OF_PROFESSOR, {variables: { "username": user.username }, skip: !user.username});
-    let currentCourseResult = useQuery(FIND_COURSE, { variables: { "courseCode": selectedCourse }, skip: !selectedCourse } );
+    let currentCourseResult = useQuery(FIND_COURSE, { pollInterval: 2000, variables: { "courseCode": selectedCourse }, skip: !selectedCourse } );
+
+    let [ addUserToRoomForCourse ] = useMutation(ADD_USER_TO_ROOM_FOR_COURSE, {
+        refetchQueries: () => [{ query: FIND_COURSE, variables: {"courseCode": selectedCourse} }]
+    });
 
     const handleVideoIconClick = () => {
         let id =  currentCourseResult.data.findCourse.roomID;
-        console.log(id);
-        navigate('/video', { state: { id: id } });
+        // if(currentCourseResult.data.findCourse.usersInRoom.includes(user.username)){
+            // alert("user is already in the room");
+        // }else{
+            // addUserToRoomForCourse({ variables: {"username": user.username, "courseCode": selectedCourse}});
+        navigate('/video', { state: { id: id, selectedCourse: selectedCourse } });
+        // }
     };
 
     const handleFilter = (event) => {
@@ -161,7 +181,7 @@ const PostsNavBar  = ({ setIsSearching, setFilteredData, setRole, postsData, set
 
     useEffect(() => {
         if(userCoursesResult.data !== undefined && userCoursesResultTA.data !== undefined && userCoursesResultProfessor.data !== undefined && selectedCourse === ""){
-            if(userCoursesResult.data.getCoursesOfStudent.concat(!userCoursesResultTA.data.getCoursesOfTA).concat(userCoursesResultProfessor.data.getCoursesOfProfessor).length > 1){
+            if(userCoursesResult.data.getCoursesOfStudent.concat(userCoursesResultTA.data.getCoursesOfTA).concat(userCoursesResultProfessor.data.getCoursesOfProfessor).length > 0){
                 setSelectedCourse(userCoursesResult.data.getCoursesOfStudent.concat(userCoursesResultTA.data.getCoursesOfTA).concat(userCoursesResultProfessor.data.getCoursesOfProfessor)[0].courseCode);
             }
         }
@@ -170,7 +190,7 @@ const PostsNavBar  = ({ setIsSearching, setFilteredData, setRole, postsData, set
 
     useEffect(() => {
         if(userCoursesResult.data !== undefined && userCoursesResultTA.data !== undefined && userCoursesResultProfessor.data !== undefined && selectedCourse === ""){
-            if(userCoursesResult.data.getCoursesOfStudent.concat(!userCoursesResultTA.data.getCoursesOfTA).concat(userCoursesResultProfessor.data.getCoursesOfProfessor).length > 1){
+            if(userCoursesResult.data.getCoursesOfStudent.concat(userCoursesResultTA.data.getCoursesOfTA).concat(userCoursesResultProfessor.data.getCoursesOfProfessor).length > 0){
                 setSelectedCourse(userCoursesResult.data.getCoursesOfStudent.concat(userCoursesResultTA.data.getCoursesOfTA).concat(userCoursesResultProfessor.data.getCoursesOfProfessor)[0].courseCode);
             }
         }
@@ -179,7 +199,7 @@ const PostsNavBar  = ({ setIsSearching, setFilteredData, setRole, postsData, set
     
     useEffect(() => {
         if(userCoursesResult.data !== undefined && userCoursesResultTA.data !== undefined && userCoursesResultProfessor.data !== undefined && selectedCourse === ""){
-            if(userCoursesResult.data.getCoursesOfStudent.concat(!userCoursesResultTA.data.getCoursesOfTA).concat(userCoursesResultProfessor.data.getCoursesOfProfessor).length > 1){
+            if(userCoursesResult.data.getCoursesOfStudent.concat(userCoursesResultTA.data.getCoursesOfTA).concat(userCoursesResultProfessor.data.getCoursesOfProfessor).length > 0){
                 setSelectedCourse(userCoursesResult.data.getCoursesOfStudent.concat(userCoursesResultTA.data.getCoursesOfTA).concat(userCoursesResultProfessor.data.getCoursesOfProfessor)[0].courseCode);
             }
         }
@@ -245,6 +265,7 @@ const PostsNavBar  = ({ setIsSearching, setFilteredData, setRole, postsData, set
                         
                     </Dropdown>  
                     
+      
                     <FaVideo onClick={() => handleVideoIconClick()} className="ml-3 mt-1 fa_video_icon" size={25} />
                 </div>
 
@@ -299,7 +320,8 @@ const Posts = () => {
             </div>
             
             {selectedCourse == '' &&
-                <ErrorMessage isDismissible="undismissble" errorMessage="Please enroll in at least one course to proceed" setShowError={setShowError} />
+                // <ErrorMessage isDismissible="undismissble" errorMessage="Please enroll in at least one course to proceed" setShowError={setShowError} />
+                <div>Make sure to enroll in at least on course before using the forum.</div>
             }
 
             {(createOrShow && selectedCourse !== '') &&
