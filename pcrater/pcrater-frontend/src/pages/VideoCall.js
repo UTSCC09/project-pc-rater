@@ -33,7 +33,7 @@ import { FaEraser } from "react-icons/fa";
 import { FaPencilAlt } from "react-icons/fa";
 
 
-const Drawing_Container = ({ setIsAUserDrawing, isAUserDrawing, isDrawing, socket }) => {
+const Drawing_Container = ({ setIsAUserDrawing, isAUserDrawing, isDrawing, socket, roomID }) => {
     const canvasRef = useRef(null);
     const contextRef = useRef(null);
     const timeoutRef = useRef();
@@ -55,13 +55,13 @@ const Drawing_Container = ({ setIsAUserDrawing, isAUserDrawing, isDrawing, socke
         context.lineWidth = 3;
         contextRef.current = context;
         socket.on("get cur board", function(data){
-            if(data !== undefined){
+            if(data.drawingBoardData !== undefined && data.roomID === roomID){
                 let interval = setInterval(function(){
                     if(isAUserDrawing) return;
                     setIsAUserDrawing(true);
                     clearInterval(interval);
                     let image = new Image();
-                    image.src = data;
+                    image.src = data.drawingBoardData;
                     image.onload = function(){
                         contextRef.current.drawImage(image, 0, 0);
                         setIsAUserDrawing(false);
@@ -70,17 +70,19 @@ const Drawing_Container = ({ setIsAUserDrawing, isAUserDrawing, isDrawing, socke
             }
         });
         socket.on("canvas-data", function(data){
-            let interval = setInterval(function(){
-                if(isAUserDrawing) return;
-                setIsAUserDrawing(true);
-                clearInterval(interval);
-                let image = new Image();
-                image.src = data;
-                image.onload = function(){
-                    contextRef.current.drawImage(image, 0, 0);
-                    setIsAUserDrawing(false);
-                };
-            }, 200);
+            if(data.roomID === roomID){
+                let interval = setInterval(function(){
+                    if(isAUserDrawing) return;
+                    setIsAUserDrawing(true);
+                    clearInterval(interval);
+                    let image = new Image();
+                    image.src = data.base64ImageData;
+                    image.onload = function(){
+                        contextRef.current.drawImage(image, 0, 0);
+                        setIsAUserDrawing(false);
+                    };
+                }, 200);
+            }
         }); 
         socket.on("clear board", function(){
             contextRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
@@ -109,7 +111,7 @@ const Drawing_Container = ({ setIsAUserDrawing, isAUserDrawing, isDrawing, socke
         if(timeoutRef.current) clearTimeout(timeoutRef.current);
         timeoutRef.current= setTimeout(function(){
             let base64ImageData = canvasRef.current.toDataURL("image/png");
-            socket.emit("canvas-data", base64ImageData);
+            socket.emit("canvas-data", { base64ImageData, roomID });
         }, 1000);
     };
 
@@ -322,7 +324,7 @@ const VideoCall = () => {
             }, audio: true }).then(stream => {
            
                 videoStream.current.srcObject = stream;
-                socket.emit("joining");
+                socket.emit("joining", roomID);
                 
                 socket.on("socket id", (id) => {
                      setSocketID(id);
@@ -330,14 +332,16 @@ const VideoCall = () => {
      
      
                 socket.on("message", (data) => {
-                    if(data.socketID !== socket.id){
-                        setIsNewMessage(true);
+                    if(data.roomID === roomID){
+                        if(data.socketID !== socket.id){
+                            setIsNewMessage(true);
+                        }
+                        setMessages(prevMessages => [...prevMessages, data]);
                     }
-                    setMessages(prevMessages => [...prevMessages, data]);
                 });
                 
                 socket.on("init", (usersList) => {
-                    socket.emit("get cur board");
+                    socket.emit("get cur board", roomID);
                     usersList.forEach(curUser  => {
                         const peerToPush = constructNewPeer(curUser[0], socket.id, stream);
                         peersListRef.current.push({
@@ -395,7 +399,8 @@ const VideoCall = () => {
             socket.emit("sending message", {
                 message,
                 socketID,
-                username: user.username
+                username: user.username, 
+                roomID
             });
             setMessage("");
         }
@@ -494,7 +499,7 @@ const VideoCall = () => {
              </div>
             }
                
-            <Drawing_Container setIsAUserDrawing={setIsAUserDrawing} isAUserDrawing={isAUserDrawing} isDrawing={isDrawing} socket={socket} />
+            <Drawing_Container setIsAUserDrawing={setIsAUserDrawing} isAUserDrawing={isAUserDrawing} isDrawing={isDrawing} socket={socket} roomID={roomID} />
             <LowNavBar socket={socket} peersList={peersList} isDrawing={isDrawing} setIsDrawing={setIsDrawing} videoStream={videoStream} showChat={showChat} setShowChat={setShowChat} isNewMessage={isNewMessage} setIsNewMessage={setIsNewMessage} />
         </div>
     );

@@ -73,8 +73,8 @@ io.on('connection', socket => {
   });
 
 
-  socket.on("joining", () => {
-      socket.emit("init", socketIdAndUserName.filter(elmt => elmt[0] !== id).map(elmt => [elmt[0], elmt[1]]));
+  socket.on("joining", (roomID) => {
+      socket.emit("init", socketIdAndUserName.filter(elmt => elmt[2] === roomID).filter(elmt => elmt[0] !== id).map(elmt => [elmt[0], elmt[1]]));
       io.to(id).emit("socket id", id);
   });
 
@@ -89,12 +89,12 @@ io.on('connection', socket => {
     io.emit("message", data);
   });
 
-  socket.on("get cur board", () => {
-    socket.broadcast.emit("get cur board", drawingBoardData);
+  socket.on("get cur board", (roomID) => {
+    socket.broadcast.emit("get cur board", { drawingBoardData, roomID });
   });
 
   socket.on("canvas-data", (data) => {
-    drawingBoardData = data;
+    drawingBoardData = data.base64ImageData;
     socket.broadcast.emit("canvas-data", data);
   });
 

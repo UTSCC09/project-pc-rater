@@ -155,12 +155,7 @@ const PostsNavBar  = ({ setIsSearching, setFilteredData, setRole, postsData, set
 
     const handleVideoIconClick = () => {
         let id =  currentCourseResult.data.findCourse.roomID;
-        // if(currentCourseResult.data.findCourse.usersInRoom.includes(user.username)){
-            // alert("user is already in the room");
-        // }else{
-            // addUserToRoomForCourse({ variables: {"username": user.username, "courseCode": selectedCourse}});
         navigate('/video', { state: { id: id, selectedCourse: selectedCourse } });
-        // }
     };
 
     const handleFilter = (event) => {
