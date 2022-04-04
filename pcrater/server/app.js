@@ -5,6 +5,9 @@
 // WebRTC Screen Sharing Tutorial: https://www.youtube.com/watch?v=X8QHHB7DA90&list=PLK0STOMCFms4nXm1bRUdjhPg0coxI2U6h&index=4
 // How To Mute Mic or Toggle Cam In WebRTC Video Chat? : https://www.youtube.com/watch?v=Uk5DbEnFNP0&list=PLK0STOMCFms4nXm1bRUdjhPg0coxI2U6h&index=14
 // React Chat App Using Socket.IO | Socket IO Tutorial: https://www.youtube.com/watch?v=E4V6nbP_NoQ
+// Develop Collaborative White Board : Web socket, Node JS & React JS : https://www.youtube.com/watch?v=LZTWYdU4nKk
+// Develop Collaborative White Board : Web socket, Node JS & React JS | Part 2 : https://www.youtube.com/watch?v=bQy6WpIXW18
+
 
 const { MongoClient } = require("mongodb");
 const bcrypt = require('bcrypt');
@@ -40,6 +43,8 @@ const socket = require("socket.io");
 
 
 let socketIdAndUserName = [];
+
+let drawingBoardData;
 
 
 const io = socket(httpServer, {
@@ -84,6 +89,20 @@ io.on('connection', socket => {
     io.emit("message", data);
   });
 
+  socket.on("get cur board", () => {
+    socket.broadcast.emit("get cur board", drawingBoardData);
+  });
+
+  socket.on("canvas-data", (data) => {
+    drawingBoardData = data;
+    socket.broadcast.emit("canvas-data", data);
+  });
+
+  socket.on("clear", () => {
+    drawingBoardData = undefined;
+    socket.broadcast.emit("clear board");
+  });
+
 
   socket.on("returning", (data) => {
     const { signal, userID } = data;
@@ -93,12 +112,14 @@ io.on('connection', socket => {
 
   socket.on("user leaves disconnect", () => {
     if(socketIdAndUserName) socketIdAndUserName = socketIdAndUserName.filter(elmt => elmt[0] !== id);
+    if(socketIdAndUserName.length == 0) drawingBoardData = undefined;
     socket.broadcast.emit('user disconnect', id);
   });
 
   socket.on('disconnect', () => {
-      if(socketIdAndUserName) socketIdAndUserName = socketIdAndUserName.filter(elmt => elmt[0] !== id);
-      socket.broadcast.emit('user disconnect', id);
+    if(socketIdAndUserName) socketIdAndUserName = socketIdAndUserName.filter(elmt => elmt[0] !== id);
+    if(socketIdAndUserName.length == 0) drawingBoardData = undefined;
+    socket.broadcast.emit('user disconnect', id);
   });
 
 

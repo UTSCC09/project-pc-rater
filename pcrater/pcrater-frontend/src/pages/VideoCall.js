@@ -4,7 +4,8 @@
 // WebRTC Screen Sharing Tutorial: https://www.youtube.com/watch?v=X8QHHB7DA90&list=PLK0STOMCFms4nXm1bRUdjhPg0coxI2U6h&index=4
 // How To Mute Mic or Toggle Cam In WebRTC Video Chat? : https://www.youtube.com/watch?v=Uk5DbEnFNP0&list=PLK0STOMCFms4nXm1bRUdjhPg0coxI2U6h&index=14
 // React Chat App Using Socket.IO | Socket IO Tutorial: https://www.youtube.com/watch?v=E4V6nbP_NoQ
-
+// Develop Collaborative White Board : Web socket, Node JS & React JS : https://www.youtube.com/watch?v=LZTWYdU4nKk
+// Develop Collaborative White Board : Web socket, Node JS & React JS | Part 2 : https://www.youtube.com/watch?v=bQy6WpIXW18
 
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import Alert from 'react-bootstrap/Alert';
@@ -28,8 +29,132 @@ import { FaVideoSlash } from "react-icons/fa";
 import { FaShareSquare } from "react-icons/fa";
 import { FaRegCommentAlt } from "react-icons/fa";
 import { FaRegCommentDots } from "react-icons/fa";
+import { FaEraser } from "react-icons/fa";
+import { FaPencilAlt } from "react-icons/fa";
 
 
+const Drawing_Container = ({ setIsAUserDrawing, isAUserDrawing, isDrawing, socket }) => {
+    const canvasRef = useRef(null);
+    const contextRef = useRef(null);
+    const timeoutRef = useRef();
+
+    const [ isMouseDown, setIsMouseDown ] = useState(false);
+    const [ mode, setMode ]  = useState("drawing");
+    const [ color, setColor ] = useState("black");
+
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        canvas.width  = window.innerWidth * 2;
+        canvas.height = window.innerHeight * 2;
+        canvas.style.width = `${window.innerHeight}px`;
+        canvas.style.height = `${window.innerWidth}px`;
+        const context = canvas.getContext('2d');
+        context.lineCap = "round";
+        context.strokeStyle = color;
+        context.lineWidth = 3;
+        contextRef.current = context;
+        socket.on("get cur board", function(data){
+            if(data !== undefined){
+                let interval = setInterval(function(){
+                    if(isAUserDrawing) return;
+                    setIsAUserDrawing(true);
+                    clearInterval(interval);
+                    let image = new Image();
+                    image.src = data;
+                    image.onload = function(){
+                        contextRef.current.drawImage(image, 0, 0);
+                        setIsAUserDrawing(false);
+                    };
+                }, 200);
+            }
+        });
+        socket.on("canvas-data", function(data){
+            let interval = setInterval(function(){
+                if(isAUserDrawing) return;
+                setIsAUserDrawing(true);
+                clearInterval(interval);
+                let image = new Image();
+                image.src = data;
+                image.onload = function(){
+                    contextRef.current.drawImage(image, 0, 0);
+                    setIsAUserDrawing(false);
+                };
+            }, 200);
+        }); 
+        socket.on("clear board", function(){
+            contextRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+        });
+    }, []);
+
+    const startDrawing = (synthetic_base_event) => {
+        const { offsetX, offsetY } = synthetic_base_event.nativeEvent;
+        contextRef.current.beginPath();
+        contextRef.current.moveTo(offsetX * 2, offsetY * 2);
+        setIsMouseDown(true);
+    };
+
+    const finishDrawing = () => {
+        contextRef.current.closePath();
+        setIsMouseDown(false);
+    };
+
+    const draw = (synthetic_base_event) => {
+        if(!isMouseDown){
+            return;
+        }
+        const { offsetX, offsetY } = synthetic_base_event.nativeEvent;
+        contextRef.current.lineTo(offsetX * 2, offsetY * 2);
+        contextRef.current.stroke();
+        if(timeoutRef.current) clearTimeout(timeoutRef.current);
+        timeoutRef.current= setTimeout(function(){
+            let base64ImageData = canvasRef.current.toDataURL("image/png");
+            socket.emit("canvas-data", base64ImageData);
+        }, 1000);
+    };
+
+    const handleClearBoard = () => {
+        contextRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+        socket.emit("clear");
+    };
+
+    const handleEraser = () => {
+        contextRef.current.strokeStyle = "white";
+        setMode("eraser");
+    };
+
+    const handleDrawIconPress = () => {
+        contextRef.current.strokeStyle = color;
+        setMode("drawing");
+    };
+
+    return (
+        <div className={isDrawing ? 'drawing_container' : "drawing_container_hidden"}>
+            <span className='change_color_text'>Change Color:</span> <input className="color-picker" type="color" onChange={(e) => {
+                contextRef.current.strokeStyle = e.target.value;
+                setColor(e.target.value);
+            }} />
+            <span className='change_color_text'>Select Brush Size: &nbsp;
+                <select onChange={(e) => {
+                    contextRef.current.lineWidth = e.target.value;
+                }}>
+                    <option>1</option>
+                    <option selected>3</option>
+                    <option>5</option>
+                    <option>10</option>
+                    <option>15</option>
+                    <option>20</option>
+                    <option>30</option>
+                    <option>50</option>
+                </select>
+            </span> &nbsp; &nbsp;
+            <FaEraser onClick={handleEraser} className={mode!=="eraser" ? 'fa_eraser' : 'fa_eraser_chosen'}  size={mode==="eraser" ? 27 : 23} /> &nbsp; &nbsp;
+            <FaPencilAlt onClick={handleDrawIconPress} className={mode!=="drawing" ? 'fa_drawing_icon' : 'fa_drawing_icon_chosen'}  size={mode==="drawing" ? 27 : 23} /> &nbsp;
+            <button onClick={handleClearBoard} className='clear_board_btn'>Clear Board</button>
+            <canvas className='w-100 h-100 border-top border-dark mt-2' onMouseDown={startDrawing} onMouseUp={finishDrawing} onMouseMove={draw} ref={canvasRef} />
+        </div>
+    );
+};
 
 
 const LowNavBar = ({ socket, peersList, isDrawing, setIsDrawing, videoStream, setShowChat, showChat, isNewMessage, setIsNewMessage }) => {
@@ -37,6 +162,7 @@ const LowNavBar = ({ socket, peersList, isDrawing, setIsDrawing, videoStream, se
     const [ isVideoOn, setIsVideoOn ] = useState(true);
     const [ isScreenSharing, setIsScreenSharing ] = useState(false);
     const audioForScreenSharing = useRef();
+    const previousUserScreenRef = useRef();
     const navigate = useNavigate();
 
 
@@ -44,27 +170,22 @@ const LowNavBar = ({ socket, peersList, isDrawing, setIsDrawing, videoStream, se
         setIsScreenSharing(true);
         navigator.mediaDevices.getDisplayMedia({ cursor: true }).then(stream => {
             peersList.forEach(peer => peer.peer.replaceTrack(peer.peer.streams[0].getTracks().find(track => track.kind === "video"), stream.getTracks().find(track => track.kind === "video"), peer.peer.streams[0]));
-            let previousUserScreen = videoStream.current.srcObject;
+            previousUserScreenRef.current = videoStream.current.srcObject;
             audioForScreenSharing.current = videoStream.current.srcObject.getTracks().find(track => track.kind === "audio");
             videoStream.current.srcObject = stream;
             stream.getTracks()[0].onended = function(){
-                peersList.forEach(peer => peer.peer.replaceTrack(peer.peer.streams[0].getTracks().find(track => track.kind === "video"), previousUserScreen.getTracks().find(track => track.kind === "video"), peer.peer.streams[0]));
-                videoStream.current.srcObject = previousUserScreen;
+                peersList.forEach(peer => peer.peer.replaceTrack(peer.peer.streams[0].getTracks().find(track => track.kind === "video"), previousUserScreenRef.current.getTracks().find(track => track.kind === "video"), peer.peer.streams[0]));
+                videoStream.current.srcObject = previousUserScreenRef.current;
                 setIsScreenSharing(false);
             };
         });
     };
 
     const stopScreenShare = () => {
-        navigator.mediaDevices.getDisplayMedia({ video: {
-            height: 150,
-            width: 330
-        }, audio: true }).then(stream => {
-            peersList.forEach(peer => peer.peer.replaceTrack(peer.peer.streams[0].getTracks().find(track => track.kind === "video"), stream.getTracks().find(track => track.kind === "video"), peer.peer.streams[0]));
-            videoStream.current.srcObject.getTracks().forEach(track => track.stop());
-            videoStream.current.srcObject = stream;
-            setIsScreenSharing(false);
-        });
+        videoStream.current.srcObject.getTracks().forEach(track => track.stop());
+        peersList.forEach(peer => peer.peer.replaceTrack(peer.peer.streams[0].getTracks().find(track => track.kind === "video"), previousUserScreenRef.current.getTracks().find(track => track.kind === "video"), peer.peer.streams[0]));
+        videoStream.current.srcObject = previousUserScreenRef.current;
+        setIsScreenSharing(false);
     };
 
 
@@ -166,6 +287,7 @@ const VideoCall = () => {
     const navigate = useNavigate();
 
     const [ isDrawing, setIsDrawing ] = useState(false);
+    const [ isAUserDrawing, setIsAUserDrawing ] = useState(false);
     const location = useLocation(); 
     const roomID  = location.state.id;
 
@@ -215,6 +337,7 @@ const VideoCall = () => {
                 });
                 
                 socket.on("init", (usersList) => {
+                    socket.emit("get cur board");
                     usersList.forEach(curUser  => {
                         const peerToPush = constructNewPeer(curUser[0], socket.id, stream);
                         peersListRef.current.push({
@@ -371,7 +494,7 @@ const VideoCall = () => {
              </div>
             }
                
-            <div className={isDrawing ? 'drawing_container' : "drawing_container_hidden"}>Drawing room</div>
+            <Drawing_Container setIsAUserDrawing={setIsAUserDrawing} isAUserDrawing={isAUserDrawing} isDrawing={isDrawing} socket={socket} />
             <LowNavBar socket={socket} peersList={peersList} isDrawing={isDrawing} setIsDrawing={setIsDrawing} videoStream={videoStream} showChat={showChat} setShowChat={setShowChat} isNewMessage={isNewMessage} setIsNewMessage={setIsNewMessage} />
         </div>
     );

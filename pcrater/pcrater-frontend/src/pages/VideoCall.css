@@ -68,6 +68,9 @@
     margin-left: 60px;
 }
 
+.drawing_container{
+}
+
 .drawing_container_hidden{
     display: none;
 }
@@ -173,10 +176,8 @@
 }
 
 .current_user_message{
-    width: min-content;
     max-width: 100%;
-    word-wrap: break-word;
-    overflow-x: hidden;
+    overflow-wrap: break-word;
     background-color: #538eed;
     color: white;
     border: 1px solid lightgray;
@@ -193,9 +194,7 @@
     align-items: right;
     margin-left: 13px;
     max-width: 100%;
-    width: min-content;
-    word-wrap: break-word;
-    overflow-x: hidden;
+    overflow-wrap: break-word;
     background-color: white;
     color: black;
     border: 1px solid lightgray;
@@ -210,4 +209,56 @@
 
 .message_container{
     width: 150px;
+}
+
+.color-picker{
+    width: 50px;
+    margin-left: 3px;
+}
+
+.clear_board_btn{
+    width: 155px;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.change_color_text{
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.fa_eraser{
+    margin-bottom: 5px;
+    margin-left: 1px;
+}
+
+.fa_eraser_chosen{
+    margin-bottom: 5px;
+    margin-left: 1px;
+    background-color: lightslategrey;
+    padding: 3px;
+}
+
+.fa_drawing_icon_chosen{
+    margin-bottom: 5px;
+    margin-left: 1px;
+    background-color: lightslategrey;
+    padding: 3px;
+}
+
+.fa_drawing_icon{
+    margin-bottom: 5px;
+    margin-left: 1px;
+}
+
+.fa_drawing_icon:hover{
+    cursor: pointer;
+}
+
+.fa_eraser_chosen:hover{
+    cursor: pointer;
+}
+
+.fa_eraser:hover{
+    cursor: pointer;
 }
