@@ -42,6 +42,7 @@ const httpServer = http.createServer(app);
 const socket = require("socket.io");
 
 
+
 let socketIdAndUserName = [];
 
 let drawingBoardData;

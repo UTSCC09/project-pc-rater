@@ -1,10 +1,11 @@
 const Course = require('../../models/Course');
 const { UserInputError } = require('apollo-server');
 const uuid = require("uuid");
-const { validateRegisterInput, validateLoginInput } = require('../../util/validators');
+const { validateAddCourseInput } = require('../../util/validators');
 const User = require('../../models/User');
 const { findOne } = require('../../models/Course');
 const mongoose = require('mongoose');
+const validator = require('validator');
 
 module.exports = {
     Query: {
@@ -58,13 +59,19 @@ module.exports = {
     Mutation: {
 
         async addCourse(_, { courseName, courseCode, semester, university }){
-            const course = await Course.findOne({ courseCode });
+            const course = await Course.findOne({ "courseCode": validator.escape(courseCode) });
             if (course) {
               throw new UserInputError('Course code already exists', {
                 errors: {
                   courseCode: 'This course code already exists.'
                 }
               });
+            }
+
+            const { errors, valid } = validateAddCourseInput(courseName, courseCode, semester, university);
+
+            if (!valid) {
+                throw new UserInputError('Errors', { errors });
             }
 
             const NewCourse = new Course({
@@ -97,15 +104,21 @@ module.exports = {
               };
         },
         async addProfessorToCourse(_, { courseCode, username }){
-            let course = await Course.findOne({ courseCode } ).populate("professors").populate("students").populate("teachingAssistants");
-            let prof_to_add = await User.findOne({ username });
+            let course = await Course.findOne({ "courseCode": validator.escape(courseCode) } ).populate("professors").populate("students").populate("teachingAssistants");
+            let prof_to_add = await User.findOne({ "username": validator.escape(username) });
             if(!prof_to_add){
                 throw new UserInputError('A professor with username ' + username + ' is not found.', {
                     errors: {
                       professor_not_found: 'Professor is not found.'
                     }
                   });
-            }else if([...course.students].map(student => student.username).includes(username) || [...course.teachingAssistants].map(ta => ta.username).includes(username) || [...course.professors].map(prof => prof.username).includes(username)){
+            }else if(!course){
+                throw new UserInputError('A course with course code ' + courseCode + ' is not found.', {
+                    errors: {
+                      course_not_found: 'Course is not found.'
+                    }
+                  });
+            }else if([...course.students].map(student => student.username).includes(validator.escape(username)) || [...course.teachingAssistants].map(ta => ta.username).includes(validator.escape(username)) || [...course.professors].map(prof => prof.username).includes(validator.escape(username))){
                 throw new UserInputError('A professor with username ' + username + ' already exists.', {
                     errors: {
                       professor_not_found: 'Professor already exists.'
@@ -131,15 +144,21 @@ module.exports = {
             
         },
         async addStudentToCourse(_, { courseCode, username }){
-            let course = await Course.findOne({ courseCode } ).populate("students").populate("teachingAssistants").populate("professors");
-            let student_to_add = await User.findOne({ username });
+            let course = await Course.findOne({ "courseCode": validator.escape(courseCode) } ).populate("students").populate("teachingAssistants").populate("professors");
+            let student_to_add = await User.findOne({ "username": validator.escape(username) });
             if(!student_to_add){
                 throw new UserInputError('A student with username ' + username + ' is not found.', {
                     errors: {
                       professor_not_found: 'Student is not found.'
                     }
                   });
-            }else if([...course.students].map(student => student.username).includes(username) || [...course.teachingAssistants].map(ta => ta.username).includes(username) || [...course.professors].map(prof => prof.username).includes(username)){
+            }else if(!course){
+                throw new UserInputError('A course with course code ' + courseCode + ' is not found.', {
+                    errors: {
+                      course_not_found: 'Course is not found.'
+                    }
+                  });
+            }else if([...course.students].map(student => student.username).includes(validator.escape(username)) || [...course.teachingAssistants].map(ta => ta.username).includes(validator.escape(username)) || [...course.professors].map(prof => prof.username).includes(validator.escape(username))){
                 throw new UserInputError('A student with username ' + username + ' already exists.', {
                     errors: {
                       student_not_found: 'Student already exists.'
@@ -164,17 +183,17 @@ module.exports = {
               };
         },
         async addTaToCourse(_, { courseCode, username }){
-            let course = await Course.findOne({ courseCode } ).populate("teachingAssistants").populate("students").populate("professors");
-            let ta_to_add = await User.findOne({ username });
+            let course = await Course.findOne({ "courseCode": validator.escape(courseCode) } ).populate("teachingAssistants").populate("students").populate("professors");
+            let ta_to_add = await User.findOne({ "username": validator.escape(username) });
             if(!course){
-                throw new UserInputError('The course ' + courseCode + " is not found.")
+                throw new UserInputError('The course ' + courseCode + " is not found.");
             }else if(!ta_to_add){
                 throw new UserInputError('A TA with username ' + username + ' is not found.', {
                     errors: {
                       ta_not_found: 'TA is not found.'
                     }
                   });
-            }else if([...course.students].map(student => student.username).includes(username) || [...course.teachingAssistants].map(ta => ta.username).includes(username) || [...course.professors].map(prof => prof.username).includes(username)){
+            }else if([...course.students].map(student => student.username).includes(validator.escape(username)) || [...course.teachingAssistants].map(ta => ta.username).includes(validator.escape(username)) || [...course.professors].map(prof => prof.username).includes(validator.escape(username))){
                 throw new UserInputError('A TA with username ' + username + ' already exists.', {
                     errors: {
                       student_not_found: 'TA already exists.'
@@ -199,15 +218,15 @@ module.exports = {
               };
         },
         async addUserToRoomForCourse(_, { username, courseCode }){
-            let course = await Course.findOne({ courseCode } ).populate("teachingAssistants").populate("students").populate("professors");
+            let course = await Course.findOne({ "courseCode": validator.escape(courseCode) } ).populate("teachingAssistants").populate("students").populate("professors");
             if(!course){
                 throw new UserInputError('The course ' + courseCode + " is not found.");
-            }else if(!course.students.map(student => student.username).includes(username) && !course.teachingAssistants.map(ta => ta.username).includes(username) && !course.professors.map(prof => prof.username).includes(username)){
+            }else if(!course.students.map(student => student.username).includes(validator.escape(validator.escape(username))) && !course.teachingAssistants.map(ta => ta.username).includes(validator.escape(username)) && !course.professors.map(prof => prof.username).includes(validator.escape(username))){
                 throw new UserInputError("The user " + username + " is not part of the course " + courseCode);
-            }else if(course.usersInRoom.includes(username)){
+            }else if(course.usersInRoom.includes(validator.escape(username))){
                 throw new UserInputError("The user " + username + " is already in the course's room of " + courseCode + ".");
             }else{
-                course.usersInRoom.push(username);
+                course.usersInRoom.push(validator.escape(username));
                 const res = await course.save();
                 return {
                     id: res._id,
@@ -224,15 +243,15 @@ module.exports = {
             }
         },
         async deleteUserFromCourseRoom(_, { username, courseCode }){
-            let course = await Course.findOne({ courseCode } ).populate("teachingAssistants").populate("students").populate("professors");
+            let course = await Course.findOne({ "courseCode": validator.escape(courseCode) } ).populate("teachingAssistants").populate("students").populate("professors");
             if(!course){
                 throw new UserInputError('The course ' + courseCode + " is not found.");
-            }else if(!course.students.map(student => student.username).includes(username) && !course.teachingAssistants.map(ta => ta.username).includes(username) && !course.professors.map(prof => prof.username).includes(username)){
+            }else if(!course.students.map(student => student.username).includes(validator.escape(username)) && !course.teachingAssistants.map(ta => ta.username).includes(validator.escape(username)) && !course.professors.map(prof => prof.username).includes(validator.escape(username))){
                 throw new UserInputError("The user " + username + " is not part of the course " + courseCode);
             }else if(!course.usersInRoom.includes(username)){
                 throw new UserInputError("The user " + username + " is not part of the room for the course " + courseCode + ".");
             }else{
-                let index = course.usersInRoom.findIndex(user => user.username === username);;
+                let index = course.usersInRoom.findIndex(user => user.username === validator.escape(username));;
                 course.usersInRoom.splice(index, 1);
                 const res = await course.save();
                 return {
@@ -250,20 +269,20 @@ module.exports = {
             } 
         },
         async deleteCourseForUser(_, { courseCode, username }){
-            let course = await Course.findOne({ courseCode } ).populate("teachingAssistants").populate("students").populate("professors");
+            let course = await Course.findOne({ "courseCode": validator.escape(courseCode) } ).populate("teachingAssistants").populate("students").populate("professors");
             if(!course){
                 throw new UserInputError('The course ' + courseCode + " is not found.");
-            }else if(!course.students.map(student => student.username).includes(username) && !course.teachingAssistants.map(ta => ta.username).includes(username) && !course.professors.map(prof => prof.username).includes(username)){
+            }else if(!course.students.map(student => student.username).includes(validator.escape(username)) && !course.teachingAssistants.map(ta => ta.username).includes(validator.escape(username)) && !course.professors.map(prof => prof.username).includes(validator.escape(username))){
                 throw new UserInputError("The user " + username + " is not part of the course " + courseCode);
             }else{
-                if(course.students.map(student => student.username).includes(username)){
-                    let index = course.students.findIndex(student => student.username === username);
+                if(course.students.map(student => student.username).includes(validator.escape(username))){
+                    let index = course.students.findIndex(student => student.username === validator.escape(username));
                     course.students.splice(index, 1);
-                }else if(course.teachingAssistants.map(ta => ta.username).includes(username)){
-                    let index = course.teachingAssistants.findIndex(ta => ta.username === username);
+                }else if(course.teachingAssistants.map(ta => ta.username).includes(validator.escape(username))){
+                    let index = course.teachingAssistants.findIndex(ta => ta.username === validator.escape(username));
                     course.teachingAssistants.splice(index, 1);
                 }else{
-                    let index = course.professors.findIndex(professor => professor.username === username);
+                    let index = course.professors.findIndex(professor => professor.username === validator.escape(username));
                     course.professors.splice(index, 1);
                 }
                 const res = await course.save();

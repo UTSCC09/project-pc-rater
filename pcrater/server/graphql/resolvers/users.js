@@ -4,7 +4,7 @@ const User = require('../../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { UserInputError } = require('apollo-server');
-
+const validator = require('validator');
 const { validateRegisterInput, validateLoginInput } = require('../../util/validators');
 
 const { SECRET_KEY } = require('../../config');
@@ -129,11 +129,11 @@ module.exports = {
         
         },
         async updateUniversity(_, { username, university }){
-          const user = await User.findOne({ username });
+          const user = await User.findOne({ "username": validator.escape(username) });
           if (!user) {
             throw new UserInputError('User not found');
           }
-          user.institution = university;
+          user.institution = validator.escape(university);
           user.save();
           return user;
         }

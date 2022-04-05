@@ -31,11 +31,11 @@ const ADD_USER_TO_ROOM_FOR_COURSE = gql`
 
 
 const CREATE_POST = gql`
-    mutation createPost ($name: String!, $role: String!, 
+    mutation createPost ($username: String!, $role: String!, 
     $course: String!, $title: String!, $content: String!, 
     $visibility: String!, $type: String!) {
         addPost(
-            name: $name, 
+            username: $username, 
             role: $role, 
             course: $course,
             title: $title,
@@ -43,7 +43,7 @@ const CREATE_POST = gql`
             visibility: $visibility,
             type: $type
         ) {
-            name
+            username
             role
             course
             title
@@ -112,7 +112,7 @@ const GET_POSTS = gql`
 query findPosts($courseCode: String!) {
     getPosts(courseCode: $courseCode) {
         id
-        name
+        username
         role
         course
         title
@@ -142,6 +142,7 @@ query findPosts($courseCode: String!) {
 
 const PostsNavBar  = ({ setIsSearching, setFilteredData, setRole, postsData, setCreateOrShow, selectedCourse, setSelectedCourse }) => {
     const { user } = useContext(AuthContext);
+    console.log("user is ", user);
     const [ searchWordVal, setSearchWordVal ] = useState(""); 
     const navigate = useNavigate();
     let userCoursesResult = useQuery(GET_COURSES_OF_STUDENT, {variables: { "username": user.username }, skip: !user.username});

@@ -8,6 +8,7 @@ import './Signup.css';
 import { AuthContext } from '../context/auth';
 import { useForm } from '../util/hooks';
 import { useNavigate } from "react-router-dom";
+import validator from 'validator';
 
 import SearchBar from "../components/SearchBar";
 
@@ -58,11 +59,17 @@ export default function Signup(props) {
 
     function registerUser() {
         values.institution = universityInputValue;
+        // if(!validator.isStrongPassword(values.password)){
+        //     setErrors(["Password is not strong enough. Password should have at least 8 characters, including at least one lower-case letter, upper-case letter, number and special symobl."])
+        // }else if(!validator.isAlphanumeric(values.username) || !validator.isAlphanumeric(values.firstname) || !validator.isAlphanumeric(values.lastname))
+        //     setErrors(["First name, last name and username should be alphanumeric."]);
+        // else{
         if(universitiesJson.map(elmt => elmt.name).includes(universityInputValue)){
             addUser();
         }else{
-           setErrors(["University name is not valid"]);
+            setErrors(["University name is not valid"]);
         }
+        // }
     }
 
     return(

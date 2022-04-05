@@ -16,7 +16,7 @@ module.exports = gql`
   }
   type Post {
     id: ID!
-    name: String!
+    username: String!
     role: String!
     course: String!
     title: String!
@@ -88,7 +88,7 @@ module.exports = gql`
       addUserToRoomForCourse(username: String!, courseCode: String!): Course!
       deleteUserFromCourseRoom(username: String!, courseCode: String!): Course!
       deleteCourseForUser(courseCode: String!, username: String!): Course!
-      addPost(name: String!, role: String!, course: String!, title: String!, content: String!, visibility: String!, type: String!): Post!
+      addPost(username: String!, role: String!, course: String!, title: String!, content: String!, visibility: String!, type: String!): Post!
       updatePost(id: ID!, title: String!, content: String!, visibility: String!): Post!
       deletePost(id: ID!): Post!
       addComment(id: ID!, content: String!, author: String!, role: String!): Post!

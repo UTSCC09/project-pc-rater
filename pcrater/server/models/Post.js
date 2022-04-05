@@ -2,7 +2,7 @@ const { model, Schema } = require('mongoose');
 const mongoose = require('mongoose');
 
 const postSchema = new Schema({
-  name: String,
+  username: String,
   role: String,
   course: String,
   title: String,

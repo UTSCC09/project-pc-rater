@@ -54,7 +54,7 @@ export default function CreatePost({ setIsSearching, createPostFunction, role, s
         }
         const name = userResult.data.findUser.firstname + " " + userResult.data.findUser.lastname;
         setIsSearching(false);
-        createPostFunction({  variables: {name , "role": role, "course": selectedCourse, title, content, visibility, type } });
+        createPostFunction({  variables: {"username": user.username , "role": role, "course": selectedCourse, title, content, visibility, type } });
 
         // setName('');
         // setRole('Student');

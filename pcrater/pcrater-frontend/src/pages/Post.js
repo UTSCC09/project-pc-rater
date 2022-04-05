@@ -65,7 +65,7 @@ const INCREASE_UPVOTES_COMMENT = gql`
     mutation increaseUpvotesForComment($postId: ID!, $commentId: ID!, $username: String!){
         increaseUpvotesComment(postId: $postId, commentId: $commentId, username: $username){
             content
-            name
+            username
             role
             comments{
                 id
@@ -92,7 +92,7 @@ const INCREASE_UPVOTES_POST = gql`
         increaseUpvotesPost(id: $id, username: $username) {
             id
             createdAt
-            name
+            username
             content
             title
             comments {
