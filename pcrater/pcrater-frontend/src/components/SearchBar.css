@@ -1,8 +1,12 @@
 /* credits: https://www.youtube.com/watch?v=x7niho285qs */
 
 .searchInputs {
-    margin-top: 10px;
     display: flex;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    width: 95%;
+    margin-top: 2px;
+    margin-bottom: 2px;
   }
   
   .search input {
@@ -11,14 +15,12 @@
     border-radius: 2px;
     border-top-right-radius: 0px;
     border-bottom-right-radius: 0px;
-    font-size: 18px;
-    padding: 15px;
     height: 30px;
-    width: 300px;
+    width: 200px;
   }
   
   .searchIcon {
-    height: 60px;
+    height: 30px;
     width: 50px;
     background-color: white;
     display: grid;

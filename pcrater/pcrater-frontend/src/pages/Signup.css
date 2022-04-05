@@ -1,6 +1,6 @@
 .div-login{
     width:300px;
-    height:400px;
+    height:500px;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -43,4 +43,20 @@
 
   #prof-checkbox {
     display: grid;
+  }
+
+  .ui-error-message {
+    margin-top: 10px;
+    border: 1px solid #ffa7a1;
+    border-radius: 5px;
+    background: #fcc4c0;
+    display: flex;
+    flex-direction: column;
+    color: red;
+    font-weight: bold;
+  }
+
+  .list {
+    margin: 5px;
+    font-size: 12px;
   }

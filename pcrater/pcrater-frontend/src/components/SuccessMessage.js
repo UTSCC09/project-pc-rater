@@ -13,8 +13,8 @@ import CloseButton from 'react-bootstrap/CloseButton';
 const SuccessMessage = (props) => {
     const {successMessage, setShowSuccess} = props;
     return (
-        <Alert style={{ textAlign: "left", width: '50rem' }} variant="success" onClose={() => setShowSuccess(false)} dismissible>
-            <p style={{ color: "green" }}>
+        <Alert variant="success" onClose={() => setShowSuccess(false)} dismissible>
+            <p className='text-success'>
                 {successMessage}
             </p>
         </Alert>

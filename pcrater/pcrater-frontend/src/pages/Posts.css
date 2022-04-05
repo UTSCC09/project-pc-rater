@@ -1,0 +1,43 @@
+.showing_posts_text{
+    margin-top: 5px;
+    margin-right: 3px;
+    font-weight: bold;
+}
+
+.posts_navbar_card{
+    margin-left: 20px;
+    margin-top: 10px;
+    width: 400px;
+}
+
+.select_course_dropdown{
+    text-align: left;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    width: 30%;
+    height: 40%;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+.search_post_form{
+    display: flex;
+    vertical-align: midde;;
+    align-items: center;
+}
+
+.new_post_btn{
+    height: 50%;
+    width: 30%;
+}
+
+.fa_serach{
+    width: 40%;
+    height: 45%;
+    background-color: white;
+}
+
+.fa_video_icon:hover{
+    cursor: pointer;
+}

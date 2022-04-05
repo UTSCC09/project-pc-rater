@@ -1,0 +1,264 @@
+.main{
+    padding-bottom: 50px;
+}
+
+.videos_container{
+    display: grid;
+    grid-template-columns: 330px 330px 330px;
+    grid-auto-rows: 200px;
+    grid-gap: 5px;
+}
+
+
+.self_video{
+    margin: 5px;
+    border: 1px solid black;
+    height: 150px;
+    width: 330px;
+    object-fit: cover;
+}
+
+.low_nav_bar{
+    padding: 10px;
+    background-color: black;
+    color: silver;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+
+.low_nav_bar_icon{
+    position: relative;
+    margin-left: 7px;
+    margin-right: 7px;
+    padding: 4px;
+}
+
+#screen_share_icon{
+    position: relative;
+    margin-left: 7px;
+    margin-right: 50px;
+    vertical-align: middle;
+    justify-content: center;
+}
+
+.current_message_username{
+    font-size: 15px;
+    color: grey;
+    margin-top: 5px;
+    margin-bottom: 3px;
+    margin-left: 15px;
+}
+
+.other_message_username{
+    margin-top: 5px;
+    font-size: 15px;
+    margin-left: 15px;
+    color: grey;
+    margin-bottom: 3px;
+}
+
+.low_nav_bar:hover{
+    cursor: pointer;
+}
+
+
+#low_nav_bar_icon_first{
+    margin-left: 60px;
+}
+
+.drawing_container{
+}
+
+.drawing_container_hidden{
+    display: none;
+}
+
+.self_video_hidden{
+    display: none;
+}
+
+.videos_container_hidden{
+    display: grid;
+    grid-template-columns: 440px 440px 440px;
+    grid-auto-rows: 200px;
+    display: none;
+}
+
+.low_nav_bar_text{
+    position: relative;
+    margin-left: 7px;
+    margin-right: 7px;
+    padding: 4px;
+}
+
+.selected_nav_bar_text{
+    background-color: #525252;
+}
+
+#first_low_nav_bar_text{
+    margin-left: 52%;
+    margin-right: 5px;
+}
+
+.chat_box{
+    height: 93%;
+    background-color: lightgrey;
+    position: fixed;
+    width: 220px;
+    top: 0;
+    right: 1px;
+}
+
+
+.fa_comment_icon{
+    margin-left: 90px;
+    margin-top: 5px;
+}
+
+.chat_container{
+    background-color: azure;
+    position: fixed;
+    top: 57px;
+    right: 2px;
+    bottom: 190px;
+    width: 250px;
+    align-items: center;
+}
+
+.messages_container{
+    height: 100%;
+    max-height: 100%;
+    overflow: auto;
+    width: 250px;
+    border: 1px solid black;
+    padding-bottom: 10px;
+    border-radius: 5px;
+}
+
+.send_message_text_area{
+    margin-top: 10px;
+    padding-left: 10px;
+    width: 98%; 
+    padding-top: 5px;
+    border-radius: 5px;
+    height: 80px;
+    outline: none;
+    width: 75%;
+}
+
+.leave_call_btn{
+    width: 70px;
+    height: 32px;
+    margin-left: 10px;
+    font-size: 15px;
+    color: lightgray;
+}
+
+.send_message_btn{
+    background-color: blue;
+    color: white;
+    border: none;
+    width: 75%;
+    height: 40px;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+.send_message_form{
+    width: 332px;
+}
+
+.username_text_below_video{
+    text-align: center;
+    margin-right: 30px;
+}
+
+.current_user_message{
+    max-width: 100%;
+    overflow-wrap: break-word;
+    background-color: #538eed;
+    color: white;
+    border: 1px solid lightgray;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-left: 13px;
+    text-align: center;
+    border-radius: 2%;
+}
+
+.other_user_message{
+    align-items: right;
+    margin-left: 13px;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    background-color: white;
+    color: black;
+    border: 1px solid lightgray;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-right: 4px;
+    text-align: center;
+    border-radius: 2%;
+}
+
+.message_container{
+    width: 150px;
+}
+
+.color-picker{
+    width: 50px;
+    margin-left: 3px;
+}
+
+.clear_board_btn{
+    width: 155px;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.change_color_text{
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.fa_eraser{
+    margin-bottom: 5px;
+    margin-left: 1px;
+}
+
+.fa_eraser_chosen{
+    margin-bottom: 5px;
+    margin-left: 1px;
+    background-color: lightslategrey;
+    padding: 3px;
+}
+
+.fa_drawing_icon_chosen{
+    margin-bottom: 5px;
+    margin-left: 1px;
+    background-color: lightslategrey;
+    padding: 3px;
+}
+
+.fa_drawing_icon{
+    margin-bottom: 5px;
+    margin-left: 1px;
+}
+
+.fa_drawing_icon:hover{
+    cursor: pointer;
+}
+
+.fa_eraser_chosen:hover{
+    cursor: pointer;
+}
+
+.fa_eraser:hover{
+    cursor: pointer;
+}

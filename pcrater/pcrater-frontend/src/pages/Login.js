@@ -3,7 +3,7 @@
 
 import React, { useState, useContext } from 'react';
 import { useMutation } from '@apollo/react-hooks';
-import { useForm    } from '../util/hooks';
+import { useForm } from '../util/hooks';
 import gql from 'graphql-tag';
 import './Login.css';
 import { AuthContext } from '../context/auth';
@@ -22,11 +22,11 @@ export default function Login() {
     const [loginUser, { loading }] = useMutation(LOGIN_USER, {
         update(_, result) {
             context.login(result.data.login);
-            navigate("/show-posts");
+            navigate("/posts");
         },
         onError(err) {
             if (err.graphQLErrors[0] !== undefined) {
-                setErrors(err.graphQLErrors[0].extensions.exception.errors);
+                setErrors(err.graphQLErrors[0].extensions.errors);
             }
         },
         variables: values
@@ -39,15 +39,24 @@ export default function Login() {
     return(
         <div className='div-login'>
             <div>
-                <h1 id="login-header">
+                <h1>
                     Login
                 </h1>
                 <form>
-                    <input type='email' name='email' placeholder='Enter your e-mail' required value={values.email} onChange={onChange} />
-                    <input type='password' name='password' placeholder='Enter your password' required value={values.password} onChange={onChange} />
+                    <input className="input" type='email' name='email' placeholder='Enter your e-mail' required value={values.email} onChange={onChange} />
+                    <input className="input" type='password' name='password' placeholder='Enter your password' required value={values.password} onChange={onChange} />
                 </form>
                 <button type='submit' noValidate onClick={onSubmit}>Login</button>
             </div>
+            {Object.keys(errors).length > 0 && (
+            <div className="ui-error-message">
+                <ul className="list">
+                    {Object.values(errors).map((value) => (
+                    <li key={value}>{value}</li>
+                    ))}
+                </ul>
+            </div>
+            )}
         </div>
     );
 }
@@ -62,6 +71,7 @@ const LOGIN_USER = gql`
             username
             email
             token
+            institution
         }
     }
 `;

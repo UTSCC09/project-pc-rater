@@ -44,6 +44,7 @@ const GET_COURSES_OF_STUDENT = gql`
         getCoursesOfStudent(username: $username) {
             courseCode
             courseName
+            university
         }
     } 
 `;
@@ -53,6 +54,7 @@ const GET_COURSES_OF_TA = gql`
         getCoursesOfTA(username: $username) {
             courseCode
             courseName
+            university
         }
     } 
 `;
@@ -62,8 +64,18 @@ const GET_COURSES_OF_PROFESSOR = gql`
         getCoursesOfProfessor(username: $username) {
             courseCode
             courseName
+            university
         }
     } 
+`;
+
+const UPDATE_UNIVERSITY = gql`
+    mutation($username: String!, $university: String!) {
+        updateUniversity(username: $username, university: $university) {
+            username
+            institution
+        }
+    }
 `;
 
 
@@ -113,9 +125,6 @@ const DELETE_USER_FROM_CLASS = gql`
     }
 `;
 
-const loadUniversity = (userResult) => {
-    return userResult.data.findUser.institution;
-}
 
 const determineSemester = () => {
     const year = new Date().getFullYear();
@@ -147,7 +156,7 @@ const New_Classes = () => {
     const [successMessage, setSuccessMessage] = useState('');
 
     const [show, setShow] = useState(false);
-    const [university, setUniversity] = useState("University of Toronto");
+    const [university, setUniversity] = useState("");
     const [universityInputVal, setUniversityInputVal] = useState("");
     const [universitiesJson, setUniversitiesJson] = useState({});
 
@@ -165,6 +174,10 @@ const New_Classes = () => {
         .catch((err) =>{
             console.log(err);
         });
+    });
+
+    let [ updateUniversity ] = useMutation(UPDATE_UNIVERSITY, {
+        refetchQueries: [ FIND_USER ]
     });
 
     let [ addNewCourse ] = useMutation(ADD_COURSE, {
@@ -187,12 +200,18 @@ const New_Classes = () => {
 
 
     
-    let allCoursesResult = useQuery(ALL_COURSES, {variables: { university }, skip: !university,});
     let userResult = useQuery(FIND_USER, {variables: { "username": user.username }, skip: !user.username,});
+    let allCoursesResult = useQuery(ALL_COURSES, {variables: { "university": university }, skip: !userResult.data});
     let userCoursesResult = useQuery(GET_COURSES_OF_STUDENT, {variables: { "username": user.username }, skip: !user.username});
     let userCoursesResultTA = useQuery(GET_COURSES_OF_TA, {variables: { "username": user.username }, skip: !user.username});
     let userCoursesResultProfessor = useQuery(GET_COURSES_OF_PROFESSOR, {variables: { "username": user.username }, skip: !user.username});
     
+
+    useEffect(() => {
+        if(!userResult.loading){
+            setUniversity(userResult.data.findUser.institution);
+        }
+    });
 
     useEffect(() => {
         if(!userCoursesResult.loading){
@@ -201,15 +220,15 @@ const New_Classes = () => {
     }, [userCoursesResult])
 
     useEffect(() => {
-        if(!allCoursesResult.loading){
+        if(!allCoursesResult.loading && allCoursesResult.data){
             setSearchResultsForCourses(allCoursesResult.data.getCourses);
-        };
-    }, [allCoursesResult])
+        }
+    }, [allCoursesResult]);
+
 
     if(allCoursesResult.loading || userResult.loading || userCoursesResult.loading || userCoursesResultTA.loading || userCoursesResultProfessor.loading){
         return <div>Loading...</div>
     }
-
 
 
     const handleClose = () => setShow(false);
@@ -224,7 +243,7 @@ const New_Classes = () => {
         setWillCreateNewClass(!willCreateNewClass);
     }
 
-    const addNewClass = () => {
+    const addNewClass = async () => {
         let classObj = allCoursesResult.data.getCourses.find(classElmt => classElmt.courseCode == classCode);
         if(classObj){
             setCourseNameError('Course already exists');
@@ -239,8 +258,9 @@ const New_Classes = () => {
             setCourseNameError('');
             setUniversityError('');
             setShowError(false);
-            addNewCourse({ variables: { "courseName": courseName, "courseCode": classCode, "university": university, "semester": current_semester } });
-            setSuccessMessage("Course added successfully! Now you can join the course as a professor.");
+            let value = await addNewCourse({ variables: { "courseName": courseName, "courseCode": classCode, "university": userResult.data.findUser.institution, "semester": current_semester } });
+            addNewProfessorToCourse({ variables: { "courseCode": classCode, "username": user.username } });
+            setSuccessMessage("Course added successfully! You have joined the course as a professor.");
             setShowSuccess(true);
             setCourseName('');
             setClassCode('');
@@ -263,13 +283,12 @@ const New_Classes = () => {
             setShowError(false);
             setSuccessMessage("You joined the course successfully");
             setShowSuccess(true);
-            switch(joinAsSelection.toLowerCase()){
-                case "student":
-                    addNewStudentToCourse({ variables: { "courseCode": classCode, "username": user.username } });
-                case "ta":
-                    addNewTAToCourse({ variables: { "courseCode": classCode, "username": user.username } });
-                default: // "professor"
-                    addNewProfessorToCourse({ variables: { "courseCode": classCode, "username": user.username } });
+            if(joinAsSelection.toLowerCase() === "student"){
+                addNewStudentToCourse({ variables: { "courseCode": classCode, "username": user.username } });
+            }else if(joinAsSelection.toLocaleLowerCase() === "ta"){
+                addNewTAToCourse({ variables: { "courseCode": classCode, "username": user.username } });
+            }else if(joinAsSelection.toLocaleLowerCase() === "professor"){
+                addNewProfessorToCourse({ variables: { "courseCode": classCode, "username": user.username } });
             }
         }
     }
@@ -284,7 +303,8 @@ const New_Classes = () => {
         if(newValue){
             let universityObject = universitiesJson.find(elmt => elmt.name.toLowerCase() == newValue.toLowerCase());
             if(universityObject){
-                setUniversity(universityObject.name);
+                // setUniversity(universityObject.name);
+                updateUniversity({ variables: { "username": user.username, "university": universityObject.name } })
                 setShow(false);
                 setUniversityError('');
             }else{
@@ -298,12 +318,12 @@ const New_Classes = () => {
 
 
     return (
-        <div className="main" style={{ display: "flex" }}>
-            <div className="subContainer" style={{ alignItems: 'center' }}>
-                <h2 style={{ textAlign: "center" }} className="universityHeader">{university}</h2>
-                <p style={{ textAlign: "center" }} onClick={handleShow}>(Change school)</p>
+        <div className="main">
+            <div className="subContainer">
+                <h2 className="text-center">{userResult.data.findUser.institution}</h2>
+                <p className="text-center" onClick={handleShow}>(Change school)</p>
                 {((universityError !== '' || courseNameError !== '') && showError) &&                
-                <ErrorMessage errorMessage={universityError === '' ? courseNameError : universityError} setShowError={setShowError} />
+                <ErrorMessage isDismissible="dismissble" errorMessage={universityError === '' ? courseNameError : universityError} setShowError={setShowError} />
                 }
                 {
                     (showSuccess &&  successMessage !== '') &&
@@ -314,8 +334,8 @@ const New_Classes = () => {
                     <Modal.Title>Change schools</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <form>
-                            <SearchBar placeholder="Enter the name of your university" setSearchWord ={setUniversityInputVal} data={universitiesJson} attributeToSearchFor="name" />
+                        <form className="w-75 px-4">
+                            <SearchBar placeholder="Enter university name" setSearchWord ={setUniversityInputVal} data={universitiesJson} attributeToSearchFor="name" />
                         </form>
                     </Modal.Body>
                     <Modal.Footer>
@@ -327,34 +347,35 @@ const New_Classes = () => {
                     </Button>
                     </Modal.Footer>
                 </Modal>
-                <div style={{ justifyContent: "center" }}>
-                    <Card style={{ width: '50rem' }}>
+                <div className='justify-content-center'>
+                    <Card className='classCard'>
                         <Card.Header style = {{ textAlign: "left", fontWeight: "bold", fontSize: "18px" }}>{current_semester} classes</Card.Header>
                         <ListGroup  variant="flush" className="courses_list" style = {{ textAlign: 'left' }}>
                             {userCoursesResult.data.getCoursesOfStudent.map(classCode => {
-                              return <ListGroup.Item> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName}</ListGroup.Item>  
+                              return <ListGroup.Item> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName} - {classCode.university}</ListGroup.Item>  
                             })}
+
                             {userCoursesResultTA.data.getCoursesOfTA.map(classCode => {
-                              return <ListGroup.Item> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName} <span style={{ color: "grey" }}> (TA)</span></ListGroup.Item>  
+                              return <ListGroup.Item> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName} - {classCode.university} <span className='text-secondary'> (TA)</span></ListGroup.Item>  
                             })}
+
                             {userCoursesResultProfessor.data.getCoursesOfProfessor.map(classCode => {
-                              return <ListGroup.Item> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName} <span style={{ color: "grey" }}> (Professor)</span></ListGroup.Item>  
+                              return <ListGroup.Item> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName} - {classCode.university} <span className='text-secondary'> (Professor)</span></ListGroup.Item>  
                             })}
-                            
- 
                         </ListGroup>
-                        <Form style={{ marginTop: "10px" }}>
+                            
+                        <Form className="mt-2">
                             <Form.Check
                              onClick={() => handleCreateNewClassClick()} 
                              style = {{ textAlign: "left", marginLeft: "10px", marginTop: "5px", marginBottom: "10px" }} 
                              label="Create new class? (professors only)" 
                              />
-                            <div style={{ display: "flex" }}>
+                            <div className="d-flex">
                                 {
                                     willCreateNewClass &&
-                                    <div style={{ display: "flex", width: "100%" }}>
-                                        <Form.Control placeholder="Enter class name" size="lg" style={{ marginLeft: "5px", marginRight: "5px" }} onChange={(e) => setCourseName(e.target.value)} /> 
-                                        <Form.Control placeholder="Enter class code" size="lg" style={{ marginLeft: "5px", marginRight: "5px" }} onChange={(e) => setClassCode(e.target.value)} />
+                                    <div className="d-flex w-100">
+                                        <Form.Control placeholder="Enter class name" size="lg" className="ml-1 mr-1" onChange={(e) => setCourseName(e.target.value)} /> 
+                                        <Form.Control placeholder="Enter class code" size="lg" className="ml-1 mr-1" onChange={(e) => setClassCode(e.target.value)} />
                                     </div>
                                 }
 
@@ -371,7 +392,7 @@ const New_Classes = () => {
                             </div>
                         </Form>
                         {!willCreateNewClass &&
-                        <Dropdown style={{ textAlign: "left", marginBottom: "5px", marginLeft: "5px", width: "30%" }}>
+                        <Dropdown className="text-left mb-1 mt-4 ml-1 w-25">
                             <Dropdown.Toggle id="dropdown-basic">
                                 Join as a {joinAsSelection}
                             </Dropdown.Toggle>
@@ -387,15 +408,15 @@ const New_Classes = () => {
                         }       
 
                         {willCreateNewClass ?
-                        <Button style={{ marginTop: "10px", width: "100%" }} variant="primary" size="lg" onClick={() => addNewClass()}>
+                        <Button className="mt-2 w-100" variant="primary" size="lg" onClick={() => addNewClass()}>
                         Create new class
                         </Button> :
-                        <Button style={{ marginTop: "10px", width: "100%" }} variant="primary" size="lg" onClick={() => joinNewClass()}>
+                        <Button className="mt-2 w-100" variant="primary" size="lg" onClick={() => joinNewClass()}>
                         Join new class
                         </Button>
                         }
  
-                        <h6 style={{ textAlign: "center" }} className='browse_classes_title'>Browse current classes</h6>
+                        <h6 className='browse_classes_title'>Browse current classes</h6>
 
                     </Card>
                 </div>
