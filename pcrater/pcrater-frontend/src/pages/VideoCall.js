@@ -166,6 +166,7 @@ const LowNavBar = ({ socket, peersList, isDrawing, setIsDrawing, videoStream, se
     const audioForScreenSharing = useRef();
     const previousUserScreenRef = useRef();
     const navigate = useNavigate();
+    const { user } = useContext(AuthContext);
 
 
     const shareScreen = () => {
@@ -259,7 +260,8 @@ const LowNavBar = ({ socket, peersList, isDrawing, setIsDrawing, videoStream, se
                 <span onClick={() => setIsDrawing(true)} className='low_nav_bar_text selected_nav_bar_text'> Drawing </span>
             }
             <Button variant="danger" size="sm" className="leave_call_btn" onClick={() => {
-                socket.emit("user leaves disconnect");
+                //socket.emit("user leaves disconnect");
+                socket.emit("user leaves disconnect", user.username);
                 setIsVideoOn(false);
                 navigate('/posts');
             } }>Leave</Button>
@@ -375,12 +377,14 @@ const VideoCall = () => {
                      item.peer.signal(data.signal);
                 });
      
-                socket.on("user disconnect", function(id){
-                     const peerObj = peersListRef.current.find(p => p.peerID === id);
+                socket.on("user disconnect", function(username){
+                     //const peerObj = peersListRef.current.find(p => p.peerID === id);
+                     const peerObj = peersListRef.current.find(p => p.username === username);
                      if(peerObj){
                          peerObj.peer.destroy();
                      }
-                     const peersList = peersListRef.current.filter(p => p.peerID !== id);
+                     //const peersList = peersListRef.current.filter(p => p.peerID !== id);
+                     const peersList = peersListRef.current.filter(p => p.username !== username);
                      peersListRef.current = peersList;
                      setPeers(peersList);
                 });

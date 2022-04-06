@@ -190,10 +190,12 @@ io.on('connection', socket => {
     io.to(userID).emit('receiving', returningSignal);
   });
 
-  socket.on("user leaves disconnect", () => {
-    if(socketIdAndUserName) socketIdAndUserName = socketIdAndUserName.filter(elmt => elmt[0] !== id);
+  socket.on("user leaves disconnect", (username) => {
+    //if(socketIdAndUserName) socketIdAndUserName = socketIdAndUserName.filter(elmt => elmt[0] !== id);
+    if(socketIdAndUserName) socketIdAndUserName = socketIdAndUserName.filter(elmt => elmt[1] !== username);
     if(socketIdAndUserName.length == 0) drawingBoardData = undefined;
-    socket.broadcast.emit('user disconnect', id);
+    //socket.broadcast.emit('user disconnect', id);
+    socket.broadcast.emit('user disconnect', username);
   });
 
   socket.on('disconnect', () => {
