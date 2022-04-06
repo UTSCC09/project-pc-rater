@@ -4,7 +4,7 @@ const User = require('../../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { UserInputError } = require('apollo-server');
-
+const validator = require('validator');
 const { validateRegisterInput, validateLoginInput } = require('../../util/validators');
 
 const { SECRET_KEY } = require('../../config');
@@ -17,7 +17,7 @@ function generateToken(user) {
             username: user.username
         },
             SECRET_KEY,
-        { expiresIn: '1h' }
+        { expiresIn: '24h' }
     );
 }
 
@@ -49,6 +49,7 @@ module.exports = {
             }
       
             const user = await User.findOne({ email });
+
       
             if (!user) {
               errors.general = 'User not found';
@@ -125,6 +126,16 @@ module.exports = {
               createdAt: res.createdAt,
               token
             };
+        
+        },
+        async updateUniversity(_, { username, university }){
+          const user = await User.findOne({ "username": validator.escape(username) });
+          if (!user) {
+            throw new UserInputError('User not found');
+          }
+          user.institution = validator.escape(university);
+          user.save();
+          return user;
         }
     }
 }

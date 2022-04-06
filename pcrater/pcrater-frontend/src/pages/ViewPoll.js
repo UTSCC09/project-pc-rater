@@ -11,6 +11,7 @@ import Alert from 'react-bootstrap/Alert';
 import CloseButton from 'react-bootstrap/CloseButton';
 import { useNavigate } from "react-router-dom";
 import {useLocation} from 'react-router-dom';
+import './ViewPoll.css';
 
 const ViewPollResults = () => {
     const location = useLocation(); 
@@ -24,10 +25,10 @@ const ViewPollResults = () => {
 
 
     return (
-        <div className="main" style={{ display: "flex" }}>
-            <div className="subContainer" style={{ alignItems: 'center' }}>
-                <h2 style={{ textAlign: "center" }}>{title}</h2>
-                <Card style={{ width: '50rem', padding: "10px" }}>
+        <div clasName='d-flex'>
+            <div className="align-items-center">
+                <h2 className='text-center'>{title}</h2>
+                <Card className="view_poll_card">
                     <h5>{description}</h5>
                     <Form>
                         {didVote ?
@@ -38,7 +39,7 @@ const ViewPollResults = () => {
                                 })}
                             </Form>
 
-                            <Button disabled onClick={handleSubmitPoll} style={{ marginTop: "10px", width: "30%" }}>Submit</Button>
+                            <Button disabled onClick={handleSubmitPoll} className="mt-2 w-25">Submit</Button>
                         </div> 
                         :
                         <div>
@@ -49,7 +50,7 @@ const ViewPollResults = () => {
                                 })}
                             </Form>
                             
-                            <Button onClick={handleSubmitPoll} style={{ marginTop: "10px", width: "30%" }}>Submit</Button>
+                            <Button onClick={handleSubmitPoll} className="mt-2 w-25">Submit</Button>
                         </div>
 
                         }

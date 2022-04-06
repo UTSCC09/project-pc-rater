@@ -1,41 +1,47 @@
 import React, { useState } from 'react';
 import { Nav } from 'react-bootstrap';
 import './ShowPosts.css';
+import './Post.css';
 import SearchBar from '../components/SearchBar';
 import { gql, useQuery, useMutation } from '@apollo/client';
 
-const GET_POSTS = gql`
-query findPosts {
-    getPosts {
-        name
-        role
-        course
-        title
-        content
-        visibility
-        type
-        createdAt
-    }
-}`;
 
-export default function ShowPosts() {
-    let allPostsResult = useQuery(GET_POSTS);
-    if(allPostsResult.loading){
-        return <div>Loading...</div>
+export default function ShowPosts({ isSearching, filteredData, postsData, setCreateOrShow, selectedCourse, currentPost, setPost }) {
+    let reversePostsData = [];
+    if(isSearching && filteredData){
+        reversePostsData = filteredData.slice();
+        reversePostsData = reversePostsData.reverse();
+    }else if(postsData){
+        reversePostsData = postsData.slice();
+        reversePostsData = reversePostsData.reverse();
     }
+
 
     return(
-        <div>
+        <div id="posts_container">
             <div id="post-functions">
-                <Nav.Link href="create-post" className="create_post_btn">Create Post</Nav.Link>
-                <SearchBar/>
             </div>
             <div id="posts">
-            {allPostsResult.data.getPosts.map(post => {
-                return <div className="post"> 
-                    <div className="post_name">{post.name}</div>
-                    <div className="post_content">{post.content}</div>
-                    <div className="post_date">{post.createdAt}</div>
+            {reversePostsData && reversePostsData.map(post => {
+                return <div className={currentPost.title === post.title ? "bg-azure post" : "bg-light post"} onClick={() => {
+                    setCreateOrShow(false);
+                    setPost(post);
+                }}> 
+                    <div className="post_name">
+                        {post.role == "Student" &&
+                            <span className='s_span'>S</span> 
+                        }
+                        {post.role == "TA" &&
+                            <span className='t_span'>T</span> 
+                        }
+                        {post.role == "Professor" &&
+                            <span className='p_span'>I</span> 
+                        }
+                        &nbsp;{post.title}</div>
+                    <div className='d-flex justify-content-around'>
+                        <div className="post_content">{post.content}</div>
+                        <div  className="post_date">{post.createdAt}</div>
+                    </div>
                 </div>
             })}
             </div>

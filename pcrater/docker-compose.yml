@@ -1,0 +1,27 @@
+version: "3"
+services:
+  react-app:
+    image: react-app
+    build: ./pcrater-frontend/
+    stdin_open: true
+    ports:
+      - "3000:3000"
+    expose:
+      - 3000
+    networks:
+      - merng-app
+
+  api-server:
+    image: api-server
+    build: 
+      context: ./server
+      dockerfile: ./server/Dockerfile.production
+    ports:
+      - "5000:5000"
+    networks:
+      - merng-app
+
+networks:
+  merng-app:
+    driver: bridge
+
