@@ -18,6 +18,7 @@ import { v1 as uuid } from "uuid";
 import './Posts.css';
 import ErrorMessage from "../components/ErrorMessage";
 import { useNavigate } from "react-router-dom";
+import ViewPollResults from './ViewPoll';
 
 const ADD_USER_TO_ROOM_FOR_COURSE = gql`
     mutation($username: String!, $courseCode: String!){
@@ -120,6 +121,11 @@ query findPosts($courseCode: String!) {
         visibility
         type
         createdAt
+        poll_options {
+            users
+            option
+            numVotes
+        }
         upvotes
         upvotes_list {
             username
@@ -324,8 +330,12 @@ const Posts = () => {
                 <CreatePost setIsSearching={setIsSearching} createPostFunction={createPostFunction} role={role} selectedCourse={selectedCourse}  />
             }
 
-            {(!createOrShow && selectedCourse !== '') &&
+            {(!createOrShow && selectedCourse !== '' && post.type == 'Question') &&
                 <Post role={role} post={post} />
+            }
+
+            {(!createOrShow && selectedCourse !== '' && post.type == 'Poll') &&
+                <ViewPollResults title={post.title} description={post.content} options={post.poll_options} postId={post.id} />
             }
 
         </div>

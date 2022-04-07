@@ -2,7 +2,7 @@ const Post = require('../../models/Post');
 const Course = require('../../models/Course');
 let User = require('../../models/User');
 const { UserInputError } = require('apollo-server');
-const { validatePostInput, validateUpdateInput, validateAddCommentInput } = require('../../util/validators');
+const { validateUsernameInput, validatePostInput, validateUpdateInput, validateAddCommentInput, validatePollInput } = require('../../util/validators');
 const validator = require('validator');
 
 
@@ -78,6 +78,7 @@ module.exports = {
                 visibility: validator.escape(visibility),
                 type: validator.escape(type),
                 createdAt,
+                poll_options: [],
                 upvotes: 0,
                 upvotes_list: [],
                 comments: []
@@ -88,15 +89,15 @@ module.exports = {
             return postObj;
         },
 
-        async updatePost(_, { id, title, content, visibility }) {
-            const { errors, valid } = validateUpdateInput(validator.escape(title), validator.escape(content), validator.escape(visibility));
+        async updatePost(_, { id, title, content }) {
+            const { errors, valid } = validateUpdateInput(validator.escape(title), validator.escape(content));
             
             if (!valid) {
                 throw new UserInputError('Errors', { errors });
             }
 
             await Post.findByIdAndUpdate(id, { title: validator.escape(title),
-                content: validator.escape(content), visibility: validator.escape(visibility)});
+                content: validator.escape(content)});
             
             postObj = await Post.findById(id);
 
@@ -224,6 +225,102 @@ module.exports = {
             commentObj.upvotes = commentObj.upvotes + 1;
             commentObj.upvotes_list.push({"username": validator.escape(username)});
             postObj.save();
+            return postObj;
+        },
+
+        async addPoll(_, { username, role, course, title, content, visibility, poll_options }) {
+            const { errors, valid } = validatePollInput(validator.escape(username), validator.escape(role), validator.escape(course), 
+            validator.escape(title), validator.escape(content), validator.escape(visibility), poll_options);
+            if (!valid) {
+                throw new UserInputError('Errors', { errors });
+            }
+
+            let courseObj = await Course.findOne({ "courseCode": validator.escape(course) } ).populate("professors").populate("students").populate("teachingAssistants");
+            let userObj = await User.findOne({ "username": validator.escape(username) });
+            if(!userObj){
+                throw new UserInputError('A user with username ' + username + ' is not found.', {
+                    errors: {
+                      user_not_found: 'User is not found.'
+                    }
+                  });
+            }else if(!courseObj){
+                throw new UserInputError('A course  with course code ' + course + ' is not found.', {
+                    errors: {
+                      course_not_found: 'Course is not found.'
+                    }
+                  });
+            }
+            else if(![...courseObj.students].map(student => student.username).includes(validator.escape(username)) && ![...courseObj.teachingAssistants].map(ta => ta.username).includes(validator.escape(username)) && ![...courseObj.professors].map(prof => prof.username).includes(validator.escape(username))){
+                throw new UserInputError('A user with username ' + username + ' is not part of the course.', {
+                    errors: {
+                      user_already_exists: 'User is not part of the course.'
+                    }
+                  });
+            }
+
+            const createdAt = getCurDateInYearMonthDayFormat();
+
+            const pollObj = new Post({
+                username: validator.escape(username), 
+                role: validator.escape(role), 
+                course: validator.escape(course), 
+                title: validator.escape(title), 
+                content: validator.escape(content), 
+                visibility: validator.escape(visibility),
+                type: "Poll",
+                createdAt,
+                poll_options: poll_options.map(option => ({"users": [], "option": option, "numVotes": 0})),
+                upvotes: 0,
+                upvotes_list: [],
+                comments: [],
+            });
+
+            await pollObj.save();
+
+            return pollObj;
+        }, 
+
+        async addVote(_, { username, option, postId }) {
+            const { errors, valid } = validateUsernameInput(validator.escape(username));
+            
+            if (!valid) {
+                throw new UserInputError('Errors', { errors });
+            }
+
+            let userObj = await User.findOne({ "username": validator.escape(username) });
+            if(!userObj){
+                throw new UserInputError('A user with username ' + username + ' is not found.', {
+                    errors: {
+                      user_not_found: 'User is not found.'
+                    }
+                  });
+            }
+
+            let postObj = await Post.findById(postId);
+            if(!postObj){
+                throw new UserInputError('A post with id ' + postId + ' is not found.', {
+                    errors: {
+                      post_not_found: 'Post is not found.'
+                    }
+                  });
+            }
+
+            let index = postObj.poll_options.findIndex(op => option == op.option);
+
+            if (postObj.poll_options[index].users.includes(username)) {
+                throw new UserInputError("User with username " + username + " has already voted", {
+                    errors: {
+                        user_already_exists: 'User already exists.'
+                      }
+                });
+            }
+            
+            postObj.poll_options[index].numVotes+=1;
+
+            postObj.poll_options[index].users.push(username);
+
+            await postObj.save();
+
             return postObj;
         }
     }
