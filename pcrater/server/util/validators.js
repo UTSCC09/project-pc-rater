@@ -105,19 +105,13 @@ module.exports.validateRegisterInput = (
     };
   };
 
-  module.exports.validateUpdateInput = (title, content, visibility) => {
+  module.exports.validateUpdateInput = (title, content) => {
     const errors = {};
     if (title.trim() === '') {
       errors.title = 'title must not be empty';
     }
     if (content.trim() === '') {
       errors.content = 'content must not be empty';
-    }
-    if (visibility.trim() === '') {
-      errors.visibility = 'visibility must be either public or private';
-    } else if (visibility.toLowerCase() != 'public' && 
-    visibility.toLowerCase() != 'private') {
-      errors.visibility = 'visibility must be either public or private';
     }
     
     return {
@@ -157,6 +151,55 @@ module.exports.validateRegisterInput = (
     }
     if(university.trim() === ''){
       errors.university = 'university must not be empty';
+    }
+
+    return {
+      errors,
+      valid: Object.keys(errors).length < 1
+    };
+  };
+
+  module.exports.validatePollInput = (username, role, course, title, content, visibility, poll_options) => {
+    const errors = {};
+    if (username.trim() === '') {
+      errors.username = 'username must not be empty';
+    }
+    if (role.trim() === '') {
+      errors.role = 'role must be either Professor, TA, or Student';
+    } else if (role.toLowerCase() != 'professor' && 
+    role.toLowerCase() != 'ta' && role.toLowerCase() != 'student') {
+      errors.role = 'role must be either Professor, TA, or Student';
+    }
+    if (course.trim() === '') {
+      errors.course = 'course must not be empty';
+    }
+    if (title.trim() === '') {
+      errors.title = 'title must not be empty';
+    }
+    if (content.trim() === '') {
+      errors.content = 'content must not be empty';
+    }
+    if (visibility.trim() === '') {
+      errors.visibility = 'visibility must be either public or private';
+    } else if (visibility.toLowerCase() != 'public' && 
+    visibility.toLowerCase() != 'private') {
+      errors.visibility = 'visibility must be either public or private';
+    }
+    
+    poll_options.forEach(option => {
+      if(option.trim() === '') errors.poll_options = "poll options cannot be empty";
+    });
+
+    return {
+      errors,
+      valid: Object.keys(errors).length < 1
+    };
+  };
+
+  module.exports.validateUsernameInput = (username) => {
+    const errors = {};
+    if (username.trim() === '') {
+      errors.username = 'username must not be empty';
     }
 
     return {

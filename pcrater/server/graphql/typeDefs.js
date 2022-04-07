@@ -24,6 +24,7 @@ module.exports = gql`
     visibility: String!
     type: String!
     createdAt: String!
+    poll_options: [Poll!]
     upvotes: Int!
     upvotes_list: [Upvote!]
     comments: [Comment!]
@@ -53,19 +54,22 @@ module.exports = gql`
     students: [User!]
   }
   type Poll {
-    id: ID!
-    courseCode: String!
-    title: String!
-    description: String!
-    createdAt: String!
-    options: [String!]!
-  }
-  type Vote { 
-    id: ID!
+    # id: ID!
+    # courseCode: String!
+    # title: String!
+    # description: String!
+    # createdAt: String!
+    # options: [String!]!
+    users: [String!]
     option: String!
-    username: String!
-    poll: Poll!
+    numVotes: Int!
   }
+  # type Vote { 
+  #   id: ID!
+  #   option: String!
+  #   username: String!
+  #   poll: Poll!
+  # }
   type Query {
     getPosts(courseCode: String!): [Post]
     getPost(id: ID!): Post
@@ -89,10 +93,13 @@ module.exports = gql`
       deleteUserFromCourseRoom(username: String!, courseCode: String!): Course!
       deleteCourseForUser(courseCode: String!, username: String!): Course!
       addPost(username: String!, role: String!, course: String!, title: String!, content: String!, visibility: String!, type: String!): Post!
-      updatePost(id: ID!, title: String!, content: String!, visibility: String!): Post!
+      updatePost(id: ID!, title: String!, content: String!): Post!
       deletePost(id: ID!): Post!
       addComment(id: ID!, content: String!, author: String!, role: String!): Post!
       increaseUpvotesPost(id: ID!, username: String!): Post
       increaseUpvotesComment(postId: ID!, commentId: ID!, username: String!): Post
+      addPoll(username: String!, role: String!, course: String!, title: String!, content: String!, visibility: String!, poll_options: [String!]): Post!
+      addVote(username: String!, option: String!, postId: ID!): Post!
+
   }
 `;

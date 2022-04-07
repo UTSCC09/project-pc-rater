@@ -41,6 +41,11 @@ const GET_POST = gql`
         getPost(id: $id){
             title
             content
+            poll_options {
+                users
+                option
+                numVotes
+            }
             upvotes
             upvotes_list{
                 username
@@ -114,12 +119,26 @@ const INCREASE_UPVOTES_POST = gql`
     }
 `;
 
-
+const UPDATE_POST = gql`
+    mutation($id: ID!, $title: String!, $content: String!) {
+    updatePost (id: $id, title: $title, content: $content) {
+        username
+        role
+        course
+        title
+        content
+        type
+    }
+  }
+`;
 
 
 const Post = ({ post, role }) => {
     const [ commentContent, setCommentContent ] = useState("");
     const { user } = useContext(AuthContext);
+    const [ isEditing, setIsEditing ]  = useState(false); 
+    const [ title, setTitle] = useState(post.title);
+    const [ content, setContent] = useState(post.content);
 
     let postResult = useQuery(GET_POST, { variables: { "id": post.id }, skip: !post.id });
     let [ addNewComment ] = useMutation(ADD_COMMENT, {
@@ -132,9 +151,27 @@ const Post = ({ post, role }) => {
         refetchQueries: [ GET_POST ]
     });
 
+    let [ updatePost ] = useMutation(UPDATE_POST, {
+        refetchQueries: [ GET_POST ]
+    });
+
+
     if(postResult.loading){
         return <div>Loading...</div>
     }
+
+    function editHandler() {
+        setIsEditing(true);
+    }
+
+    function submitHandler() {
+        setIsEditing(false);
+        if (post.username == user.username) {
+            updatePost({ variables: { "id": post.id, "title": title, "content": content } });
+        }
+        window.location.reload();
+    }
+
 
 
     return (
@@ -150,12 +187,18 @@ const Post = ({ post, role }) => {
                     {post.role == "Professor" &&
                         <span className="p_span">I</span>  
                     }
-                    &nbsp;{post.title}
+                    &nbsp;{!isEditing ? <span>{postResult.data.getPost.title}</span> : <input placeholder="Enter new title" defaultValue={post.title} onChange={(e) => setTitle(e.target.value)}/>}
                 
                 </Card.Title>
-                <Card.Text className="post_content">{post.content}</Card.Text>
+                <Card.Text className="post_content">{!isEditing ? <span>{postResult.data.getPost.content}</span> : <input placeholder="Enter new content" defaultValue={post.content} onChange={(e) => setContent(e.target.value)}/>}</Card.Text>
                 <Card.Footer className="card_footer">
-                    <Button size="sm" className="edit_button">Edit</Button>
+                    {(!isEditing && (post.username == user.username)) ?
+                        <Button size="sm" className="edit_button" onClick={editHandler}>Edit</Button> :
+                        (isEditing) ?
+                        <Button size="sm" className="edit_button" onClick={submitHandler}>Submit</Button> :
+                        null
+                    }
+                    {/* <Button size="sm" className="edit_button" onClick={editHandler}>Edit</Button> */}                    
                     {postResult.data.getPost.upvotes_list.map(upvote => upvote.username).includes(user.username) ?
                     <div className="good_question_text" style = {{ marginLeft: "20px", color: "blue", fontSize: "12px" }}>You have upvoted |  {postResult.data.getPost.upvotes}</div> :
                     <div onClick={() => increaseUpvotesPost({ variables: { "id": post.id, "username": user.username } })} className="good_question_text" style = {{ marginLeft: "20px", color: "blue", fontSize: "12px" }}>Good question |  {postResult.data.getPost.upvotes}</div>
