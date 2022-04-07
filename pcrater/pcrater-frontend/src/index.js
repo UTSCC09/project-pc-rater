@@ -13,8 +13,7 @@ import {
 } from '@apollo/client';
 
 const httpLink = createHttpLink({
-  uri: 'http://localhost:5000/'
-  //deployment http://159.203.57.14:5000
+  uri: 'https://pcrater.me/api'
 });
 
 const client = new ApolloClient({

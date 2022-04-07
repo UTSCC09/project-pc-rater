@@ -166,7 +166,6 @@ const LowNavBar = ({ socket, peersList, isDrawing, setIsDrawing, videoStream, se
     const audioForScreenSharing = useRef();
     const previousUserScreenRef = useRef();
     const navigate = useNavigate();
-    const { user } = useContext(AuthContext);
 
 
     const shareScreen = () => {
@@ -260,8 +259,7 @@ const LowNavBar = ({ socket, peersList, isDrawing, setIsDrawing, videoStream, se
                 <span onClick={() => setIsDrawing(true)} className='low_nav_bar_text selected_nav_bar_text'> Drawing </span>
             }
             <Button variant="danger" size="sm" className="leave_call_btn" onClick={() => {
-                //socket.emit("user leaves disconnect");
-                socket.emit("user leaves disconnect", user.username);
+                socket.emit("user leaves disconnect");
                 setIsVideoOn(false);
                 navigate('/posts');
             } }>Leave</Button>
@@ -308,89 +306,92 @@ const VideoCall = () => {
     const videoStream = useRef();
     const peersListRef = useRef([]);
 
-    let socket = io.connect('http://localhost:8000/');
+    let socket = io.connect('https://pcrater.me', {
+	path: "/videocall"
+    });
 
     useEffect(() => {
-        socket = io.connect('http://localhost:8000/');
+        //socket = io.connect('https://pcrater.me/videocall');
+	socket = io.connect('https://pcrater.me', {
+		path: "/videocall"
+    	});
 
-        socket.emit("check if user is in room", { "username": user.username, roomID });
+    socket.emit("check if user is in room", { "username": user.username, roomID });
 
-        socket.on("user is already in room", () => {
-            setShowModal(true);
-        }); 
+    socket.on("user is already in room", () => {
+        setShowModal(true);
+    }); 
 
-        socket.on("user is not in room yet", () => {
-            navigator.mediaDevices.getUserMedia({ video: {
-                height: 150,
-                width: 330
-            }, audio: true }).then(stream => {
-           
-                videoStream.current.srcObject = stream;
-                socket.emit("joining", roomID);
-                
-                socket.on("socket id", (id) => {
-                     setSocketID(id);
-                });
-     
-     
-                socket.on("message", (data) => {
-                    if(data.roomID === roomID){
-                        if(data.socketID !== socket.id){
-                            setIsNewMessage(true);
-                        }
-                        setMessages(prevMessages => [...prevMessages, data]);
+    socket.on("user is not in room yet", () => {
+        navigator.mediaDevices.getUserMedia({ video: {
+            height: 150,
+            width: 330
+        }, audio: true }).then(stream => {
+        
+            videoStream.current.srcObject = stream;
+            socket.emit("joining", roomID);
+            
+            socket.on("socket id", (id) => {
+                    setSocketID(id);
+            });
+    
+    
+            socket.on("message", (data) => {
+                if(data.roomID === roomID){
+                    if(data.socketID !== socket.id){
+                        setIsNewMessage(true);
                     }
-                });
-                
-                socket.on("init", (usersList) => {
-                    socket.emit("get cur board", roomID);
-                    usersList.forEach(curUser  => {
-                        const peerToPush = constructNewPeer(curUser[0], socket.id, stream);
-                        peersListRef.current.push({
-                            peerID: curUser[0] , 
-                            peer: peerToPush,
-                            username: curUser[1]
-                        });
-                        setPeers(old_peers => [...old_peers, {
-                            peerID: curUser[0],
-                            peer: peerToPush,
-                            username: curUser[1]
-                        }]);
-                    });
-                });
-     
-                socket.on("joined room", (data) => {
-                    const { sig, userOnCallID, username } = data;
-                    const peerToPush = appendToPeers(sig, userOnCallID, stream);
+                    setMessages(prevMessages => [...prevMessages, data]);
+                }
+            });
+            
+            socket.on("init", (usersList) => {
+                socket.emit("get cur board", roomID);
+                usersList.forEach(curUser  => {
+                    const peerToPush = constructNewPeer(curUser[0], socket.id, stream);
                     peersListRef.current.push({
-                        peerID: userOnCallID,
+                        peerID: curUser[0] , 
                         peer: peerToPush,
-                        username: username
+                        username: curUser[1]
                     });
-     
-     
-                    setPeers(old_peers => [...old_peers, { peer: peerToPush, peerID: userOnCallID, username }]);
+                    setPeers(old_peers => [...old_peers, {
+                        peerID: curUser[0],
+                        peer: peerToPush,
+                        username: curUser[1]
+                    }]);
                 });
-     
-                socket.on("receiving", (data) => {
-                     const item =  peersListRef.current.find(p => p.peerID === data.id);
-                     item.peer.signal(data.signal);
+            });
+    
+            socket.on("joined room", (data) => {
+                const { sig, userOnCallID, username } = data;
+                const peerToPush = appendToPeers(sig, userOnCallID, stream);
+                peersListRef.current.push({
+                    peerID: userOnCallID,
+                    peer: peerToPush,
+                    username: username
                 });
+    
+    
+                setPeers(old_peers => [...old_peers, { peer: peerToPush, peerID: userOnCallID, username }]);
+            });
+    
+            socket.on("receiving", (data) => {
+                    const item =  peersListRef.current.find(p => p.peerID === data.id);
+                    item.peer.signal(data.signal);
+            });
+    
+            socket.on("user disconnect", function(id){
+                    const peerObj = peersListRef.current.find(p => p.peerID === id);
+                    if(peerObj){
+                        peerObj.peer.destroy();
+                    }
+                    const peersList = peersListRef.current.filter(p => p.peerID !== id);
+                    peersListRef.current = peersList;
+                    setPeers(peersList);
+            });
      
-                socket.on("user disconnect", function(username){
-                     //const peerObj = peersListRef.current.find(p => p.peerID === id);
-                     const peerObj = peersListRef.current.find(p => p.username === username);
-                     if(peerObj){
-                         peerObj.peer.destroy();
-                     }
-                     //const peersList = peersListRef.current.filter(p => p.peerID !== id);
-                     const peersList = peersListRef.current.filter(p => p.username !== username);
-                     peersListRef.current = peersList;
-                     setPeers(peersList);
-                });
      
-     
-             });
+            });
         })
        
     }, []);

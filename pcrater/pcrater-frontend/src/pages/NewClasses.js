@@ -416,7 +416,7 @@ const New_Classes = () => {
                         </Button>
                         }
  
-                        <h6 className='browse_classes_title' onClick={() => navigate("/posts")}>Browse current classes</h6>
+                        <h6 className='browse_classes_title'>Browse current classes</h6>
 
                     </Card>
                 </div>

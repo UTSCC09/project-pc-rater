@@ -10,6 +10,8 @@ services:
       - 3000
     networks:
       - merng-app
+    environment:
+      - WDS_SOCKET_PORT=0
 
   api-server:
     image: api-server
@@ -18,8 +20,11 @@ services:
       dockerfile: ./server/Dockerfile.production
     ports:
       - "5000:5000"
+      - "9000:9000"
     networks:
       - merng-app
+    environment:
+      - WDS_SOCKET_PORT=0
 
 networks:
   merng-app:

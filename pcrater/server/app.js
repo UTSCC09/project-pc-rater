@@ -116,30 +116,31 @@ const server = new ApolloServer({
 const express = require("express");
 const app = express();
 app.use(cors());
+const fs = require("fs");
 const http = require("http");
-const httpServer = http.createServer(app);
+const https = require("https");
+
+httpServer = http.createServer(app);
 const socket = require("socket.io");
-
-
 
 let socketIdAndUserName = [];
 
 let drawingBoardData;
 
+const options = {
+  key: fs.readFileSync("privkey3.pem"),
+  cert: fs.readFileSync("fullchain3.pem"),
+};
 
 const io = socket(httpServer, {
-  cors: {
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST'],
-    credentials: true,
-  },
+   path: "/videocall"
 });
 
+httpServer.listen(9000, () => console.log('http server for the sockets is running on port 9000'));
 
-httpServer.listen(8000, () => console.log('http server for the sockets is running on port 8000'));
+//httpServer.listen(8000, () => console.log('http server for the sockets is running on port 8000'));
 
 io.on('connection', socket => {
-
   const id = socket.id;
 
   socket.on("check if user is in room", (data) => {
@@ -190,12 +191,10 @@ io.on('connection', socket => {
     io.to(userID).emit('receiving', returningSignal);
   });
 
-  socket.on("user leaves disconnect", (username) => {
-    //if(socketIdAndUserName) socketIdAndUserName = socketIdAndUserName.filter(elmt => elmt[0] !== id);
-    if(socketIdAndUserName) socketIdAndUserName = socketIdAndUserName.filter(elmt => elmt[1] !== username);
+  socket.on("user leaves disconnect", () => {
+    if(socketIdAndUserName) socketIdAndUserName = socketIdAndUserName.filter(elmt => elmt[0] !== id);
     if(socketIdAndUserName.length == 0) drawingBoardData = undefined;
-    //socket.broadcast.emit('user disconnect', id);
-    socket.broadcast.emit('user disconnect', username);
+    socket.broadcast.emit('user disconnect', id);
   });
 
   socket.on('disconnect', () => {
