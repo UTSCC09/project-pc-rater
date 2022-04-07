@@ -97,22 +97,23 @@ export default function CreatePost({ setIsSearching, createPostFunction, role, s
 
                     <Dropdown.Menu>
                         <Dropdown.Item onClick={() => setType("Question")}>Question</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setType("Note")}>Note</Dropdown.Item>
+                        {/* <Dropdown.Item onClick={() => setType("Note")}>Note</Dropdown.Item> */}
                         <Dropdown.Item onClick={() => setType("Poll")}>Poll</Dropdown.Item>
                     </Dropdown.Menu>
                     
                 </Dropdown>  
                 
-                {(type === "Question" || type === "Note") ?
+                {(type === "Question") ?
                     <>
                         Title:<input type="text" id="title" className="form_element" placeholder="Post Title" input value={title} 
                             onChange={({ target }) => setTitle(target.value)} required/>
                         Content:<textarea rows="5" id="content" className="form_element" placeholder="Details" input value={content} 
                             onChange={({ target }) => setContent(target.value)} required></textarea>
+                        <Button type="submit" className="btn">Create Post</Button>
                     </> :
                     <>
-                        <CreatePoll />
-                    
+                        <CreatePoll role={role} selectedCourse={selectedCourse}/>
+        
                     </>
                 
 
@@ -131,9 +132,7 @@ export default function CreatePost({ setIsSearching, createPostFunction, role, s
                     
                 </Dropdown> */}
 
-
-                
-                <Button type="submit" className="btn">Create Post</Button>
+                {/* <Button type="submit" className="btn">Create Post</Button> */}
             </form>
         </div>
     );

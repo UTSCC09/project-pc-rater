@@ -10,6 +10,13 @@ const postSchema = new Schema({
   visibility: String,
   type: String,
   createdAt: String,
+  poll_options: [
+    {
+      users: [String],
+      option: String,
+      numVotes: Number
+    }
+  ],
   upvotes: Number,
   upvotes_list: [
     {
