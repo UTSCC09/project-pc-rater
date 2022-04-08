@@ -73,7 +73,6 @@ module.exports = gql`
   type Query {
     getPosts(courseCode: String!): [Post]
     getPost(id: ID!): Post
-    getUsers: [User]
     findUser(username: String!): User
     getCourses(university: String!): [Course]
     getCoursesOfStudent(username: String!): [Course]

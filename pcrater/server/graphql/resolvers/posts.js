@@ -17,7 +17,13 @@ function getCurDateInYearMonthDayFormat(){
 module.exports = {
 
     Query: {
-        async getPosts(_, args) {
+        
+        async getPosts(_, args, context) {
+            if(!context.token){
+                let err = new Error("Unauthorized user");
+                err.code = 401;
+                throw err;
+            }
             try {
                 const posts = await Post.find({ "course": args.courseCode });
                 return posts;
@@ -26,7 +32,12 @@ module.exports = {
             }
         },
 
-        async getPost(_, args){
+        async getPost(_, args, context){
+            if(!context.token){
+                let err = new Error("Unauthorized user");
+                err.code = 401;
+                throw err;
+            }
             try{
                 const postObj = await Post.findById(args.id);
                 return postObj;
@@ -36,7 +47,12 @@ module.exports = {
         }
     },
     Mutation: {
-        async addPost(_, { username, role, course, title, content, visibility, type }) {
+        async addPost(_, { username, role, course, title, content, visibility, type }, context) {
+            if(!context.token){
+                let err = new Error("Unauthorized user");
+                err.code = 401;
+                throw err;
+            }
             const { errors, valid } = validatePostInput(validator.escape(username), validator.escape(role), validator.escape(course), 
             validator.escape(title), validator.escape(content), validator.escape(visibility), validator.escape(type));
             
@@ -89,7 +105,12 @@ module.exports = {
             return postObj;
         },
 
-        async updatePost(_, { id, title, content }) {
+        async updatePost(_, { id, title, content }, context) {
+            if(!context.token){
+                let err = new Error("Unauthorized user");
+                err.code = 401;
+                throw err;
+            }
             const { errors, valid } = validateUpdateInput(validator.escape(title), validator.escape(content));
             
             if (!valid) {
@@ -109,7 +130,12 @@ module.exports = {
             return postObj;
         },
 
-        async deletePost(_, { id }) {
+        async deletePost(_, { id }, context) {
+            if(!context.token){
+                let err = new Error("Unauthorized user");
+                err.code = 401;
+                throw err;
+            }
             const errors = {};
 
             const postObj = await Post.findByIdAndDelete(id);
@@ -121,7 +147,12 @@ module.exports = {
             
             return postObj;
         },
-        async addComment(_, { id, content, author, role }){
+        async addComment(_, { id, content, author, role }, context){
+            if(!context.token){
+                let err = new Error("Unauthorized user");
+                err.code = 401;
+                throw err;
+            }
             const { errors, valid } = validateAddCommentInput(validator.escape(content), validator.escape(author), validator.escape(role));
             const postObj = await Post.findById(id);
             if(!postObj){
@@ -159,7 +190,12 @@ module.exports = {
             await postObj.save();
             return postObj;
         },
-        async increaseUpvotesPost(_, { id, username }){
+        async increaseUpvotesPost(_, { id, username }, context){
+            if(!context.token){
+                let err = new Error("Unauthorized user");
+                err.code = 401;
+                throw err;
+            }
             const errors = {};
             const postObj = await Post.findById(id);
             if(!postObj){
@@ -189,7 +225,12 @@ module.exports = {
             postObj.save();
             return postObj;
         },
-        async increaseUpvotesComment(_, { postId, commentId, username }){
+        async increaseUpvotesComment(_, { postId, commentId, username }, context){
+            if(!context.token){
+                let err = new Error("Unauthorized user");
+                err.code = 401;
+                throw err;
+            }
             const errors = {};
             const postObj = await Post.findById(postId);
             if(!postObj){
@@ -228,9 +269,14 @@ module.exports = {
             return postObj;
         },
 
-        async addPoll(_, { username, role, course, title, content, visibility, poll_options }) {
+        async addPoll(_, { username, role, course, title, content, visibility, poll_options }, context) {
+            if(!context.token){
+                let err = new Error("Unauthorized user");
+                err.code = 401;
+                throw err;
+            }
             const { errors, valid } = validatePollInput(validator.escape(username), validator.escape(role), validator.escape(course), 
-            validator.escape(title), validator.escape(content), validator.escape(visibility), poll_options);
+            validator.escape(title), validator.escape(content), validator.escape(visibility), poll_options.map(option => validator.escape(option)));
             if (!valid) {
                 throw new UserInputError('Errors', { errors });
             }
@@ -269,7 +315,7 @@ module.exports = {
                 visibility: validator.escape(visibility),
                 type: "Poll",
                 createdAt,
-                poll_options: poll_options.map(option => ({"users": [], "option": option, "numVotes": 0})),
+                poll_options: poll_options.map(option => ({"users": [], "option": validator.escape(option), "numVotes": 0})),
                 upvotes: 0,
                 upvotes_list: [],
                 comments: [],
@@ -280,7 +326,12 @@ module.exports = {
             return pollObj;
         }, 
 
-        async addVote(_, { username, option, postId }) {
+        async addVote(_, { username, option, postId }, context) {
+            if(!context.token){
+                let err = new Error("Unauthorized user");
+                err.code = 401;
+                throw err;
+            }
             const { errors, valid } = validateUsernameInput(validator.escape(username));
             
             if (!valid) {
@@ -305,9 +356,9 @@ module.exports = {
                   });
             }
 
-            let index = postObj.poll_options.findIndex(op => option == op.option);
+            let index = postObj.poll_options.findIndex(op => validator.escape(option) == op.option);
 
-            if (postObj.poll_options[index].users.includes(username)) {
+            if (postObj.poll_options[index].users.includes(validator.escape(username))) {
                 throw new UserInputError("User with username " + username + " has already voted", {
                     errors: {
                         user_already_exists: 'User already exists.'
@@ -317,7 +368,7 @@ module.exports = {
             
             postObj.poll_options[index].numVotes+=1;
 
-            postObj.poll_options[index].users.push(username);
+            postObj.poll_options[index].users.push(validator.escape(username));
 
             await postObj.save();
 

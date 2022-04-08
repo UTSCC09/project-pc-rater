@@ -3,17 +3,20 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Nav, Navbar, Container } from 'react-bootstrap';
 import { AuthContext } from '../context/auth';
 import { useNavigate } from "react-router-dom";
+import { useApolloClient } from "@apollo/client";
 
 function NavBar() {
 
+    const client = useApolloClient();
     const { user, logout } = useContext(AuthContext);
     const navigate = useNavigate();
     const [activePage, setActivePage] = useState('');
 
     const handleLogOut = () => {
         logout();
+        client.clearStore();
         navigate('/');
-    }
+    };
 
     const handleItemClick = (e, { name }) => setActivePage(name);
         const { activeItem } = activePage;

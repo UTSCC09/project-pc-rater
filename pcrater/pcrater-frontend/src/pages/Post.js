@@ -10,6 +10,8 @@ import './Post.css';
 import Badge from '@mui/material/Badge';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Form from 'react-bootstrap/Form';
+import { useNavigate } from "react-router-dom";
+
 
 
 const ADD_COMMENT= gql`
@@ -134,6 +136,7 @@ const UPDATE_POST = gql`
 
 
 const Post = ({ post, role }) => {
+    const navigate = useNavigate();
     const [ commentContent, setCommentContent ] = useState("");
     const { user } = useContext(AuthContext);
     const [ isEditing, setIsEditing ]  = useState(false); 
@@ -169,7 +172,6 @@ const Post = ({ post, role }) => {
         if (post.username == user.username) {
             updatePost({ variables: { "id": post.id, "title": title, "content": content } });
         }
-        window.location.reload();
     }
 
 
