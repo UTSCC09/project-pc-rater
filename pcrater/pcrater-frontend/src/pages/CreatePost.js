@@ -1,11 +1,11 @@
-import React, { useState, useContext } from 'react';
-import {gql, useMutation, useQuery} from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
+import React, { useContext, useState } from 'react';
 import Button from "react-bootstrap/Button";
-import './CreatePost.css';
 import Dropdown from 'react-bootstrap/Dropdown';
+import ErrorMessage from "../components/ErrorMessage";
 import { AuthContext } from '../context/auth';
 import CreatePoll from './CreatePoll';
-import ErrorMessage from "../components/ErrorMessage";
+import './CreatePost.css';
 
 
 const FIND_USER = gql`
@@ -20,10 +20,6 @@ const FIND_USER = gql`
 `;
 
 export default function CreatePost({ setIsSearching, createPostFunction, role, selectedCourse }) {
-
-    // const [name, setName] = useState('');
-    // const [role, setRole] = useState('Student');
-    // const [course, setCourse] = useState('');
 
     const [errorMessage, setErrorMessage] = useState('');
     const [showError, setShowError] = useState(false);
@@ -56,9 +52,6 @@ export default function CreatePost({ setIsSearching, createPostFunction, role, s
         setIsSearching(false);
         createPostFunction({  variables: {"username": user.username , "role": role, "course": selectedCourse, title, content, visibility, type } });
 
-        // setName('');
-        // setRole('Student');
-        // setCourse('');
         setTitle('');
         setContent('');
         setVisibility('Public');
@@ -71,24 +64,6 @@ export default function CreatePost({ setIsSearching, createPostFunction, role, s
             <ErrorMessage isDismissible="dismissble" errorMessage={errorMessage} setShowError={setShowError} />}
             <form className="complex_post_form" id="add_post_form" onSubmit={submit}>
                 <div className="post_title">Create a Post</div>
-                {/* Full Name:<input type="text" id="username" className="form_element" placeholder="Full Name" input value={name} 
-                onChange={({ target }) => setName(target.value)} required/> */}
-
-                {/* Role:<Dropdown style={{ textAlign: "left", marginBottom: "5px", marginLeft: "5px", width: "40%" }}>
-                    <Dropdown.Toggle id="dropdown-basic">
-                        {role}
-                    </Dropdown.Toggle>
-
-                    <Dropdown.Menu>
-                        <Dropdown.Item onClick={() => setRole("Student")}>Student</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setRole("TA")}>TA</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setRole("Professor")}>Professor</Dropdown.Item>
-                    </Dropdown.Menu>
-                    
-                </Dropdown>   */}
-
-                {/* Course:<input type="text" id="course" className="form_element" placeholder="Course Code" input value={course} 
-                onChange={({ target }) => setCourse(target.value)}required/> */}
 
                 Type:<Dropdown className="tet-left mb-2 ml-1 w-25" >
                     <Dropdown.Toggle id="dropdown-basic">
@@ -97,7 +72,6 @@ export default function CreatePost({ setIsSearching, createPostFunction, role, s
 
                     <Dropdown.Menu>
                         <Dropdown.Item onClick={() => setType("Question")}>Question</Dropdown.Item>
-                        {/* <Dropdown.Item onClick={() => setType("Note")}>Note</Dropdown.Item> */}
                         <Dropdown.Item onClick={() => setType("Poll")}>Poll</Dropdown.Item>
                     </Dropdown.Menu>
                     
@@ -105,9 +79,9 @@ export default function CreatePost({ setIsSearching, createPostFunction, role, s
                 
                 {(type === "Question") ?
                     <>
-                        Title:<input type="text" id="title" className="form_element" placeholder="Post Title" input value={title} 
+                        Title:<input type="text" id="title" className="form_element" placeholder="Post Title" input="true" value={title} 
                             onChange={({ target }) => setTitle(target.value)} required/>
-                        Content:<textarea rows="5" id="content" className="form_element" placeholder="Details" input value={content} 
+                        Content:<textarea rows="5" id="content" className="form_element" placeholder="Details" input="true" value={content} 
                             onChange={({ target }) => setContent(target.value)} required></textarea>
                         <Button type="submit" className="btn">Create Post</Button>
                     </> :
@@ -120,19 +94,6 @@ export default function CreatePost({ setIsSearching, createPostFunction, role, s
                 }
 
 
-                {/* Visibility:<Dropdown style={{ textAlign: "left", marginBottom: "5px", marginLeft: "5px", width: "30%" }}>
-                    <Dropdown.Toggle id="dropdown-basic">
-                        {visibility}
-                    </Dropdown.Toggle>
-
-                    <Dropdown.Menu>
-                        <Dropdown.Item onClick={() => setVisibility("Public")}>Public</Dropdown.Item>
-                        <Dropdown.Item onClick={() => setVisibility("Private")}>Private</Dropdown.Item>
-                    </Dropdown.Menu>
-                    
-                </Dropdown> */}
-
-                {/* <Button type="submit" className="btn">Create Post</Button> */}
             </form>
         </div>
     );

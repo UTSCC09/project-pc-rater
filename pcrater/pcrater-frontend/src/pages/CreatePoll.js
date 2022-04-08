@@ -1,17 +1,11 @@
-import React, { useContext, useState, useEffect, useRef } from 'react';
-import Card from "react-bootstrap/Card";
-import ListGroup from "react-bootstrap/ListGroup";
+import { gql, useMutation } from "@apollo/client";
+import React, { useContext, useRef, useState } from 'react';
 import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
-import DropdownButton from 'react-bootstrap/DropdownButton';
-import Dropdown from 'react-bootstrap/Dropdown';
-import SearchBar from '../components/SearchBar';
-import Modal from 'react-bootstrap/Modal';
-import Alert from 'react-bootstrap/Alert';
-import CloseButton from 'react-bootstrap/CloseButton';
+import ListGroup from "react-bootstrap/ListGroup";
 import { useNavigate } from "react-router-dom";
 import ErrorMessage from "../components/ErrorMessage";
-import {gql, useQuery, useMutation} from "@apollo/client";
 import { AuthContext } from '../context/auth';
 
 
@@ -105,7 +99,6 @@ const CreatePoll = ({role, selectedCourse}) => {
     const handleSubmitPoll = (e) => {
         e.preventDefault();
         if(titleValue && descriptionValue && pollOptions.length > 1){
-            //navigate("/view-poll", { state: {title: titleValue, description: descriptionValue, options: pollOptions} })
             createPollFunction({variables: {"username": user.username , 
             "role": role, "course": selectedCourse, title: titleValue, 
             content: descriptionValue, visibility: visibility, poll_options: pollOptions.map(option => option.val)}})

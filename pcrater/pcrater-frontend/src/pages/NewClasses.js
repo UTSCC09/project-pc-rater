@@ -1,23 +1,19 @@
-import React, { useState, useEffect, useContext } from 'react';
-import './NewClasses.css';
-import { IconName } from "react-icons/bs";
-import Card from "react-bootstrap/Card";
-import ListGroup from "react-bootstrap/ListGroup";
+import { gql, useMutation, useQuery } from '@apollo/client';
+import React, { useContext, useEffect, useState } from 'react';
 import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import DropdownButton from 'react-bootstrap/DropdownButton';
+import Card from "react-bootstrap/Card";
 import Dropdown from 'react-bootstrap/Dropdown';
-import SearchBar from '../components/SearchBar';
-import ErrorMessage from '../components/ErrorMessage';
+import Form from "react-bootstrap/Form";
+import ListGroup from "react-bootstrap/ListGroup";
 import Modal from 'react-bootstrap/Modal';
-import { gql, useQuery, useMutation } from '@apollo/client'
-import Alert from 'react-bootstrap/Alert';
-import CloseButton from 'react-bootstrap/CloseButton';
-import { AuthContext } from '../context/auth';
-import { useNavigate } from "react-router-dom";
-import SuccessMessage from '../components/SuccessMessage';
-
 import { FaTimesCircle } from 'react-icons/fa';
+import { useNavigate } from "react-router-dom";
+import ErrorMessage from '../components/ErrorMessage';
+import SearchBar from '../components/SearchBar';
+import SuccessMessage from '../components/SuccessMessage';
+import { AuthContext } from '../context/auth';
+import './NewClasses.css';
+
 
 
 const ALL_COURSES = gql `
@@ -136,7 +132,7 @@ const determineSemester = () => {
         season = "Summer";
     }
     return season + " " + year;
-}
+};
     
 let current_semester = determineSemester();
 
@@ -217,7 +213,7 @@ const New_Classes = () => {
         if(!userCoursesResult.loading){
             setClassesList(userCoursesResult.data.getCoursesOfStudent);
         }
-    }, [userCoursesResult])
+    }, [userCoursesResult]);
 
     useEffect(() => {
         if(!allCoursesResult.loading && allCoursesResult.data){
@@ -244,14 +240,14 @@ const New_Classes = () => {
     }
 
     const addNewClass = async () => {
-        let classObj = allCoursesResult.data.getCourses.find(classElmt => classElmt.courseCode == classCode);
+        let classObj = allCoursesResult.data.getCourses.find(classElmt => classElmt.courseCode === classCode);
         if(classObj){
             setCourseNameError('Course already exists');
             setShowError(true);
-        }else if(courseName == ''){
+        }else if(courseName === ''){
             setCourseNameError('Course name cannot be empty.');
             setShowError(true);
-        }else if(classCode == ''){
+        }else if(classCode === ''){
             setCourseNameError('Course code cannot be empty.');
             setShowError(true);
         }else{
@@ -268,10 +264,10 @@ const New_Classes = () => {
     }
 
     const joinNewClass = () => {
-        let classObj = allCoursesResult.data.getCourses.find(classElmt => classElmt.courseCode == classCode);
-        let classObj2 = userCoursesResult.data.getCoursesOfStudent.find(classElmt => classElmt.courseCode == classCode);
-        let classObj3 = userCoursesResultTA.data.getCoursesOfTA.find(classElmt => classElmt.courseCode == classCode);
-        let classObj4 = userCoursesResultProfessor.data.getCoursesOfProfessor.find(classElmt => classElmt.courseCode == classCode);
+        let classObj = allCoursesResult.data.getCourses.find(classElmt => classElmt.courseCode === classCode);
+        let classObj2 = userCoursesResult.data.getCoursesOfStudent.find(classElmt => classElmt.courseCode === classCode);
+        let classObj3 = userCoursesResultTA.data.getCoursesOfTA.find(classElmt => classElmt.courseCode === classCode);
+        let classObj4 = userCoursesResultProfessor.data.getCoursesOfProfessor.find(classElmt => classElmt.courseCode === classCode);
         if(classObj === undefined){
             setCourseNameError('Course is not found.');
             setShowError(true);
@@ -301,9 +297,8 @@ const New_Classes = () => {
 
     function handleUniversityChange(newValue){
         if(newValue){
-            let universityObject = universitiesJson.find(elmt => elmt.name.toLowerCase() == newValue.toLowerCase());
+            let universityObject = universitiesJson.find(elmt => elmt.name.toLowerCase() === newValue.toLowerCase());
             if(universityObject){
-                // setUniversity(universityObject.name);
                 updateUniversity({ variables: { "username": user.username, "university": universityObject.name } })
                 setShow(false);
                 setUniversityError('');
@@ -352,15 +347,15 @@ const New_Classes = () => {
                         <Card.Header style = {{ textAlign: "left", fontWeight: "bold", fontSize: "18px" }}>{current_semester} classes</Card.Header>
                         <ListGroup  variant="flush" className="courses_list" style = {{ textAlign: 'left' }}>
                             {userCoursesResult.data.getCoursesOfStudent.map(classCode => {
-                              return <ListGroup.Item> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName} - {classCode.university}</ListGroup.Item>  
+                              return <ListGroup.Item key={classCode}> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName} - {classCode.university}</ListGroup.Item>  
                             })}
 
                             {userCoursesResultTA.data.getCoursesOfTA.map(classCode => {
-                              return <ListGroup.Item> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName} - {classCode.university} <span className='text-secondary'> (TA)</span></ListGroup.Item>  
+                              return <ListGroup.Item key={classCode}> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName} - {classCode.university} <span className='text-secondary'> (TA)</span></ListGroup.Item>  
                             })}
 
                             {userCoursesResultProfessor.data.getCoursesOfProfessor.map(classCode => {
-                              return <ListGroup.Item> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName} - {classCode.university} <span className='text-secondary'> (Professor)</span></ListGroup.Item>  
+                              return <ListGroup.Item key={classCode}> <FaTimesCircle onClick={() => handleDeleteClass(classCode.courseCode, user.username)} className="delete-icon" /> {classCode.courseCode}: {classCode.courseName} - {classCode.university} <span className='text-secondary'> (Professor)</span></ListGroup.Item>  
                             })}
                         </ListGroup>
                             

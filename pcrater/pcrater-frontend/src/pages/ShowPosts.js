@@ -1,9 +1,6 @@
-import React, { useState } from 'react';
-import { Nav } from 'react-bootstrap';
-import './ShowPosts.css';
+import React from 'react';
 import './Post.css';
-import SearchBar from '../components/SearchBar';
-import { gql, useQuery, useMutation } from '@apollo/client';
+import './ShowPosts.css';
 
 
 export default function ShowPosts({ isSearching, filteredData, postsData, setCreateOrShow, selectedCourse, currentPost, setPost }) {
@@ -23,18 +20,18 @@ export default function ShowPosts({ isSearching, filteredData, postsData, setCre
             </div>
             <div id="posts">
             {reversePostsData && reversePostsData.map(post => {
-                return <div className={currentPost.title === post.title ? "bg-azure post" : "bg-light post"} onClick={() => {
+                return <div key={post.id} className={currentPost.title === post.title ? "bg-azure post" : "bg-light post"} onClick={() => {
                     setCreateOrShow(false);
                     setPost(post);
                 }}> 
                     <div className="post_name">
-                        {post.role == "Student" &&
+                        {post.role === "Student" &&
                             <span className='s_span'>S</span> 
                         }
-                        {post.role == "TA" &&
+                        {post.role === "TA" &&
                             <span className='t_span'>T</span> 
                         }
-                        {post.role == "Professor" &&
+                        {post.role === "Professor" &&
                             <span className='p_span'>I</span> 
                         }
                         &nbsp;{post.title}</div>

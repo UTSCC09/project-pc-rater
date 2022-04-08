@@ -1,20 +1,10 @@
-import React, { useContext, useState, useEffect, useRef } from 'react';
-import Card from "react-bootstrap/Card";
-import ListGroup from "react-bootstrap/ListGroup";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import React, { useContext, useState } from 'react';
 import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
 import Form from "react-bootstrap/Form";
-import DropdownButton from 'react-bootstrap/DropdownButton';
-import Dropdown from 'react-bootstrap/Dropdown';
-import SearchBar from '../components/SearchBar';
-import Modal from 'react-bootstrap/Modal';
-import Alert from 'react-bootstrap/Alert';
-import CloseButton from 'react-bootstrap/CloseButton';
-import { useNavigate } from "react-router-dom";
-import {useLocation} from 'react-router-dom';
-import {gql, useQuery, useMutation} from "@apollo/client";
 import { AuthContext } from '../context/auth';
 import './ViewPoll.css';
-import { Input } from '@material-ui/core';
 
 const ADD_VOTE=gql`
 mutation addVote($username: String!, $option: String!, $postId: ID!){
@@ -61,9 +51,6 @@ const GET_POST = gql`
 
 
 const ViewPollResults = ({title, description, options, postId}) => {
-    const location = useLocation(); 
-    const navigate = useNavigate();
-    //const {title, description, options} = location.state;
     const [didVote, setDidVote] = useState(false);
     const { user } = useContext(AuthContext);
     const [ selectedOption, setSelectedOption ] = useState(options[0].option);
@@ -81,7 +68,6 @@ const ViewPollResults = ({title, description, options, postId}) => {
             createVoteFunction({variables: {"username": user.username, 
             "option": selectedOption, "postId": postId}});
             setDidVote(true);
-            // window.location.reload();
         }
     };
 
@@ -108,17 +94,6 @@ const ViewPollResults = ({title, description, options, postId}) => {
                         </div> 
                         :
                         <div>
-                            {/* <Form>
-                                <select onChange={(e) => {
-                                        setSelectedOption (e.target.value);
-                                    }}>
-                                {options.map((op, idx) => {
-                                    return <option value={op.option} checked="checked" type="radio" label={op.option} 
-                                    name={title} />
-                                    
-                                })}
-                                </select>
-                            </Form> */}
 
                             <Form>
                                 <Form.Select onChange={(e) => {

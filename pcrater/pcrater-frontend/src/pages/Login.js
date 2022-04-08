@@ -1,13 +1,13 @@
 //credits: https://www.youtube.com/watch?v=_DqPiZPKkgY&list=PLMhAeHCz8S3_pgb-j51QnCEhXNj5oyl8n
 
 
-import React, { useState, useContext } from 'react';
 import { useMutation } from '@apollo/react-hooks';
-import { useForm } from '../util/hooks';
 import gql from 'graphql-tag';
-import './Login.css';
-import { AuthContext } from '../context/auth';
+import React, { useContext, useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from '../context/auth';
+import { useForm } from '../util/hooks';
+import './Login.css';
 
 export default function Login() {
     const context = useContext(AuthContext);

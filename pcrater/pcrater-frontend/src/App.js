@@ -1,23 +1,18 @@
-import logo from './logo.svg';
-import './App.css';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-
+import './App.css';
+import NavBar from './components/NavBar';
 import { AuthProvider } from './context/auth';
-import AuthRoute from './util/AuthRoute';
-
+import CreatePoll from './pages/CreatePoll';
 import Home from './pages/Home';
 import Login from './pages/Login';
-import Signup from './pages/Signup';
 import NewClasses from './pages/NewClasses';
-import CreatePost from './pages/CreatePost';
-import ShowPosts from './pages/ShowPosts';
-
-import CreatePoll from './pages/CreatePoll'; 
-import ViewPoll from './pages/ViewPoll';
-import NavBar from './components/NavBar';
-import ViewPollResults from './pages/ViewPoll';
 import Posts from './pages/Posts';
+import Signup from './pages/Signup';
 import VideoCall from './pages/VideoCall';
+import ViewPoll from './pages/ViewPoll';
+
+
+
 
 function App() {
   return (

@@ -1,16 +1,15 @@
 /* Credits: https://react-bootstrap.github.io/components/list-group/ */    
 
-import React, { useState, useContext } from 'react';
-import { AuthContext } from '../context/auth';
-import {gql, useQuery, useMutation} from "@apollo/client";
-import Card from "react-bootstrap/Card";
-import ListGroup from "react-bootstrap/ListGroup";
-import Button from "react-bootstrap/Button";
-import './Post.css';
+import { gql, useMutation, useQuery } from "@apollo/client";
 import Badge from '@mui/material/Badge';
-import Dropdown from 'react-bootstrap/Dropdown';
+import React, { useContext, useState } from 'react';
+import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
 import Form from 'react-bootstrap/Form';
+import ListGroup from "react-bootstrap/ListGroup";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from '../context/auth';
+import './Post.css';
 
 
 
@@ -169,7 +168,7 @@ const Post = ({ post, role }) => {
 
     function submitHandler() {
         setIsEditing(false);
-        if (post.username == user.username) {
+        if (post.username === user.username) {
             updatePost({ variables: { "id": post.id, "title": title, "content": content } });
         }
     }
@@ -180,13 +179,13 @@ const Post = ({ post, role }) => {
             <Card style = {{ width: "65%", marginTop: "10px" }}>
                 <Card.Header>{post.type}</Card.Header>
                 <Card.Title style = {{ marginTop: "10px", paddingLeft: "10px" }}>
-                    {post.role == "Student" &&
+                    {post.role === "Student" &&
                         <span className="s_span">S</span>  
                     }
-                    {post.role == "TA" &&
+                    {post.role === "TA" &&
                         <span className="t_span">T</span>  
                     }
-                    {post.role == "Professor" &&
+                    {post.role === "Professor" &&
                         <span className="p_span">I</span>  
                     }
                     &nbsp;{!isEditing ? <span>{postResult.data.getPost.title}</span> : <input placeholder="Enter new title" defaultValue={post.title} onChange={(e) => setTitle(e.target.value)}/>}
@@ -194,13 +193,12 @@ const Post = ({ post, role }) => {
                 </Card.Title>
                 <Card.Text className="post_content">{!isEditing ? <span>{postResult.data.getPost.content}</span> : <input placeholder="Enter new content" defaultValue={post.content} onChange={(e) => setContent(e.target.value)}/>}</Card.Text>
                 <Card.Footer className="card_footer">
-                    {(!isEditing && (post.username == user.username)) ?
+                    {(!isEditing && (post.username === user.username)) ?
                         <Button size="sm" className="edit_button" onClick={editHandler}>Edit</Button> :
                         (isEditing) ?
                         <Button size="sm" className="edit_button" onClick={submitHandler}>Submit</Button> :
                         null
                     }
-                    {/* <Button size="sm" className="edit_button" onClick={editHandler}>Edit</Button> */}                    
                     {postResult.data.getPost.upvotes_list.map(upvote => upvote.username).includes(user.username) ?
                     <div className="good_question_text" style = {{ marginLeft: "20px", color: "blue", fontSize: "12px" }}>You have upvoted |  {postResult.data.getPost.upvotes}</div> :
                     <div onClick={() => increaseUpvotesPost({ variables: { "id": post.id, "username": user.username } })} className="good_question_text" style = {{ marginLeft: "20px", color: "blue", fontSize: "12px" }}>Good question |  {postResult.data.getPost.upvotes}</div>
@@ -226,9 +224,6 @@ const Post = ({ post, role }) => {
                                             thanks! | {comment.upvotes}
                                         </Badge>
                                         }
-                                        {/* <Badge onClick={() => increaseUpvotesComment({ variables: { "postId": post.id, "commentId": comment.id, "username": user.username } })} className="good_question_text" style = {{ color: "blue" }} bg="primary" pill>
-                                            thanks! | {comment.upvotes}
-                                        </Badge> */}
                                     </ListGroup.Item>
                                 ) 
                             }else if(comment.role.toLowerCase() === "ta"){
@@ -249,12 +244,9 @@ const Post = ({ post, role }) => {
                                             thanks! | {comment.upvotes}
                                         </Badge>
                                         }
-                                        {/* <Badge onClick={() => increaseUpvotesComment({ variables: { "postId": post.id, "commentId": comment.id, "username": user.username } })} className="good_question_text" style = {{ color: "blue" }} bg="primary" pill>
-                                        thanks! | {comment.upvotes}
-                                        </Badge> */}
                                     </ListGroup.Item>
                                 ) 
-                            }else if(comment.role.toLowerCase() == "professor"){
+                            }else if(comment.role.toLowerCase() === "professor"){
                                 return (
                                     <ListGroup.Item
                                         as="li"
@@ -272,9 +264,6 @@ const Post = ({ post, role }) => {
                                             thanks! | {comment.upvotes}
                                         </Badge>
                                         }
-                                        {/* <Badge onClick={() => increaseUpvotesComment({ variables: { "postId": post.id, "commentId": comment.id, "username": user.username } })} className="good_question_text" bg="primary" style = {{ color: "blue" }} pill>
-                                        thanks! | {comment.upvotes}
-                                        </Badge> */}
                                     </ListGroup.Item>
                                 ) 
                             }
@@ -283,7 +272,6 @@ const Post = ({ post, role }) => {
 
                 <Form style = {{ marginTop: "20px", marginLeft: "10px", marginRight: "10px" }}>
                     <Form.Label>Start a new followup discussion</Form.Label>
-                    {/* <Form.Control onChange={({ target }) => setCommentContent(target.value)} as="textarea" rows={4} placeholder="Enter comment" /> */}
                     <Form.Control value={commentContent} onChange={({ target }) => setCommentContent(target.value)} as="textarea" rows={4} placeholder="Enter comment" />
                     <Button onClick={() => {
                         if(commentContent){

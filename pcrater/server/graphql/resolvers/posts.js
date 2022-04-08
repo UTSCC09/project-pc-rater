@@ -356,7 +356,7 @@ module.exports = {
                   });
             }
 
-            let index = postObj.poll_options.findIndex(op => validator.escape(option) == op.option);
+            let index = postObj.poll_options.findIndex(op => validator.escape(option) === op.option);
 
             if (postObj.poll_options[index].users.includes(validator.escape(username))) {
                 throw new UserInputError("User with username " + username + " has already voted", {

@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Collapse from 'react-bootstrap/Collapse';
 import Card from 'react-bootstrap/Card';
 import {gql, useMutation} from "@apollo/client";
-import './Home.css'
+import './Home.css';
 import {
     MDBNavbar,
     MDBNavbarNav,

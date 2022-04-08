@@ -8,30 +8,17 @@
 // Develop Collaborative White Board : Web socket, Node JS & React JS | Part 2 : https://www.youtube.com/watch?v=bQy6WpIXW18
 // LETS BUILD A DRAWING APPLICATION USING REACT AND CANVAS API: https://www.youtube.com/watch?v=FLESHMJ-bI0
 
-import React, { useState, useEffect, useRef, useContext } from 'react';
-import Alert from 'react-bootstrap/Alert';
-import Modal from 'react-bootstrap/Modal';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import Button from 'react-bootstrap/Button';
-import {useLocation} from 'react-router-dom';
-import { AuthContext } from '../context/auth';
-import { gql, useQuery, useMutation } from '@apollo/client';
-import { useNavigate } from "react-router-dom";
-
-import io from "socket.io-client";
-import Peer from "simple-peer";
-import styled from "styled-components";
-import "./VideoCall.css";
-import Card from "react-bootstrap/Card";
+import Modal from 'react-bootstrap/Modal';
 // import Button from "react-bootstrap/Button";
-import { FaVolumeDown } from "react-icons/fa";  
-import { FaVolumeMute } from "react-icons/fa";  
-import { FaVideo } from "react-icons/fa";  
-import { FaVideoSlash } from "react-icons/fa";  
-import { FaShareSquare } from "react-icons/fa";
-import { FaRegCommentAlt } from "react-icons/fa";
-import { FaRegCommentDots } from "react-icons/fa";
-import { FaEraser } from "react-icons/fa";
-import { FaPencilAlt } from "react-icons/fa";
+import { FaEraser, FaPencilAlt, FaRegCommentAlt, FaRegCommentDots, FaShareSquare, FaVideo, FaVideoSlash, FaVolumeDown, FaVolumeMute } from "react-icons/fa";
+import { useLocation, useNavigate } from 'react-router-dom';
+import Peer from "simple-peer";
+import io from "socket.io-client";
+import { AuthContext } from '../context/auth';
+import "./VideoCall.css";
+
 
 
 const Drawing_Container = ({ setIsAUserDrawing, isAUserDrawing, isDrawing, socket, roomID }) => {
@@ -138,11 +125,11 @@ const Drawing_Container = ({ setIsAUserDrawing, isAUserDrawing, isDrawing, socke
                 setColor(e.target.value);
             }} />
             <span className='change_color_text'>Select Brush Size: &nbsp;
-                <select onChange={(e) => {
+                <select defaultValue={3} onChange={(e) => {
                     contextRef.current.lineWidth = e.target.value;
                 }}>
                     <option>1</option>
-                    <option selected>3</option>
+                    <option>3</option>
                     <option>5</option>
                     <option>10</option>
                     <option>15</option>
@@ -195,7 +182,7 @@ const LowNavBar = ({ socket, peersList, isDrawing, setIsDrawing, videoStream, se
 
 
     const handleCameraToggle = () => {
-        const videoTrack = videoStream.current.srcObject.getTracks().find(Track => Track.kind == 'video');
+        const videoTrack = videoStream.current.srcObject.getTracks().find(Track => Track.kind === 'video');
         if(videoTrack.enabled){
             videoTrack.enabled = false;
         }else{
@@ -207,7 +194,7 @@ const LowNavBar = ({ socket, peersList, isDrawing, setIsDrawing, videoStream, se
     const handleAudioToggle = () => {
         let audioTrack;
         if(!isScreenSharing){
-            audioTrack =  videoStream.current.srcObject.getTracks().find(Track => Track.kind == 'audio');
+            audioTrack =  videoStream.current.srcObject.getTracks().find(Track => Track.kind === 'audio');
         }else{
             audioTrack = audioForScreenSharing.current;
         }
@@ -261,7 +248,6 @@ const LowNavBar = ({ socket, peersList, isDrawing, setIsDrawing, videoStream, se
                 <span onClick={() => setIsDrawing(true)} className='low_nav_bar_text selected_nav_bar_text'> Drawing </span>
             }
             <Button variant="danger" size="sm" className="leave_call_btn" onClick={() => {
-                // socket.emit("user leaves disconnect");
                 socket.emit("user leaves disconnect", user.username);
                 setIsVideoOn(false);
                 navigate('/posts');
@@ -313,10 +299,14 @@ const VideoCall = () => {
 	path: "/videocall"
     });
 
+    // let socket = io.connect("http://localhost:9000");
+
     useEffect(() => {
 	socket = io.connect('https://pcrater.me', {
 		path: "/videocall"
-    	});
+    });
+    // socket = io.connect("http://localhost:9000");
+
 
     socket.emit("check if user is in room", { "username": user.username, roomID });
 
@@ -382,15 +372,6 @@ const VideoCall = () => {
                     item.peer.signal(data.signal);
             });
     
-            // socket.on("user disconnect", function(id){
-            //         const peerObj = peersListRef.current.find(p => p.peerID === id);
-            //         if(peerObj){
-            //             peerObj.peer.destroy();
-            //         }
-            //         const peersList = peersListRef.current.filter(p => p.peerID !== id);
-            //         peersListRef.current = peersList;
-            //         setPeers(peersList);
-            // });
 
             socket.on("user disconnect", function(username){
                 const peerObj = peersListRef.current.find(p => p.username === username);

@@ -1,23 +1,16 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { gql, useMutation, useQuery } from "@apollo/client";
+import React, { useContext, useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
-import {gql, useMutation, useQuery} from "@apollo/client";
-import CreatePost from './CreatePost';
-import ShowPosts from './ShowPosts';
-import SearchBar from '../components/SearchBar';
-import DropdownButton from 'react-bootstrap/DropdownButton';
-import Dropdown from 'react-bootstrap/Dropdown';
 import Card from 'react-bootstrap/Card';
-import { FaTelegramPlane } from "react-icons/fa";
-import Post from './Post';
-import { AuthContext } from '../context/auth';
+import Dropdown from 'react-bootstrap/Dropdown';
 import Form from "react-bootstrap/Form";
-import { FaSearch } from "react-icons/fa";  
-import { FaVideo } from "react-icons/fa";
-import { FaShareSquare } from "react-icons/fa";
-import { v1 as uuid } from "uuid";
-import './Posts.css';
-import ErrorMessage from "../components/ErrorMessage";
+import { FaSearch, FaTelegramPlane, FaVideo } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from '../context/auth';
+import CreatePost from './CreatePost';
+import Post from './Post';
+import './Posts.css';
+import ShowPosts from './ShowPosts';
 import ViewPollResults from './ViewPoll';
 
 const ADD_USER_TO_ROOM_FOR_COURSE = gql`
@@ -241,7 +234,7 @@ const PostsNavBar  = ({ setIsSearching, setFilteredData, setRole, postsData, set
 
                         <Dropdown.Menu>
                             {userCoursesResult.data.getCoursesOfStudent.map(course => 
-                                <Dropdown.Item onClick={() => {
+                                <Dropdown.Item key={course.courseCode} onClick={() => {
                                     setSelectedCourse(course.courseCode);
                                     setCreateOrShow(true);
                                 }}>{course.courseCode} : {course.courseName}</Dropdown.Item>    
@@ -256,7 +249,7 @@ const PostsNavBar  = ({ setIsSearching, setFilteredData, setRole, postsData, set
                             )}
 
                             {userCoursesResultProfessor.data.getCoursesOfProfessor.map(course => 
-                                <Dropdown.Item onClick={() => {
+                                <Dropdown.Item key={course.courseCode} onClick={() => {
                                     setSelectedCourse(course.courseCode);
                                     setCreateOrShow(true);
                                 }}>{course.courseCode} : {course.courseName} <span className='text-secondary'> (Prof)</span></Dropdown.Item>    
@@ -271,13 +264,6 @@ const PostsNavBar  = ({ setIsSearching, setFilteredData, setRole, postsData, set
                 </div>
 
                 <div style = {{ display: "flex" }}>
-                    {/* <Button onClick={() => setCreateOrShow(true)} size="sm" style={{ height: "50%", width: "25%", marginTop: "10px" }}><FaTelegramPlane /> New Post</Button> */}
-                    {/* <SearchBar placeholder="Search post..." setSearchWord={setSearchWordVal} data={postsData.map(post => {
-                        let new_elemt = {
-                            "title": post.title
-                        };
-                        return new_elemt;
-                    })} attributeToSearchFor="title" /> */}
                     <Form className="search_post_form" onSubmit={(e) => e.preventDefault()}>
                         <Button className="new_post_btn" onClick={() => setCreateOrShow(true)} size="sm"><FaTelegramPlane /> New Post</Button>
                         <Form.Control onChange={handleFilter} className="h-50" placeholder="Search for post..." />
@@ -320,8 +306,7 @@ const Posts = () => {
                 <ShowPosts isSearching={isSearching} filteredData={filteredData} postsData={allPostsResult.data ? allPostsResult.data.getPosts : []} setCreateOrShow={setCreateOrShow} selectedCourse={selectedCourse} currentPost={post} setPost={setPost} />
             </div>
             
-            {selectedCourse == '' &&
-                // <ErrorMessage isDismissible="undismissble" errorMessage="Please enroll in at least one course to proceed" setShowError={setShowError} />
+            {selectedCourse === '' &&
                 <div>Make sure to enroll in at least on course before using the forum.</div>
             }
 
@@ -329,11 +314,11 @@ const Posts = () => {
                 <CreatePost setIsSearching={setIsSearching} createPostFunction={createPostFunction} role={role} selectedCourse={selectedCourse}  />
             }
 
-            {(!createOrShow && selectedCourse !== '' && post.type == 'Question') &&
+            {(!createOrShow && selectedCourse !== '' && post.type === 'Question') &&
                 <Post role={role} post={post} />
             }
 
-            {(!createOrShow && selectedCourse !== '' && post.type == 'Poll') &&
+            {(!createOrShow && selectedCourse !== '' && post.type === 'Poll') &&
                 <ViewPollResults title={post.title} description={post.content} options={post.poll_options} postId={post.id} />
             }
 
