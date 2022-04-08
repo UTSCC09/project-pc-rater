@@ -9,7 +9,12 @@ const validator = require('validator');
 
 module.exports = {
     Query: {
-        async getCourses(root, args){
+        async getCourses(root, args, context){
+            if(!context.token){
+                let err = new Error("Unauthorized user");
+                err.code = 401;
+                throw err;
+            }
             try{
                 const courses = await Course.find({"university": args.university});
                 return courses;
@@ -17,7 +22,12 @@ module.exports = {
                 throw new Error(err);
             }
         },
-        async getCoursesOfStudent(root, args){
+        async getCoursesOfStudent(root, args, context){
+            if(!context.token){
+                let err = new Error("Unauthorized user");
+                err.code = 401;
+                throw err;
+            }
             try{
                 const user = await User.findOne({"username": args.username});
                 const all_courses = await Course.find({}).populate("students");
@@ -27,7 +37,12 @@ module.exports = {
                 throw new Error(err);
             }
         },
-        async getCoursesOfProfessor(root, args){
+        async getCoursesOfProfessor(root, args, context){
+            if(!context.token){
+                let err = new Error("Unauthorized user");
+                err.code = 401;
+                throw err;
+            }
             try{
                 const user = await User.findOne({"username": args.username});
                 const all_courses = await Course.find({}).populate("professors");
@@ -37,7 +52,12 @@ module.exports = {
                 throw new Error(err);
             }   
         },
-        async getCoursesOfTA(root, args){
+        async getCoursesOfTA(root, args, context){
+            if(!context.token){
+                let err = new Error("Unauthorized user");
+                err.code = 401;
+                throw err;
+            }
             try{
                 const user = await User.findOne({"username": args.username});
                 const all_courses = await Course.find({}).populate("teachingAssistants");
@@ -47,7 +67,12 @@ module.exports = {
                 throw new Error(err);
             }
         },
-        async findCourse(root, args){
+        async findCourse(root, args, context){
+            if(!context.token){
+                let err = new Error("Unauthorized user");
+                err.code = 401;
+                throw err;
+            }
             try{
                 const course = await Course.findOne({"courseCode": args.courseCode}).populate("students").populate("teachingAssistants").populate("professors");
                 return course;
@@ -58,7 +83,12 @@ module.exports = {
     },
     Mutation: {
 
-        async addCourse(_, { courseName, courseCode, semester, university }){
+        async addCourse(_, { courseName, courseCode, semester, university }, context){
+            if(!context.token){
+                let err = new Error("Unauthorized user");
+                err.code = 401;
+                throw err;
+            }
             const course = await Course.findOne({ "courseCode": validator.escape(courseCode) });
             if (course) {
               throw new UserInputError('Course code already exists', {
@@ -103,7 +133,12 @@ module.exports = {
                 createdAt: res.createdAt,
               };
         },
-        async addProfessorToCourse(_, { courseCode, username }){
+        async addProfessorToCourse(_, { courseCode, username }, context){
+            if(!context.token){
+                let err = new Error("Unauthorized user");
+                err.code = 401;
+                throw err;
+            }
             let course = await Course.findOne({ "courseCode": validator.escape(courseCode) } ).populate("professors").populate("students").populate("teachingAssistants");
             let prof_to_add = await User.findOne({ "username": validator.escape(username) });
             if(!prof_to_add){
@@ -143,7 +178,12 @@ module.exports = {
               };
             
         },
-        async addStudentToCourse(_, { courseCode, username }){
+        async addStudentToCourse(_, { courseCode, username }, context){
+            if(!context.token){
+                let err = new Error("Unauthorized user");
+                err.code = 401;
+                throw err;
+            }
             let course = await Course.findOne({ "courseCode": validator.escape(courseCode) } ).populate("students").populate("teachingAssistants").populate("professors");
             let student_to_add = await User.findOne({ "username": validator.escape(username) });
             if(!student_to_add){
@@ -182,7 +222,12 @@ module.exports = {
                 createdAt: res.createdAt,
               };
         },
-        async addTaToCourse(_, { courseCode, username }){
+        async addTaToCourse(_, { courseCode, username }, context){
+            if(!context.token){
+                let err = new Error("Unauthorized user");
+                err.code = 401;
+                throw err;
+            }
             let course = await Course.findOne({ "courseCode": validator.escape(courseCode) } ).populate("teachingAssistants").populate("students").populate("professors");
             let ta_to_add = await User.findOne({ "username": validator.escape(username) });
             if(!course){
@@ -217,7 +262,12 @@ module.exports = {
                 createdAt: res.createdAt,
               };
         },
-        async addUserToRoomForCourse(_, { username, courseCode }){
+        async addUserToRoomForCourse(_, { username, courseCode }, context){
+            if(!context.token){
+                let err = new Error("Unauthorized user");
+                err.code = 401;
+                throw err;
+            }
             let course = await Course.findOne({ "courseCode": validator.escape(courseCode) } ).populate("teachingAssistants").populate("students").populate("professors");
             if(!course){
                 throw new UserInputError('The course ' + courseCode + " is not found.");
@@ -242,7 +292,12 @@ module.exports = {
                   };
             }
         },
-        async deleteUserFromCourseRoom(_, { username, courseCode }){
+        async deleteUserFromCourseRoom(_, { username, courseCode }, context){
+            if(!context.token){
+                let err = new Error("Unauthorized user");
+                err.code = 401;
+                throw err;
+            }
             let course = await Course.findOne({ "courseCode": validator.escape(courseCode) } ).populate("teachingAssistants").populate("students").populate("professors");
             if(!course){
                 throw new UserInputError('The course ' + courseCode + " is not found.");
@@ -268,7 +323,12 @@ module.exports = {
                   };
             } 
         },
-        async deleteCourseForUser(_, { courseCode, username }){
+        async deleteCourseForUser(_, { courseCode, username }, context){
+            if(!context.token){
+                let err = new Error("Unauthorized user");
+                err.code = 401;
+                throw err;
+            }
             let course = await Course.findOne({ "courseCode": validator.escape(courseCode) } ).populate("teachingAssistants").populate("students").populate("professors");
             if(!course){
                 throw new UserInputError('The course ' + courseCode + " is not found.");

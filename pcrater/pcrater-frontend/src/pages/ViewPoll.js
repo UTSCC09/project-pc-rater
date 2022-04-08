@@ -30,13 +30,50 @@ mutation addVote($username: String!, $option: String!, $postId: ID!){
 
 `;
 
+
+const GET_POST = gql`
+    query getPostById($id: ID!){
+        getPost(id: $id){
+            title
+            content
+            poll_options {
+                users
+                option
+                numVotes
+            }
+            upvotes
+            upvotes_list{
+                username
+            }
+            comments {
+                id
+                content
+                author
+                role
+                upvotes
+                upvotes_list{
+                    username
+                }
+            }
+        }
+    }
+`;
+
+
 const ViewPollResults = ({title, description, options, postId}) => {
     const location = useLocation(); 
+    const navigate = useNavigate();
     //const {title, description, options} = location.state;
     const [didVote, setDidVote] = useState(false);
     const { user } = useContext(AuthContext);
     const [ selectedOption, setSelectedOption ] = useState(options[0].option);
     const [ createVoteFunction ] = useMutation(ADD_VOTE); 
+    let postResult = useQuery(GET_POST, { variables: { "id": postId }, skip: !postId, pollInterval: 2000 });
+
+    if(postResult.loading){
+        return <div>Loading...</div>;
+    }
+
 
     const handleSubmitPoll = (e) => {
         e.preventDefault();
@@ -44,7 +81,7 @@ const ViewPollResults = ({title, description, options, postId}) => {
             createVoteFunction({variables: {"username": user.username, 
             "option": selectedOption, "postId": postId}});
             setDidVote(true);
-            window.location.reload();
+            // window.location.reload();
         }
     };
 
@@ -52,14 +89,15 @@ const ViewPollResults = ({title, description, options, postId}) => {
     return (
         <div className='d-flex'>
             <div className="align-items-center">
-                <h2 className='text-center'>{title}</h2>
+                <Card.Header className="mt-4">Poll</Card.Header>
+                <h2 className="mt-1 text-center border-left border-right border-grey">{title}</h2>
                 <Card className="view_poll_card">
                     <h5>{description}</h5>
                     <Form>
                         {(options.map(op => op.users.includes(user.username)).includes(true) || didVote) ?
                         <div>
                             <Form>
-                                {options.map((op, idx) => {
+                                {postResult.data.getPost.poll_options.map((op, idx) => {
                                     return <div style={{ marginLeft: "40px"}}>
                                         <Form.Check disabled label={op.option + " (" + op.numVotes + ")"} checked={op.users.includes(user.username)} type="radio" name={title} />
                                     </div>
