@@ -314,7 +314,6 @@ const VideoCall = () => {
     });
 
     useEffect(() => {
-        //socket = io.connect('https://pcrater.me/videocall');
 	socket = io.connect('https://pcrater.me', {
 		path: "/videocall"
     	});
