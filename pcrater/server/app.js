@@ -110,6 +110,11 @@ let token;
 
 const server = new ApolloServer({
   playground: false,
+  introspection: false,
+  cors: {
+    origin: "https://pcrater.me",
+    credentials: true
+  },
   typeDefs,
   resolvers,
   context: ({ req }) => {
@@ -120,7 +125,9 @@ const server = new ApolloServer({
 
 const express = require("express");
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: "https://pcrater.me"
+}));
 
 
 const fs = require("fs");
@@ -136,7 +143,12 @@ let drawingBoardData;
 
 
 const io = socket(httpServer, {
-   path: "/videocall"
+   path: "/videocall",
+    cors: {
+      origin: 'https://pcrater.me',
+      methods: ['GET', 'POST'],
+      credentials: true,
+  },
 });
 
 // const io = socket(httpServer, {
