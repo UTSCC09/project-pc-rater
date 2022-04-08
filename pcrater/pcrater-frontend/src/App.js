@@ -10,6 +10,7 @@ import Posts from './pages/Posts';
 import Signup from './pages/Signup';
 import VideoCall from './pages/VideoCall';
 import ViewPoll from './pages/ViewPoll';
+import Credits from './pages/Credits';
 
 
 
@@ -28,6 +29,7 @@ function App() {
           <Route exact path="create-poll" element={<CreatePoll />} />
           <Route exact path="/view-poll" element={<ViewPoll />} />
           <Route exact path="posts" element={<Posts/>} />
+          <Route exact path="/credits" element={<Credits/>} />
         </Routes>
       </Router>
     </AuthProvider>

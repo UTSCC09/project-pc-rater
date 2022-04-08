@@ -239,6 +239,7 @@ const New_Classes = () => {
         setWillCreateNewClass(!willCreateNewClass);
     }
 
+    //Adding and validating new classes
     const addNewClass = async () => {
         let classObj = allCoursesResult.data.getCourses.find(classElmt => classElmt.courseCode === classCode);
         if(classObj){
@@ -263,6 +264,7 @@ const New_Classes = () => {
         }
     }
 
+    //Joining and validating new classses.
     const joinNewClass = () => {
         let classObj = allCoursesResult.data.getCourses.find(classElmt => classElmt.courseCode === classCode);
         let classObj2 = userCoursesResult.data.getCoursesOfStudent.find(classElmt => classElmt.courseCode === classCode);
@@ -295,6 +297,7 @@ const New_Classes = () => {
         setShowSuccess(true);
     }
 
+    //Handle university change from the search bar.
     function handleUniversityChange(newValue){
         if(newValue){
             let universityObject = universitiesJson.find(elmt => elmt.name.toLowerCase() === newValue.toLowerCase());

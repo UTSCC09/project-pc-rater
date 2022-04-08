@@ -1,5 +1,5 @@
-//credits: https://www.youtube.com/watch?v=_DqPiZPKkgY&list=PLMhAeHCz8S3_pgb-j51QnCEhXNj5oyl8n
-
+//credits: 
+//Auth: https://www.youtube.com/watch?v=n1mdAPFq2Os
 
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
@@ -19,7 +19,7 @@ export default function Signup(props) {
     const [universitiesJson, setUniversitiesJson] = useState([]);
     const [ universityInputValue, setUniversityInputValue ] = useState("");
 
-    // //This will be used for fetching data from the database
+    //This will be used for fetching data from the database
     useEffect(() => {
         fetch('https://raw.githubusercontent.com/Hipo/university-domains-list/master/world_universities_and_domains.json')
         .then((res) => {
@@ -33,6 +33,7 @@ export default function Signup(props) {
         });
     });
 
+    //Clear fields
     const { onChange, onSubmit, values } = useForm(registerUser, {
         username: "",
         firstname: "",
@@ -43,6 +44,7 @@ export default function Signup(props) {
         confirmPassword: ""
     });
 
+    //Add user
     const [addUser, { loading }] = useMutation(REGISTER_USER, {
         update(_, result) {
             context.login(result.data.register);
@@ -56,6 +58,7 @@ export default function Signup(props) {
         variables: values
     });
 
+    //Register user and validate university input
     function registerUser() {
         values.institution = universityInputValue;
         if(universitiesJson.map(elmt => elmt.name).includes(universityInputValue)){

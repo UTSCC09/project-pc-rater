@@ -1,4 +1,5 @@
-/* Credits: https://react-bootstrap.github.io/components/list-group/ */    
+/* Credits:
+Bootstrap: https://react-bootstrap.github.io/components/list-group/ */    
 
 import { gql, useMutation, useQuery } from "@apollo/client";
 import Badge from '@mui/material/Badge';

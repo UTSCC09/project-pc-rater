@@ -30,9 +30,6 @@ export default function CreatePost({ setIsSearching, createPostFunction, role, s
     const [type, setType] = useState('Question');
     const { user } = useContext(AuthContext);
     
-
-    const tempName='';
-
     
     let userResult = useQuery(FIND_USER, {variables: { "username": user.username }, skip: !user.username,});
 
@@ -48,7 +45,6 @@ export default function CreatePost({ setIsSearching, createPostFunction, role, s
             setErrorMessage("Cannot create a post with invalid user data.");
             setShowError(true);
         }
-        const name = userResult.data.findUser.firstname + " " + userResult.data.findUser.lastname;
         setIsSearching(false);
         createPostFunction({  variables: {"username": user.username , "role": role, "course": selectedCourse, title, content, visibility, type } });
 

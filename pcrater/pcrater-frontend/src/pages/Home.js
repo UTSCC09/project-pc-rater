@@ -1,18 +1,9 @@
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
-import Collapse from 'react-bootstrap/Collapse';
 import Card from 'react-bootstrap/Card';
-import {gql, useMutation} from "@apollo/client";
+import Collapse from 'react-bootstrap/Collapse';
 import './Home.css';
-import {
-    MDBNavbar,
-    MDBNavbarNav,
-    MDBNavbarItem,
-    MDBNavbarToggler,
-    MDBNavbarLink,
-    MDBContainer,
-    MDBIcon
-} from 'mdb-react-ui-kit';
+
 
 export default function Signup() {
 
@@ -38,7 +29,7 @@ export default function Signup() {
                     aria-controls="example-collapse-text"
                     aria-expanded={open}
                     id="whybtn">
-                    Why PCRaters?
+                    Why PCRater?
                 </Button>
                 <div className='collapseContainer'>
                     <Collapse in={open} dimension="width">

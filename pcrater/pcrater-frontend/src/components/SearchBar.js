@@ -1,10 +1,10 @@
-//credits: https://www.youtube.com/watch?v=x7niho285qs
+//credits: 
+// Search Bar functionality: https://www.youtube.com/watch?v=x7niho285qs */
 
+import CloseIcon from "@material-ui/icons/Close";
+import SearchIcon from "@material-ui/icons/Search";
 import React, { useState } from "react";
 import "./SearchBar.css";
-import SearchIcon from "@material-ui/icons/Search";
-import CloseIcon from "@material-ui/icons/Close";
-import Alert from 'react-bootstrap/Alert';
 
 function SearchBar({ setSearchWord, placeholder, data, attributeToSearchFor }) {
   const [filteredData, setFilteredData] = useState([]);

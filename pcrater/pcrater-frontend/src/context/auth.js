@@ -1,4 +1,5 @@
-//credit: https://www.youtube.com/watch?v=_DqPiZPKkgY&list=PLMhAeHCz8S3_pgb-j51QnCEhXNj5oyl8n
+//credit:
+//Authorization: https://www.youtube.com/watch?v=n1mdAPFq2Os
 
 import React, { useReducer, createContext } from 'react';
 import jwtDecode from 'jwt-decode';
@@ -45,6 +46,7 @@ function authReducer(state, action) {
 
 function AuthProvider(props) {
   const [state, dispatch] = useReducer(authReducer, initialState);
+  /* Handle the login logic*/
   function login(userData) {
     localStorage.setItem('jwtToken', userData.token);
     dispatch({
@@ -53,6 +55,7 @@ function AuthProvider(props) {
     });
   }
 
+  /* Handle the logout logic*/
   function logout() {
     localStorage.removeItem('jwtToken');
     dispatch({ type: 'LOGOUT' });

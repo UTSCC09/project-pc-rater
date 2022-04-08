@@ -11,7 +11,6 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-// import Button from "react-bootstrap/Button";
 import { FaEraser, FaPencilAlt, FaRegCommentAlt, FaRegCommentDots, FaShareSquare, FaVideo, FaVideoSlash, FaVolumeDown, FaVolumeMute } from "react-icons/fa";
 import { useLocation, useNavigate } from 'react-router-dom';
 import Peer from "simple-peer";
@@ -20,7 +19,7 @@ import { AuthContext } from '../context/auth';
 import "./VideoCall.css";
 
 
-
+//Drawing room with all of its attributes and functionalities 
 const Drawing_Container = ({ setIsAUserDrawing, isAUserDrawing, isDrawing, socket, roomID }) => {
     const canvasRef = useRef(null);
     const contextRef = useRef(null);
@@ -146,7 +145,7 @@ const Drawing_Container = ({ setIsAUserDrawing, isAUserDrawing, isDrawing, socke
     );
 };
 
-
+//Low navigation bar with all user options
 const LowNavBar = ({ socket, peersList, isDrawing, setIsDrawing, videoStream, setShowChat, showChat, isNewMessage, setIsNewMessage }) => {
     const [ isMuted, setIsMuted ] = useState(false);
     const [ isVideoOn, setIsVideoOn ] = useState(true);
@@ -256,6 +255,7 @@ const LowNavBar = ({ socket, peersList, isDrawing, setIsDrawing, videoStream, se
     )
 }
 
+//Individual video for a user (either current or peer)
 const Video = ({ peerInCall, username }) => {
     let videoRef = useRef();
     peerInCall.on("stream", peerStream => {
@@ -272,7 +272,7 @@ const Video = ({ peerInCall, username }) => {
 
 
 
-
+//Main container for the video calls functionality that incopeartes all other related WebRTC components
 const VideoCall = () => {
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();

@@ -28,7 +28,7 @@ mutation addPoll($username: String!, $role: String!, $course: String!, $title: S
 
 `;
 
-
+//Poll items the user sees when creating a poll
 const PollItem = (props) => {
     const {optionObj, deletePollItem} = props;
     return (

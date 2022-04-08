@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Form from "react-bootstrap/Form";
-import { FaSearch, FaTelegramPlane, FaVideo } from "react-icons/fa";
+import { FaTelegramPlane, FaVideo } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from '../context/auth';
 import CreatePost from './CreatePost';
@@ -138,7 +138,7 @@ query findPosts($courseCode: String!) {
 }`;
 
 
-
+//Select course to show the posts for, serach bar for filtering, video calls icon
 const PostsNavBar  = ({ setIsSearching, setFilteredData, setRole, postsData, setCreateOrShow, selectedCourse, setSelectedCourse }) => {
     const { user } = useContext(AuthContext);
     const [ searchWordVal, setSearchWordVal ] = useState(""); 
@@ -263,11 +263,10 @@ const PostsNavBar  = ({ setIsSearching, setFilteredData, setRole, postsData, set
                     <FaVideo onClick={() => handleVideoIconClick()} className="ml-3 mt-1 fa_video_icon" size={25} />
                 </div>
 
-                <div style = {{ display: "flex" }}>
+                <div style = {{ display: "flex", height: "60px" }}>
                     <Form className="search_post_form" onSubmit={(e) => e.preventDefault()}>
                         <Button className="new_post_btn" onClick={() => setCreateOrShow(true)} size="sm"><FaTelegramPlane /> New Post</Button>
                         <Form.Control onChange={handleFilter} className="h-50" placeholder="Search for post..." />
-                        <FaSearch className='fa_serach' />
                     </Form>
                 </div>
             </Card.Header> :

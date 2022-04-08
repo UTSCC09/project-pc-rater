@@ -49,7 +49,7 @@ const GET_POST = gql`
     }
 `;
 
-
+//After a poll has been created, users can see the poll, vote, and see the results after the vote
 const ViewPollResults = ({title, description, options, postId}) => {
     const [didVote, setDidVote] = useState(false);
     const { user } = useContext(AuthContext);
