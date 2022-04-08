@@ -148,7 +148,6 @@ query findPosts($courseCode: String!) {
 
 const PostsNavBar  = ({ setIsSearching, setFilteredData, setRole, postsData, setCreateOrShow, selectedCourse, setSelectedCourse }) => {
     const { user } = useContext(AuthContext);
-    console.log("user is ", user);
     const [ searchWordVal, setSearchWordVal ] = useState(""); 
     const navigate = useNavigate();
     let userCoursesResult = useQuery(GET_COURSES_OF_STUDENT, {variables: { "username": user.username }, skip: !user.username});
@@ -304,7 +303,7 @@ const Posts = () => {
     const [ showError, setShowError ] = useState(false);
 
 
-    let allPostsResult = useQuery(GET_POSTS, { variables: { "courseCode": selectedCourse }});
+    let allPostsResult = useQuery(GET_POSTS, { variables: { "courseCode": selectedCourse }, pollInterval: 2000});
     
     const [ createPostFunction ] = useMutation(CREATE_POST, { refetchQueries: [ GET_POSTS ] });
     

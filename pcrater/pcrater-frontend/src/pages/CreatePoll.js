@@ -112,7 +112,6 @@ const CreatePoll = ({role, selectedCourse}) => {
             setPollOptions([])
             setTitleValue('')
             setDescriptionValue('');
-            window.location.reload();
         }else if(!titleValue){
             setErrorMessage('The poll\'s title cannot be empty.');
             setShowError(true);

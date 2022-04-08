@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { UserInputError } = require('apollo-server');
 const validator = require('validator');
+const cookie = require('cookie');
 const { validateRegisterInput, validateLoginInput } = require('../../util/validators');
 
 const { SECRET_KEY } = require('../../config');
@@ -23,15 +24,12 @@ function generateToken(user) {
 
 module.exports = {
     Query: {
-        async getUsers() {
-            try {
-                const users = await User.find();
-                return users;
-            } catch (err) {
-                throw new Error(err);
+        async findUser(root, args, context) {
+            if(!context.token){
+              let err = new Error("Unauthorized user");
+              err.code = 401;
+              throw err;
             }
-        },
-        async findUser(root, args) {
             try {
                 const user = await User.findOne({ "username": args.username });
                 return user;
@@ -41,7 +39,7 @@ module.exports = {
         }
     },
     Mutation: {
-        async login(_, { email, password }) {
+        async login(_, { email, password }, context) {
             const { errors, valid } = validateLoginInput(email, password);
             
             if (!valid) {
@@ -63,7 +61,6 @@ module.exports = {
             }
             
             const token = generateToken(user);
-      
             return {
               id: user._id,
               username: user.username,
@@ -76,7 +73,7 @@ module.exports = {
               token
             };
         },
-        async register(_, { username, firstname, lastname, institution, email, password, confirmPassword }) {
+        async register(_, { username, firstname, lastname, institution, email, password, confirmPassword }, context) {
             // Validate user data
             const { valid, errors } = validateRegisterInput(
               username,
@@ -114,7 +111,7 @@ module.exports = {
             const res = await newUser.save();
             
             const token = generateToken(res);
-            
+
             return {
               id: res._id,
               username: res.username,
@@ -138,4 +135,4 @@ module.exports = {
           return user;
         }
     }
-}
+};

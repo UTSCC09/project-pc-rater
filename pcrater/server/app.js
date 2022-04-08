@@ -105,17 +105,22 @@ const User = require('./models/User');
 const Course = require('./models/Course');
 const Post = require('./models/Post');
 const cors = require('cors');
-const client = new MongoClient(uri);
 
 
 const server = new ApolloServer({
+  playground: false,
   typeDefs,
-  resolvers
+  resolvers,
+  context: ({ req }) => {
+    return { "token": req.headers.authorization };
+  },
 });
 
 const express = require("express");
 const app = express();
 app.use(cors());
+
+
 const fs = require("fs");
 const http = require("http");
 const https = require("https");
