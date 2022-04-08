@@ -1,5 +1,4 @@
-# __your_project_name__
-PCRater
+# PCRater
 
 ## Project URL
 https://pcrater.me/ 
