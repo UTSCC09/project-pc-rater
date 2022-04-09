@@ -61,8 +61,8 @@ Drawing board support for the virtual room.
 
 **Task:** Leaving deployment aside, explain how the app is built. Please describe the overall code design and be specific about the programming languages, framework, libraries and third-party api that you have used. 
 
-Our code is split into two main folders: pcrater-frotnend and server.
-The pcrater-frotnend folder contains the frontend logic of our app, which includes the React framework, styling with CSS, and Bootstrap. Our frontend logic also incorporates the Apollo Client library that is connected to the Apolloserver for running GraphQL queries. For the WebRTC, we used the socket.io-client and simple-peer libraries to connect to the HTTP server and implement the peer-to-peer communication logic on web sockets.
+Our code is split into two main folders: pcrater-frontend and server.
+The pcrater-frontend folder contains the frontend logic of our app, which includes the React framework, styling with CSS, and Bootstrap. Our frontend logic also incorporates the Apollo Client library that is connected to the Apolloserver for running GraphQL queries. For the WebRTC, we used the socket.io-client and simple-peer libraries to connect to the HTTP server and implement the peer-to-peer communication logic on web sockets.
 
 Our server folder contains the main server file, app.js, which initiates the ApolloServer, the HTTP server for sockets, and uses mongoose to connect our Apollo Server to our MongoDB database. Also, in app.js we handle all the incoming socket.io requests and send back new requests to the corresponding connected peers.
 
