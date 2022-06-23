@@ -3,19 +3,17 @@
 
 ## Project URL
 
-**Task:** Provide the link to your deployed application. Please make sure the link works. 
+<strong>Note:</strong> We are run out of credits on Digital Ocean so the link no longer works.
 
 https://pcrater.me/ 
 
 ## Project Video URL 
 
-**Task:** Provide the link to your youtube video. Please make sure the link works. 
 
 https://www.youtube.com/watch?v=LBmZgJET6dw
 
 ## Project Description
 
-**Task:** Provide a detailed description of your app
 
 PCRater is a web application that provides a central platform for students to come and join forums for their courses. 
 Users can join classes as students, TAs or even professors based on their assigned role in the class. 
@@ -59,7 +57,6 @@ Drawing board support for the virtual room.
 
 ## Development
 
-**Task:** Leaving deployment aside, explain how the app is built. Please describe the overall code design and be specific about the programming languages, framework, libraries and third-party api that you have used. 
 
 Our code is split into two main folders: pcrater-frontend and server.
 The pcrater-frontend folder contains the frontend logic of our app, which includes the React framework, styling with CSS, and Bootstrap. Our frontend logic also incorporates the Apollo Client library that is connected to the Apolloserver for running GraphQL queries. For the WebRTC, we used the socket.io-client and simple-peer libraries to connect to the HTTP server and implement the peer-to-peer communication logic on web sockets.
@@ -75,8 +72,6 @@ We also have a util folder for data validation, which is being called inside the
 
 ## Deployment
 
-**Task:** Explain how you have deployed your application.
-
 We dockerized our frontend and backend into two separate docker containers. 
 Then, we spun them up on our Digital Ocean droplet. 
 We used Ngnix Reverse Proxy to handle all our traffic.
@@ -85,16 +80,12 @@ P.S. We used NameCheap to get our domain name: pcrater.me, and then set the reco
 
 ## Maintenance
 
-**Task:** Explain how you monitor your deployed app to make sure that everything is working as expected.
 
 We monitor our application from time to time by testing the features and confirming that they work.
 We use the command htop to monitor the physical deployment server's health (i.e. CPU usage, memory) when the server is getting too slow. Also, we are using Sentry to monitor real-time crashes and fixes.
 
 
 ## Challenges
-
-**Task:** What is the top 3 most challenging things that you have learned/developed for you app? Please restrict your answer to only three items. 
-
 
 1. Learning and working with new programming languages, applications and frameworks such as REACT, GraphQL, 
 MongoDB with no previous exposure.
@@ -103,7 +94,6 @@ MongoDB with no previous exposure.
 
 ## Contributions
 
-**Task:** Describe the contribution of each team member to the project. Please provide the full name of each team member (but no student number). 
 
 Raz Ben Haim:
  - WebRTC video calls, chat, drawing board 
@@ -121,9 +111,3 @@ Mohammad Sajjad
 - Polls (Backend and Frontend)
 - Aiding with Video Call (Backend and Frontend)
 - Multiple bug fixes and refactorization in various components
-
-# One more thing? 
-
-**Task:** Any additional comment you want to share with the course staff? 
-
-Thank you for everything.
