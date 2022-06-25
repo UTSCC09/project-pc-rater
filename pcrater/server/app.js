@@ -57,22 +57,22 @@ let socketIdAndUserName = [];
 let drawingBoardData;
 
 
-const io = socket(httpServer, {
-   path: "/videocall",
-    cors: {
-      origin: 'https://pcrater.me',
-      methods: ['GET', 'POST'],
-      credentials: true,
-  },
-});
-
 // const io = socket(httpServer, {
-//   cors : {
-//     origin: "http://localhost:3000",
-//     methods: ['GET', 'POST'],
-//     credentials: true,
-//   }
+//    path: "/videocall",
+//     cors: {
+//       origin: 'https://pcrater.me',
+//       methods: ['GET', 'POST'],
+//       credentials: true,
+//   },
 // });
+
+const io = socket(httpServer, {
+  cors : {
+    origin: "http://localhost:3000",
+    methods: ['GET', 'POST'],
+    credentials: true,
+  }
+});
 
 
 httpServer.listen(9000, () => console.log('http server for the sockets is running on port 9000'));

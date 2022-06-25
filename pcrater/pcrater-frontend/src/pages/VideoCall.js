@@ -295,17 +295,17 @@ const VideoCall = () => {
     const videoStream = useRef();
     const peersListRef = useRef([]);
 
-    let socket = io.connect('https://pcrater.me', {
-	path: "/videocall"
-    });
+    // let socket = io.connect('https://pcrater.me', {
+	// path: "/videocall"
+    // });
 
-    // let socket = io.connect("http://localhost:9000");
+    let socket = io.connect("http://localhost:9000");
 
     useEffect(() => {
-	socket = io.connect('https://pcrater.me', {
-		path: "/videocall"
-    });
-    // socket = io.connect("http://localhost:9000");
+	// socket = io.connect('https://pcrater.me', {
+	// 	path: "/videocall"
+    // });
+    socket = io.connect("http://localhost:9000");
 
 
     socket.emit("check if user is in room", { "username": user.username, roomID });

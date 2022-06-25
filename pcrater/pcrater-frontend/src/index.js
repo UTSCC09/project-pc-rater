@@ -31,8 +31,8 @@ Sentry.init({
 });
 
 const httpLink = createHttpLink({
-  uri: 'https://pcrater.me/api'
-  // uri: 'http://localhost:5000'
+  // uri: 'https://pcrater.me/api'
+  uri: 'http://localhost:5000'
 });
 
 const authLink = setContext((_, { headers }) => {
